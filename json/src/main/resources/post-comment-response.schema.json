@@ -1,0 +1,14 @@
+{
+  "$id": "TODO, after pushing",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Post comment response",
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "rejectionReason": {
+      "type": "string"
+    }
+  }
+}

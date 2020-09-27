@@ -1,0 +1,36 @@
+{
+  "$id": "TODO, after pushing",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Post comment request",
+  "type": "object",
+  "definitions": {
+    "commentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorization": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tokenProvider": {
+          "type": "string",
+          "enum": ["Google"]
+        }
+      }
+    }
+  },
+  "properties": {
+    "comment": {
+      "type": "string"
+    },
+    "inReplyTo": {
+      "$ref": "#/definitions/commentId"
+    },
+    "authorization": {
+      "$ref": "#/definitions/authorization"
+    }
+  }
+}
