@@ -1,0 +1,23 @@
+{
+  "name": "flamewars",
+  "version": "1.0.0",
+  "description": "Serverless comment engine",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "Michael Boyles",
+  "license": "MIT",
+  "dependencies": {
+    "build": "^0.1.4",
+    "run": "^1.4.0",
+    "aws-sdk": "^2.764.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-typescript": "^7.7.7",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
+  }
+}
