@@ -1,4 +1,5 @@
 import type { PostCommentRequest } from './dist/post-comment-request'
+import * as AWS from 'aws-sdk';
 
 interface ApiGatewayRequest {
     body : string;
@@ -9,7 +10,6 @@ interface ApiGatewayResponse {
     body : string;
 }
 
-const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});

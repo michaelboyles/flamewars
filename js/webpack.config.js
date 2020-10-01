@@ -3,19 +3,19 @@ module.exports = [
         mode: 'development',
         entry: './create-comment-request-handler.ts',
         output: {
-            filename: './out.js'
+            filename: './out.js',
+            library: 'main',
+            libraryTarget: 'commonjs2'
         },
         module: {
             rules: [
                 {
                     test: /\.ts$/,
                     exclude: /node_modules/,
-                    use: 'babel-loader'
+                    use: 'ts-loader'
                 }
             ]
         },
-        externals: {
-            'aws-sdk': 'aws-sdk'
-        }
+        externals: ['aws-sdk']
     }
 ]
