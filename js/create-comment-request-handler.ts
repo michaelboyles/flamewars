@@ -17,6 +17,14 @@ const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 export const handler = async function(event : ApiGatewayRequest, context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
+    if (!isValid) {
+        const response: ApiGatewayResponse = {
+            statusCode: 400,
+            body: JSON.stringify({"success": false})
+        };
+        return response;
+    }
+
     const params = {
         TableName: 'COMMENTS',
         Item: {
@@ -31,10 +39,14 @@ export const handler = async function(event : ApiGatewayRequest, context) {
     return dynamo.putItem(params)
         .promise()
         .then(() => {
-            const response : ApiGatewayResponse = {
+            const response: ApiGatewayResponse = {
                 statusCode: 200,
                 body: JSON.stringify({"success": true})
             };
             return response;
         });
+}
+
+function isValid(request: PostCommentRequest){
+    return request.url && request.comment && request.authorization;
 }

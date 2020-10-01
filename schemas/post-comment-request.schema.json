@@ -35,5 +35,6 @@
     "authorization": {
       "$ref": "#/definitions/authorization"
     }
-  }
+  },
+  "required": ["url", "comment", "authorization"]
 }
