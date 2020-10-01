@@ -4,29 +4,34 @@ interface ApiGatewayRequest{
     body : string;
 }
 
-var AWS = require('aws-sdk');
+interface ApiGatewayResponse {
+    statusCode: number;
+    body : string;
+}
+
+const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
 
-var dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 export const handler = async function(event : ApiGatewayRequest, context) {
-    var request : PostCommentRequest = JSON.parse(event.body);
+    const request : PostCommentRequest = JSON.parse(event.body);
 
-    var params = {
+    const params = {
         TableName: 'COMMENTS',
         Item: {
             'id': { S: new Date().toISOString() },
-            'comment' : {S: request.comment },
-            'parent'  : {S: request.inReplyTo }
+            'comment' : { S: request.comment },
+            'parent'  : { S: request.inReplyTo }
         }
     };
 
     return dynamo.putItem(params)
         .promise()
         .then(() => {
-            const response = {
+            const response : ApiGatewayResponse = {
                 statusCode: 200,
-                body: JSON.stringify({"success": true}),
+                body: JSON.stringify({"success": true})
             };
             return response;
         });
