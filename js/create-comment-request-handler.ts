@@ -1,14 +1,6 @@
 import type { PostCommentRequest } from './dist/post-comment-request'
+import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
-
-interface ApiGatewayRequest {
-    body : string;
-}
-
-interface ApiGatewayResponse {
-    statusCode: number;
-    body : string;
-}
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -29,7 +21,7 @@ export const handler = async function(event: ApiGatewayRequest, context) {
         TableName: 'COMMENTS',
         Item: {
             'id'       : { S: new Date().toISOString()  }, //TODO uuid?
-            'url'      : { S: request.url               },
+            'pageUrl'  : { S: request.url               },
             'comment'  : { S: request.comment           },
             'parent'   : { S: request.inReplyTo         },
             'timestamp': { S: new Date().toISOString()  }

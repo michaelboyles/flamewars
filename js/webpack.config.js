@@ -2,8 +2,12 @@ module.exports = [
     {
         mode: 'development',
         entry: './create-comment-request-handler.ts',
+        entry: {
+            'create-comment-request-handler': './create-comment-request-handler.ts',
+            'get-comments': './get-comments.ts'
+        },
         output: {
-            filename: './out.js',
+            filename: '[name].js',
             library: 'main',
             libraryTarget: 'commonjs2'
         },
