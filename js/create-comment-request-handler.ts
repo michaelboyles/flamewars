@@ -1,12 +1,13 @@
 import type { PostCommentRequest } from './dist/post-comment-request'
 import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
+import type { Handler } from 'aws-lambda'
 
 AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-export const handler = async function(event: ApiGatewayRequest, context) {
+export const handler: Handler = async function(event: ApiGatewayRequest, context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid) {
