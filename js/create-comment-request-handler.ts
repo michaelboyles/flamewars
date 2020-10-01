@@ -1,6 +1,6 @@
 import type { PostCommentRequest } from './dist/post-comment-request'
 
-interface ApiGatewayRequest{
+interface ApiGatewayRequest {
     body : string;
 }
 
@@ -14,7 +14,7 @@ AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-export const handler = async function(event : ApiGatewayRequest, context) {
+export const handler = async function(event: ApiGatewayRequest, context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid) {
@@ -28,11 +28,11 @@ export const handler = async function(event : ApiGatewayRequest, context) {
     const params = {
         TableName: 'COMMENTS',
         Item: {
-            'id'        : { S: new Date().toISOString()  }, //TODO uuid?
-            'url'       : { S: request.url               },
-            'comment'   : { S: request.comment           },
-            'parent'    : { S: request.inReplyTo         },
-            'timestamp' : { S : new Date().toISOString() }
+            'id'       : { S: new Date().toISOString()  }, //TODO uuid?
+            'url'      : { S: request.url               },
+            'comment'  : { S: request.comment           },
+            'parent'   : { S: request.inReplyTo         },
+            'timestamp': { S: new Date().toISOString()  }
         }
     };
 
