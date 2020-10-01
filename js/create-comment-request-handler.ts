@@ -20,9 +20,11 @@ export const handler = async function(event : ApiGatewayRequest, context) {
     const params = {
         TableName: 'COMMENTS',
         Item: {
-            'id': { S: new Date().toISOString() },
-            'comment' : { S: request.comment },
-            'parent'  : { S: request.inReplyTo }
+            'id'        : { S: new Date().toISOString()  }, //TODO uuid?
+            'url'       : { S: request.url               },
+            'comment'   : { S: request.comment           },
+            'parent'    : { S: request.inReplyTo         },
+            'timestamp' : { S : new Date().toISOString() }
         }
     };
 
