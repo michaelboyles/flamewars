@@ -3,8 +3,8 @@ module.exports = [
         mode: 'development',
         entry: './create-comment-request-handler.ts',
         entry: {
-            'create-comment-request-handler': './create-comment-request-handler.ts',
-            'get-comments': './get-comments.ts'
+            'create-comment-request-handler': './server/create-comment-request-handler.ts',
+            'get-comments': './server/get-comments.ts'
         },
         output: {
             filename: '[name].js',
@@ -21,5 +21,22 @@ module.exports = [
             ]
         },
         externals: ['aws-sdk']
+    },
+    {
+        name: 'Client',
+        mode: 'production',
+        entry: './client/index.ts',
+        output: {
+            filename: 'index.js'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts$/,
+                    exclude: /node_modules/,
+                    use: 'ts-loader'
+                }
+            ]
+        }
     }
 ]

@@ -1,4 +1,4 @@
-import type { PostCommentRequest } from './dist/post-comment-request'
+import type { PostCommentRequest } from '../dist/post-comment-request'
 import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
