@@ -5,6 +5,7 @@
   "scripts": {
     "gen": "node generate-types.js",
     "webpack": "webpack",
+    "start": "webpack-dev-server --mode development --open --hot",
     "build": "run-s gen webpack"
   },
   "author": "Michael Boyles",
@@ -27,6 +28,7 @@
     "ts-loader": "^8.0.4",
     "typescript": "^4.0.3",
     "webpack": "^4.36.1",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.11.0"
   }
 }
