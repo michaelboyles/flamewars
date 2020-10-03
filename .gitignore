@@ -3,3 +3,4 @@
 target/
 js/node_modules/
 js/dist
+js/client/index.html

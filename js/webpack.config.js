@@ -17,7 +17,12 @@ module.exports = [
                 {
                     test: /\.ts$/,
                     exclude: /node_modules/,
-                    use: 'ts-loader'
+                    use: [{
+                        loader: 'ts-loader',
+                        options: {
+                            configFile: "server/tsconfig.json"
+                        }
+                    }]
                 }
             ]
         },
@@ -26,16 +31,21 @@ module.exports = [
     {
         name: 'Client',
         mode: 'production',
-        entry: './client/index.ts',
+        entry: './client/index.tsx',
         output: {
             filename: 'index.js'
         },
         module: {
             rules: [
                 {
-                    test: /\.ts$/,
+                    test: /\.tsx$/,
                     exclude: /node_modules/,
-                    use: 'ts-loader'
+                    use: [{
+                        loader: 'ts-loader',
+                        options: {
+                            configFile: "client/tsconfig.json"
+                        }
+                    }]
                 }
             ]
         }
