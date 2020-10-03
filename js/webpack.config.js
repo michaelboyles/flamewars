@@ -1,5 +1,6 @@
 module.exports = [
     {
+        name: 'Server',
         mode: 'development',
         entry: './create-comment-request-handler.ts',
         entry: {
