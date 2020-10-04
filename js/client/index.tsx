@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import * as ReactDOM from 'react-dom';
+import './style.scss';
 
 interface Author {
     name: string;

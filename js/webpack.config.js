@@ -46,6 +46,10 @@ module.exports = [
                             configFile: "client/tsconfig.json"
                         }
                     }]
+                },
+                {
+                    test: /\.scss$/,
+                    use: ['style-loader', 'css-loader', 'sass-loader']
                 }
             ]
         }
