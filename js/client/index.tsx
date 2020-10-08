@@ -42,6 +42,7 @@ function ShowComment(comment: Comment) {
 
     return (
         <li>
+            <img src={comment.author.portraitUrl ? comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
             <div className='author-name'>{comment.author.name}</div>
             <div className='timestamp'>{comment.timestamp.toISOString()}</div>
             <div className='content'>{comment.text}</div>
