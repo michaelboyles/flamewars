@@ -18,6 +18,46 @@ interface Comment {
 
 type CommentId = string;
 
+function formatTimestamp(timestamp: Date) {
+    const now = new Date();
+    const age = Math.abs(now.getTime() - timestamp.getTime());
+
+    const millisPerSecond = 1000;
+    const millisPerMinute = millisPerSecond * 60;
+    const millisPerHour   = millisPerMinute * 60;
+    const millisPerDay    = millisPerHour * 24;
+    const millisPerMonth  = millisPerDay * 30;
+    const millisPerYear   = millisPerDay * 365;
+
+    let unit: string;
+    let quantity: number;
+    if (age < millisPerMinute) {
+        unit = 'second';
+        quantity = Math.floor(age / millisPerSecond);
+    }
+    else if (age < millisPerHour) {
+        unit = 'minute';
+        quantity = Math.floor(age / millisPerMinute);
+    }
+    else if (age < millisPerDay) {
+        unit = 'hour';
+        quantity = Math.floor(age / millisPerHour);
+    }
+    else if (age < millisPerMonth) {
+        unit = 'day';
+        quantity = Math.floor(age / millisPerDay);
+    }
+    else if (age < millisPerYear) {
+        unit = 'month';
+        quantity = Math.floor(age / millisPerMonth);
+    }
+    else {
+        unit = 'year';
+        quantity = Math.floor(age / millisPerYear);
+    }
+    return `${quantity} ${unit}${quantity == 1 ? '' : 's'} ago`; 
+}
+
 function submitComment(event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
     if (inReplyTo) {
         alert(`You replied to ${inReplyTo}!`);
@@ -41,21 +81,23 @@ function ShowComment(comment: Comment) {
     const [isReplyOpen, setReplyOpen] = useState(false);
 
     return (
-        <li>
-            <img src={comment.author.portraitUrl ? comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
-            <div className='author-name'>{comment.author.name}</div>
-            <div className='timestamp'>{comment.timestamp.toISOString()}</div>
-            <div className='content'>{comment.text}</div>
-            <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
-            {
-                isReplyOpen ? <AddComment inReplyTo={ comment.id } /> : null
-            }
-            {
-                comment.replies.length ?
-                    <ul>{ comment.replies.map(reply => ShowComment(reply)) }</ul>
-                    :
-                    null
-            }
+        <li className='comment'>
+            <img className='portrait' src={comment.author.portraitUrl ? comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
+            <div className='body'>
+                <span className='author-name'>{comment.author.name}</span>
+                <span className='timestamp'>{formatTimestamp(comment.timestamp)}</span>
+                <span className='content'>{comment.text}</span>
+                <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
+                {
+                    isReplyOpen ? <AddComment inReplyTo={ comment.id } /> : null
+                }
+                {
+                    comment.replies.length ?
+                        <ul>{ comment.replies.map(reply => ShowComment(reply)) }</ul>
+                        :
+                        null
+                }
+            </div>
         </li>
     );
 }
@@ -87,7 +129,7 @@ function Comments() {
     return (
         <>
             <AddComment />
-            <ul>
+            <ul className='comments'>
                 { comments.map(comment => ShowComment(comment)) }
             </ul>
         </>
