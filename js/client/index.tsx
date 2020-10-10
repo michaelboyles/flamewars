@@ -7,10 +7,12 @@ import type { PostCommentRequest } from '../dist/post-comment-request'
 import type { CommentId } from '../dist/comment'
 import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-response'
 
+type CommentConsumer = (comment: Comment) => void;
+
 const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
 const getUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comments';
 
-function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
+function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, onDone: CommentConsumer, inReplyTo?: CommentId) {
     event.preventDefault();
     const request: PostCommentRequest = {
         url: window.location.toString(),
@@ -26,14 +28,21 @@ function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, in
             method: 'POST'
         })
         .then(r => r.json())
-        .then(json => console.log("Comment posted successfully", json))
+        .then(json => {
+            if (onDone) {
+                onDone(json.comment)
+            }
+            else {
+                console.log("Comment posted successfully", json)
+            }
+        })
         .catch(e => console.error(e))
 }
 
-function AddComment(props: { inReplyTo?: CommentId }) {
+function AddComment(props: {inReplyTo?: CommentId, onDone: CommentConsumer}) {
     const [text, setText] = useState('');
     return (
-        <form onSubmit={e => submitComment(text, e, props.inReplyTo)}>
+        <form onSubmit={e => submitComment(text, e, props.onDone, props.inReplyTo)}>
             <textarea onChange={e => setText(e.target.value)}></textarea>
             <button type="submit">Post</button>
         </form>
@@ -41,6 +50,7 @@ function AddComment(props: { inReplyTo?: CommentId }) {
 }
 
 const ShowComment = (props: {comment: Comment}) => {
+    const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
 
     return (
@@ -52,11 +62,11 @@ const ShowComment = (props: {comment: Comment}) => {
                 <span className='content'>{props.comment.text}</span>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {
-                    isReplyOpen ? <AddComment inReplyTo={ props.comment.id } /> : null
+                    isReplyOpen ? <AddComment onDone={comment => setReplies(replies.concat(comment)) } inReplyTo={props.comment.id}   /> : null
                 }
                 {
-                    props.comment.replies.length ?
-                        <ul>{ props.comment.replies.map(reply => <ShowComment comment={reply} />) }</ul>
+                    replies.length ?
+                        <ul>{ replies.map(reply => <ShowComment comment={reply} />) }</ul>
                         :
                         null
                 }
@@ -78,7 +88,7 @@ const Comments = () => {
 
     return (
         <>
-            <AddComment />
+            <AddComment onDone={(a: Comment) => setComments(comments.concat(a))} />
             <ul className='comments'>
                 { comments.map(comment => <ShowComment comment={comment} />) }
             </ul>
