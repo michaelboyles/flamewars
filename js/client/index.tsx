@@ -1,20 +1,21 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 import './style.scss';
 import { formatPastDate } from './time';
 import type { PostCommentRequest } from '../dist/post-comment-request'
 import type { CommentId } from '../dist/comment'
-import type { Comment } from '../dist/get-all-comments-response'
+import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-response'
 
 const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
+const getUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comments';
 
 function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
     event.preventDefault();
     const request: PostCommentRequest = {
         url: window.location.toString(),
         comment: text,
-        inReplyTo: '123', //TODO server complains if absent
+        inReplyTo: inReplyTo ? inReplyTo : '123', //TODO server complains if absent
         authorization: {
             token: 'abc',
             tokenProvider: 'Google'
@@ -39,23 +40,23 @@ function AddComment(props: { inReplyTo?: CommentId }) {
     );
 }
 
-function ShowComment(comment: Comment) {
+const ShowComment = (props: {comment: Comment}) => {
     const [isReplyOpen, setReplyOpen] = useState(false);
 
     return (
         <li className='comment'>
-            <img className='portrait' src={comment.author.portraitUrl ? comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
+            <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
             <div className='body'>
-                <span className='author-name'>{comment.author.name}</span>
-                <span className='timestamp'>{formatPastDate(Date.parse(comment.timestamp))}</span>
-                <span className='content'>{comment.text}</span>
+                <span className='author-name'>{props.comment.author.name}</span>
+                <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
+                <span className='content'>{props.comment.text}</span>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {
-                    isReplyOpen ? <AddComment inReplyTo={ comment.id } /> : null
+                    isReplyOpen ? <AddComment inReplyTo={ props.comment.id } /> : null
                 }
                 {
-                    comment.replies.length ?
-                        <ul>{ comment.replies.map(reply => ShowComment(reply)) }</ul>
+                    props.comment.replies.length ?
+                        <ul>{ props.comment.replies.map(reply => <ShowComment comment={reply} />) }</ul>
                         :
                         null
                 }
@@ -64,35 +65,22 @@ function ShowComment(comment: Comment) {
     );
 }
 
-// Some mock data
-const comments: Comment[] = [
-    {
-        id: '123',
-        text: 'This is a comment',
-        author: {
-            name: 'Cpt Obvious'
-        },
-        timestamp: new Date().toISOString(),
-        replies: [
-            {
-                id: '456',
-                text: 'I agree with you. That is a comment',
-                author: {
-                    name: 'Michael'
-                },
-                timestamp: new Date().toISOString(),
-                replies: []
-            }
-        ]
-    }
-]
+const Comments = () => {
+    const [comments, setComments] = useState([] as Comment[]);
 
-function Comments() {
+    useEffect(() => {
+        fetch(getUrl + '?url=' + window.location.toString())
+            .then(response => response.json())
+            .then(json => setComments((json as GetAllCommentsResponse).comments))
+            .catch(e => console.log(e));
+      }, []
+    );
+
     return (
         <>
             <AddComment />
             <ul className='comments'>
-                { comments.map(comment => ShowComment(comment)) }
+                { comments.map(comment => <ShowComment comment={comment} />) }
             </ul>
         </>
     );

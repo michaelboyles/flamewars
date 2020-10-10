@@ -8,6 +8,11 @@ AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
+const responseHeaders = {
+    'Access-Control-Allow-Origin': 'http://localhost:8080',
+    'Access-Control-Allow-Methods': 'POST'
+};
+
 function convertDataToResponse(data: ScanOutput) {
     let comments: Comment[] = [];
 
@@ -42,6 +47,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, context) {
                 console.log(err, err.stack);
                 const response: ApiGatewayResponse = {
                     statusCode: 500,
+                    headers: responseHeaders,
                     body: JSON.stringify(event)
                 };
                 reject(response);
@@ -49,6 +55,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, context) {
             else {
                 const response: ApiGatewayResponse = {
                     statusCode: 200,
+                    headers: responseHeaders,
                     body: JSON.stringify(convertDataToResponse(data))
                 };
                 resolve(response);
