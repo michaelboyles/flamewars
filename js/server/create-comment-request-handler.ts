@@ -8,12 +8,18 @@ AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
+const responseHeaders = {
+    'Access-Control-Allow-Origin': 'http://localhost:8080',
+    'Access-Control-Allow-Methods': 'POST'
+};
+
 export const handler: Handler = async function(event: ApiGatewayRequest, context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid) {
         return {
             statusCode: 400,
+            headers: responseHeaders,
             body: JSON.stringify({"success": false})
         } as ApiGatewayResponse;
     }
@@ -34,6 +40,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
         .then(() => {
             return {
                 statusCode: 200,
+                headers: responseHeaders,
                 body: JSON.stringify({"success": true})
             } as ApiGatewayResponse;
         });

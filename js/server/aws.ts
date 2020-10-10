@@ -7,6 +7,7 @@ export interface ApiGatewayRequest {
 
 export interface ApiGatewayResponse {
     statusCode: number;
+    headers?: object,
     body: string;
 }
 

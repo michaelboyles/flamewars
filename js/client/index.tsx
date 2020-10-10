@@ -3,6 +3,9 @@ import { useState } from 'react';
 import * as ReactDOM from 'react-dom';
 import './style.scss';
 import { formatPastDate } from './time';
+import type { PostCommentRequest } from '../dist/post-comment-request'
+
+const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
 
 interface Author {
     name: string;
@@ -19,20 +22,31 @@ interface Comment {
 
 type CommentId = string;
 
-function submitComment(event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
-    if (inReplyTo) {
-        alert(`You replied to ${inReplyTo}!`);
-    }
-    else {
-        alert(`You commented on ${window.location}`)
-    }
+function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
     event.preventDefault();
+    const request: PostCommentRequest = {
+        url: window.location.toString(),
+        comment: text,
+        inReplyTo: '123', //TODO server complains if absent
+        authorization: {
+            token: 'abc',
+            tokenProvider: 'Google'
+        }
+    };
+    fetch(submitUrl, {
+            body: JSON.stringify(request),
+            method: 'POST'
+        })
+        .then(r => r.json())
+        .then(json => console.log("Comment posted successfully", json))
+        .catch(e => console.error(e))
 }
 
 function AddComment(props: { inReplyTo?: CommentId }) {
+    const [text, setText] = useState('');
     return (
-        <form onSubmit={e => submitComment(e, props.inReplyTo)}>
-            <textarea></textarea>
+        <form onSubmit={e => submitComment(text, e, props.inReplyTo)}>
+            <textarea onChange={e => setText(e.target.value)}></textarea>
             <button type="submit">Post</button>
         </form>
     );
