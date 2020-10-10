@@ -12,11 +12,10 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
     const request : PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid) {
-        const response: ApiGatewayResponse = {
+        return {
             statusCode: 400,
             body: JSON.stringify({"success": false})
-        };
-        return response;
+        } as ApiGatewayResponse;
     }
 
     const params: PutItemInput = {
@@ -33,11 +32,10 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
     return dynamo.putItem(params)
         .promise()
         .then(() => {
-            const response: ApiGatewayResponse = {
+            return {
                 statusCode: 200,
                 body: JSON.stringify({"success": true})
-            };
-            return response;
+            } as ApiGatewayResponse;
         });
 }
 
