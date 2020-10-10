@@ -1,7 +1,8 @@
 import type { PostCommentRequest } from '../dist/post-comment-request'
-import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
+import type { ApiGatewayRequest, ApiGatewayResponse, DynamoComment } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
+import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -18,7 +19,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
         return response;
     }
 
-    const params = {
+    const params: PutItemInput = {
         TableName: 'COMMENTS',
         Item: {
             'id'       : { S: new Date().toISOString()  }, //TODO uuid?
@@ -26,7 +27,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
             'comment'  : { S: request.comment           },
             'parent'   : { S: request.inReplyTo         },
             'timestamp': { S: new Date().toISOString()  }
-        }
+        } as DynamoComment
     };
 
     return dynamo.putItem(params)
