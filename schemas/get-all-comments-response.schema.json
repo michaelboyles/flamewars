@@ -1,0 +1,15 @@
+{
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Get all comments response",
+    "type": "object",
+    "properties": {
+        "comments": {
+            "type": "array",
+            "items": {
+                "$ref": "comment.schema.json" 
+            }
+        }
+    },
+    "required": ["comments"]
+  }

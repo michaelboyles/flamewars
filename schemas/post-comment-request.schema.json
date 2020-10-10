@@ -4,10 +4,6 @@
   "title": "Post comment request",
   "type": "object",
   "definitions": {
-    "commentId": {
-      "type": "string",
-      "minLength": 1
-    },
     "authorization": {
       "type": "object",
       "properties": {
@@ -30,7 +26,7 @@
       "type": "string"
     },
     "inReplyTo": {
-      "$ref": "#/definitions/commentId"
+      "$ref": "comment.schema.json#/definitions/commentId"
     },
     "authorization": {
       "$ref": "#/definitions/authorization"

@@ -5,7 +5,7 @@ const dir = '../schemas/';
 const extension = '.schema.json';
 fs.readdir(dir, (err, files) =>
     files.forEach(file =>
-        js2ts.compileFromFile(dir + file)
+        js2ts.compileFromFile(dir + file, {cwd: dir})
             .then(ts => fs.writeFileSync('dist/' + file.replace(extension, '') + '.ts', ts))
     )
 );

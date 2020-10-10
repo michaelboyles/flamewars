@@ -1,0 +1,47 @@
+{
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Comment",
+    "type": "object",
+    "definitions": {
+        "commentId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "author": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "portraitUrl": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": ["name"]
+        }
+    },
+    "properties": {
+        "id": {
+            "$ref": "#/definitions/commentId"
+        },
+        "author": {
+            "$ref": "#/definitions/author"
+        },
+        "text": {
+            "type": "string"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "replies": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            }
+        }
+    },
+    "required": ["id", "author", "text", "timestamp", "replies"]
+  }

@@ -1,6 +1,6 @@
-function formatPastDate(timestamp: Date) {
+function formatPastDate(timestamp: number) {
     const now = new Date();
-    const age = Math.abs(now.getTime() - timestamp.getTime());
+    const age = Math.abs(now.getTime() - timestamp);
 
     const millisPerSecond = 1000;
     const millisPerMinute = millisPerSecond * 60;

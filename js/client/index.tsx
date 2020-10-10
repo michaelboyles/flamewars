@@ -4,23 +4,10 @@ import * as ReactDOM from 'react-dom';
 import './style.scss';
 import { formatPastDate } from './time';
 import type { PostCommentRequest } from '../dist/post-comment-request'
+import type { CommentId } from '../dist/comment'
+import type { Comment } from '../dist/get-all-comments-response'
 
 const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
-
-interface Author {
-    name: string;
-    portraitUrl?: string;
-}
-
-interface Comment {
-    id: CommentId;
-    text: string;
-    author: Author;
-    timestamp: Date;
-    replies: Comment[];
-}
-
-type CommentId = string;
 
 function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, inReplyTo?: CommentId) {
     event.preventDefault();
@@ -60,7 +47,7 @@ function ShowComment(comment: Comment) {
             <img className='portrait' src={comment.author.portraitUrl ? comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
             <div className='body'>
                 <span className='author-name'>{comment.author.name}</span>
-                <span className='timestamp'>{formatPastDate(comment.timestamp)}</span>
+                <span className='timestamp'>{formatPastDate(Date.parse(comment.timestamp))}</span>
                 <span className='content'>{comment.text}</span>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {
@@ -85,7 +72,7 @@ const comments: Comment[] = [
         author: {
             name: 'Cpt Obvious'
         },
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         replies: [
             {
                 id: '456',
@@ -93,7 +80,7 @@ const comments: Comment[] = [
                 author: {
                     name: 'Michael'
                 },
-                timestamp: new Date(),
+                timestamp: new Date().toISOString(),
                 replies: []
             }
         ]
