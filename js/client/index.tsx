@@ -15,7 +15,7 @@ function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, in
     const request: PostCommentRequest = {
         url: window.location.toString(),
         comment: text,
-        inReplyTo: inReplyTo ? inReplyTo : '123', //TODO server complains if absent
+        inReplyTo: inReplyTo,
         authorization: {
             token: 'abc',
             tokenProvider: 'Google'

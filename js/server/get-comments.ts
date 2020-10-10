@@ -2,7 +2,7 @@ import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
-import { ScanOutput } from 'aws-sdk/clients/dynamodb';
+import { ItemList, ScanOutput } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -13,21 +13,28 @@ const responseHeaders = {
     'Access-Control-Allow-Methods': 'POST'
 };
 
-function convertDataToResponse(data: ScanOutput) {
-    let comments: Comment[] = [];
+function convertDataToResponse(data: ScanOutput) : GetAllCommentsResponse {
+    return {
+        comments: sortToHeirarchy(data.Items, '')
+    };
+}
 
-    data.Items.forEach(item => comments.push({
-        id: item.id.S,
-        author: {
-            name: 'Michael'
-        },
-        text: item.comment.S,
-        timestamp: item.timestamp.S,
-        replies: []
-    }));
-
-    const body: GetAllCommentsResponse = {comments: comments}
-    return body;
+function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
+    const comments: Comment[] = [];
+    items.forEach(item => {
+        if (item.parent.S === parentId) {
+            comments.push({
+                id: item.id.S,
+                author: {
+                    name: 'Michael' //TODO not hardcoded
+                },
+                text: item.comment.S,
+                timestamp: item.timestamp.S,
+                replies: sortToHeirarchy(items, item.id.S)
+            });
+        }
+    });
+    return comments;
 }
 
 export const handler: Handler = function(event: ApiGatewayRequest, context) {

@@ -27,11 +27,11 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
     const params: PutItemInput = {
         TableName: 'COMMENTS',
         Item: {
-            'id'       : { S: new Date().toISOString()  }, //TODO uuid?
-            'pageUrl'  : { S: request.url               },
-            'comment'  : { S: request.comment           },
-            'parent'   : { S: request.inReplyTo         },
-            'timestamp': { S: new Date().toISOString()  }
+            'id'       : { S: new Date().toISOString() }, //TODO uuid?
+            'pageUrl'  : { S: request.url },
+            'comment'  : { S: request.comment },
+            'parent'   : { S: request.inReplyTo ? request.inReplyTo : '' },
+            'timestamp': { S: new Date().toISOString() }
         } as DynamoComment
     };
 
