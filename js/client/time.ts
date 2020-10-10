@@ -14,6 +14,9 @@ function formatPastDate(timestamp: number) {
     if (age < millisPerMinute) {
         unit = 'second';
         quantity = Math.floor(age / millisPerSecond);
+        if (quantity < 10) {
+            return 'Just now';
+        }
     }
     else if (age < millisPerHour) {
         unit = 'minute';
