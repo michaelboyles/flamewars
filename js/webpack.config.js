@@ -35,10 +35,13 @@ module.exports = [
         output: {
             filename: 'index.js'
         },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js']
+        },
         module: {
             rules: [
                 {
-                    test: /\.tsx$/,
+                    test: /\.tsx?$/,
                     exclude: /node_modules/,
                     use: [{
                         loader: 'ts-loader',
