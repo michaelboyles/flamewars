@@ -28,23 +28,36 @@ function submitComment(text: string, event: React.FormEvent<HTMLFormElement>, on
             method: 'POST'
         })
         .then(r => r.json())
-        .then(json => {
-            if (onDone) {
-                onDone(json.comment)
-            }
-            else {
-                console.log("Comment posted successfully", json)
-            }
-        })
+        .then(json => onDone(json.comment))
         .catch(e => console.error(e))
+}
+
+function LoadingSpinner() {
+    return (
+        <div className='loading-spinner'>
+            <div></div><div></div><div></div><div></div>
+        </div>
+    );
 }
 
 function AddComment(props: {inReplyTo?: CommentId, onDone: CommentConsumer}) {
     const [text, setText] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        setIsSubmitting(true);
+        submitComment(
+            text,
+            event,
+            comment => { props.onDone(comment); setIsSubmitting(false); },
+            props.inReplyTo
+        );
+    };
     return (
-        <form onSubmit={e => submitComment(text, e, props.onDone, props.inReplyTo)}>
-            <textarea onChange={e => setText(e.target.value)}></textarea>
-            <button type="submit">Post</button>
+        <form onSubmit={onSubmit}>
+            {isSubmitting ? <LoadingSpinner /> : null}
+            <textarea onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
+            <button type="submit" disabled={isSubmitting}>Post</button>
         </form>
     );
 }
