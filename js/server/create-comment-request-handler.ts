@@ -4,6 +4,8 @@ import type { ApiGatewayRequest, ApiGatewayResponse, DynamoComment } from './aws
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
+import { getGoogleDetails } from './user-details';
+import type { UserDetails } from './user-details';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -25,6 +27,13 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
         } as ApiGatewayResponse;
     }
 
+    let userDetails: UserDetails;
+    switch (request.authorization.tokenProvider) {
+        case 'Google':
+            userDetails = await getGoogleDetails(request.authorization.token);
+            break;
+    }
+
     const commentId = new Date().toISOString();
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
@@ -36,7 +45,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
             pageUrl  : { S: request.url },
             comment  : { S: request.comment },
             parent   : { S: parent },
-            timestamp: { S: timestamp }
+            timestamp: { S: timestamp },
+            author   : { S: userDetails.name }
         } as DynamoComment
     };
 
