@@ -17,7 +17,7 @@ const responseHeaders = {
 export const handler: Handler = async function(event: ApiGatewayRequest, context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
-    if (!isValid) {
+    if (!isValid(request)) {
         return {
             statusCode: 400,
             headers: responseHeaders,
