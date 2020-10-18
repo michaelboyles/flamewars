@@ -34,14 +34,15 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
             break;
     }
 
-    const commentId = new Date().toISOString();
+    const commentId = new Date().toISOString(); //TODO uuid?
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
 
     const params: PutItemInput = {
-        TableName: 'COMMENTS',
+        TableName: 'FLAMEWARS',
         Item: {
-            id       : { S: commentId }, //TODO uuid?
+            PK       : { S: 'PAGE#' + request.url },
+            SK       : { S: '#COMMENT#' + commentId },
             pageUrl  : { S: request.url },
             comment  : { S: request.comment },
             parent   : { S: parent },

@@ -3,6 +3,7 @@ import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
 import { ItemList, ScanOutput } from 'aws-sdk/clients/dynamodb';
+import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -24,13 +25,13 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     items.forEach(item => {
         if (item.parent.S === parentId) {
             comments.push({
-                id: item.id.S,
+                id: item.SK.S,
                 author: {
                     name: 'Michael' //TODO not hardcoded
                 },
                 text: item.comment.S,
                 timestamp: item.timestamp.S,
-                replies: sortToHeirarchy(items, item.id.S)
+                replies: sortToHeirarchy(items, item.SK.S)
             });
         }
     });
@@ -39,17 +40,17 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
 
 export const handler: Handler = function(event: ApiGatewayRequest, context) {
     const url = event.queryStringParameters.url;
-    const params = {
-        TableName: 'COMMENTS',
-        FilterExpression: "pageUrl = :u", 
+    const params: QueryInput = {
+        TableName: 'FLAMEWARS',
+        KeyConditionExpression: "PK = :u", 
         ExpressionAttributeValues: {
-            ":u": { S: url }
+            ':u': { S: 'PAGE#' + url }
         }, 
         Select: 'ALL_ATTRIBUTES'
     };
 
     return new Promise((resolve, reject) => {
-        dynamo.scan(params, (err, data) => {
+        dynamo.query(params, (err, data) => {
             if (err) {
                 console.log(err, err.stack);
                 const response: ApiGatewayResponse = {

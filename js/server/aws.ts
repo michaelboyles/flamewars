@@ -16,7 +16,8 @@ export interface DynamoString {
 }
 
 export interface DynamoComment extends PutItemInputAttributeMap {
-    id: DynamoString;
+    PK: DynamoString;
+    SK: DynamoString;
     pageUrl: DynamoString;
     comment: DynamoString;
     parent: DynamoString;
