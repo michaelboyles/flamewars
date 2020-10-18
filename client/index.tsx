@@ -79,7 +79,7 @@ const ShowComment = (props: {comment: Comment, authorization: Authorization}) =>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {
                     isReplyOpen ? <AddComment authorization={props.authorization}
-                                              onDone={comment => setReplies(replies.concat(comment)) }
+                                              onDone={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
                                               inReplyTo={props.comment.id} />
                                 : null
                 }
