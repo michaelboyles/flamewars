@@ -15,7 +15,8 @@
           "type": "string",
           "enum": ["Google"]
         }
-      }
+      },
+      "required": ["token", "tokenProvider"]
     }
   },
   "properties": {
