@@ -8,6 +8,11 @@ import type { CommentId } from '../dist/comment'
 import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-response'
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 
+interface LocalAuthorization extends Authorization
+{
+    name: string;
+}
+
 type CommentConsumer = (comment: Comment) => void;
 
 const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
@@ -89,9 +94,24 @@ const ShowComment = (props: {comment: Comment, authorization: Authorization}) =>
     );
 }
 
+const SignIn = (props: {authorization: LocalAuthorization, setAuthorization}) => {
+    return props.authorization ? 
+        <span>Signed in as {props.authorization.name}</span>
+        :
+        <GoogleLogin 
+            clientId='164705233134-movagpgcoeepgc24qksgil15k2qpde8e.apps.googleusercontent.com'
+            onSuccess={resp => props.setAuthorization({
+                token: (resp as GoogleLoginResponse).tokenId,   //TODO how to remove 'as'?
+                tokenProvider: 'Google',
+                name: (resp as GoogleLoginResponse).getBasicProfile().getName()
+            })} 
+            isSignedIn={true}
+        />
+}
+
 const Comments = () => {
     const [comments, setComments] = useState([] as Comment[]);
-    const [authorization, setAuthorization] = useState(null as Authorization);
+    const [authorization, setAuthorization] = useState(null as LocalAuthorization);
 
     useEffect(() => {
         fetch(getUrl + '?url=' + window.location.toString())
@@ -103,11 +123,7 @@ const Comments = () => {
 
     return (
         <>
-            <GoogleLogin 
-                clientId='164705233134-movagpgcoeepgc24qksgil15k2qpde8e.apps.googleusercontent.com'
-                onSuccess={resp => setAuthorization({token: (resp as GoogleLoginResponse).tokenId, tokenProvider: 'Google'})} //TODO how to remove 'as'?
-                isSignedIn={true}
-            />
+            <SignIn authorization={authorization} setAuthorization={setAuthorization} />
             <AddComment onDone={(a: Comment) => setComments(comments.concat(a))} authorization={authorization} />
             <ul className='comments'>
                 { comments.map(comment => <ShowComment comment={comment} authorization={authorization} />) }
