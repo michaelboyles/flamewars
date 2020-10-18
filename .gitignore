@@ -1,6 +1,6 @@
 *.iml
 .idea/
 target/
-js/node_modules/
-js/dist
-js/index.html
+node_modules/
+dist
+index.html
