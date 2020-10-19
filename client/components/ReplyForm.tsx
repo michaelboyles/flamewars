@@ -8,7 +8,7 @@ type CommentConsumer = (comment: Comment) => void;
 
 const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
 
-function submitComment(text: string, authorization: Authorization, onDone: CommentConsumer, inReplyTo?: CommentId) {
+function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId) {
     const request: PostCommentRequest = {
         url: window.location.toString(),
         comment: text,
@@ -20,11 +20,11 @@ function submitComment(text: string, authorization: Authorization, onDone: Comme
             method: 'POST'
         })
         .then(r => r.json())
-        .then(json => onDone(json.comment))
+        .then(json => afterSubmit(json.comment))
         .catch(e => console.error(e))
 }
 
-export const ReplyForm = (props: {inReplyTo?: CommentId, authorization: Authorization, onDone: CommentConsumer}) => {
+export const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId}) => {
     const [text, setText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,7 +34,7 @@ export const ReplyForm = (props: {inReplyTo?: CommentId, authorization: Authoriz
         submitComment(
             text,
             props.authorization,
-            comment => { props.onDone(comment); setIsSubmitting(false); },
+            comment => { props.afterSubmit(comment); setIsSubmitting(false); },
             props.inReplyTo
         );
     };
