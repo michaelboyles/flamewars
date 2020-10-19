@@ -8,8 +8,7 @@ import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-r
 import type { LocalAuthorization } from './components/SignIn'
 import { SignIn } from './components/SignIn'
 import { ReplyForm } from './components/ReplyForm';
-
-const getUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comments';
+import { AWS_GET_URL } from '../config';
 
 const ShowComment = (props: {comment: Comment, authorization: Authorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
@@ -45,7 +44,7 @@ const Comments = () => {
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
 
     useEffect(() => {
-        fetch(getUrl + '?url=' + window.location.toString())
+        fetch(AWS_GET_URL + '?url=' + window.location.toString())
             .then(response => response.json())
             .then(json => setComments((json as GetAllCommentsResponse).comments))
             .catch(e => console.log(e));

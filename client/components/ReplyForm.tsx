@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { LoadingSpinner } from './LoadingSpinner'
 import type { Comment, CommentId } from '../../dist/comment'
 import type { Authorization, PostCommentRequest } from '../../dist/post-comment-request'
+import { AWS_SUBMIT_URL } from '../../config';
 
 type CommentConsumer = (comment: Comment) => void;
-
-const submitUrl = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/post-comment-request-js';
 
 function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId) {
     const request: PostCommentRequest = {
@@ -15,7 +14,7 @@ function submitComment(text: string, authorization: Authorization, afterSubmit: 
         inReplyTo: inReplyTo,
         authorization: authorization
     };
-    fetch(submitUrl, {
+    fetch(AWS_SUBMIT_URL, {
             body: JSON.stringify(request),
             method: 'POST'
         })
