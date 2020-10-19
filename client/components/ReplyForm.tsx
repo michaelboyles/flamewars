@@ -7,7 +7,7 @@ import { AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
 
 type CommentConsumer = (comment: Comment) => void;
 
-function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId) {
+function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void, inReplyTo?: CommentId) {
     const request: PostCommentRequest = {
         url: window.location.toString(),
         comment: text,
@@ -18,9 +18,12 @@ function submitComment(text: string, authorization: Authorization, afterSubmit: 
             body: JSON.stringify(request),
             method: 'POST'
         })
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error();
+            return r.json();
+        })
         .then(json => afterSubmit(json.comment))
-        .catch(e => console.error(e))
+        .catch(() => onError())
 }
 
 const CommentLengthMessage = (props: {length: number}) => {
@@ -36,6 +39,7 @@ const CommentLengthMessage = (props: {length: number}) => {
 export const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId}) => {
     const [text, setText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -43,7 +47,8 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
         submitComment(
             text,
             props.authorization,
-            comment => { props.afterSubmit(comment); setIsSubmitting(false); },
+            comment => { props.afterSubmit(comment); setIsSubmitting(false); setError(null); },
+            () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); },
             props.inReplyTo
         );
     };
@@ -52,6 +57,7 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
             {isSubmitting ? <LoadingSpinner /> : null}
             <textarea onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
             <CommentLengthMessage length={text.length} />
+            { error ? <p>{error}</p> : null }
             <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>Post</button>
         </form>
     );
