@@ -55,7 +55,7 @@ const Comments = () => {
     return (
         <>
             <SignIn authorization={authorization} setAuthorization={setAuthorization} />
-            <ReplyForm onDone={(a: Comment) => setComments(comments.concat(a))} authorization={authorization} />
+            <ReplyForm onDone={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} />
             <ul className='comments'>
                 { comments.map(comment => <ShowComment comment={comment} authorization={authorization} />) }
             </ul>
