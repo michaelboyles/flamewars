@@ -6,6 +6,7 @@ import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { getGoogleDetails } from './user-details';
 import type { UserDetails } from './user-details';
+import { MAX_COMMENT_LENGTH } from '../config'
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -75,5 +76,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
 }
 
 function isValid(request: PostCommentRequest){
-    return request.url && request.comment && request.authorization;
+    return request.url
+        && request.comment && request.comment.length <= MAX_COMMENT_LENGTH
+        && request.authorization;
 }
