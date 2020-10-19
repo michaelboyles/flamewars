@@ -47,7 +47,7 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
         submitComment(
             text,
             props.authorization,
-            comment => { props.afterSubmit(comment); setIsSubmitting(false); setError(null); },
+            comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },
             () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); },
             props.inReplyTo
         );
@@ -55,7 +55,7 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
     return (
         <form onSubmit={onSubmit}>
             {isSubmitting ? <LoadingSpinner /> : null}
-            <textarea onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
+            <textarea value={text} onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
             <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>Post</button>
