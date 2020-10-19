@@ -60,7 +60,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
                 comment: {
                     id: commentId,
                     author: {
-                        name: 'Michael'
+                        name: userDetails.name
                     },
                     text: request.comment,
                     timestamp: timestamp,

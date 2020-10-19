@@ -2,7 +2,7 @@ import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
-import { ItemList, ScanOutput } from 'aws-sdk/clients/dynamodb';
+import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'eu-west-2'});
@@ -14,7 +14,7 @@ const responseHeaders = {
     'Access-Control-Allow-Methods': 'POST'
 };
 
-function convertDataToResponse(data: ScanOutput) : GetAllCommentsResponse {
+function convertDataToResponse(data: QueryOutput) : GetAllCommentsResponse {
     return {
         comments: sortToHeirarchy(data.Items, '')
     };
@@ -27,7 +27,7 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
             comments.push({
                 id: item.SK.S,
                 author: {
-                    name: 'Michael' //TODO not hardcoded
+                    name: item.author.S
                 },
                 text: item.comment.S,
                 timestamp: item.timestamp.S,

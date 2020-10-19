@@ -1,6 +1,5 @@
 import { OAuth2Client } from 'google-auth-library';
-
-const CLIENT_ID = '164705233134-movagpgcoeepgc24qksgil15k2qpde8e.apps.googleusercontent.com';
+import { GOOGLE_CLIENT_ID } from '../config';
 
 export type UserDetails = {
     userId: string;
@@ -8,11 +7,11 @@ export type UserDetails = {
 }
 
 export const getGoogleDetails = async (token: string): Promise<UserDetails> => {
-    const client = new OAuth2Client(CLIENT_ID);
+    const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
     const loginTicket = await client.verifyIdToken({
         idToken: token,
-        audience: CLIENT_ID
+        audience: GOOGLE_CLIENT_ID
     });
     const payload = loginTicket.getPayload();
     return {
