@@ -2,10 +2,10 @@ module.exports = [
     {
         name: 'Server',
         mode: 'production',
-        entry: './create-comment-request-handler.ts',
         entry: {
             'create-comment-request-handler': './server/create-comment-request-handler.ts',
-            'get-comments': './server/get-comments.ts'
+            'get-comments': './server/get-comments.ts',
+            'delete-comment': './server/delete-comment.ts'
         },
         output: {
             filename: '[name].js',

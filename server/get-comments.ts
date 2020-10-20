@@ -1,4 +1,4 @@
-import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
+import type { ApiGatewayRequest, ApiGatewayResponse, DynamoComment } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
@@ -22,11 +22,12 @@ function convertDataToResponse(data: QueryOutput) : GetAllCommentsResponse {
 
 function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     const comments: Comment[] = [];
-    items.forEach(item => {
+    items.forEach((item: DynamoComment) => {
         if (item.parent.S === parentId) {
             comments.push({
                 id: item.SK.S,
                 author: {
+                    id: item.userId.S,
                     name: item.author.S
                 },
                 text: item.comment.S,

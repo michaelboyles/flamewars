@@ -15,7 +15,7 @@ export const getGoogleDetails = async (token: string): Promise<UserDetails> => {
     });
     const payload = loginTicket.getPayload();
     return {
-        userId: payload.sub,
+        userId: 'GOOGLE/' + payload.sub,
         name: payload.given_name ? payload.given_name : 'Anonymous'
     }
 }

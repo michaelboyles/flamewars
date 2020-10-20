@@ -11,6 +11,9 @@
         "author": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -19,7 +22,7 @@
                     "format": "uri"
                 }
             },
-            "required": ["name"]
+            "required": ["id", "name"]
         }
     },
     "properties": {

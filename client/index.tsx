@@ -10,7 +10,18 @@ import { SignIn } from './components/SignIn'
 import { ReplyForm } from './components/ReplyForm';
 import { AWS_GET_URL } from '../config';
 
-const ShowComment = (props: {comment: Comment, authorization: Authorization}) => {
+function deleteComment(authorization: LocalAuthorization, comment: Comment) {
+    console.log("MBMB", comment);
+    fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(comment.id)}`, { method: 'DELETE' })
+        .then(response => response.ok ? alert('Deleted') : alert('Failed'))
+        .catch(e => console.log(e));
+}
+
+function isOwner(authorization: LocalAuthorization, comment: Comment) {
+    return authorization && comment.author.id.endsWith(authorization.id);
+}
+
+const ShowComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
 
@@ -20,6 +31,7 @@ const ShowComment = (props: {comment: Comment, authorization: Authorization}) =>
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
+                { isOwner(props.authorization, props.comment) ? <a onClick={() => deleteComment(props.authorization, props.comment)}>Delete</a> : null  }
                 <span className='content'>{props.comment.text}</span>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {

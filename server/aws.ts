@@ -23,4 +23,5 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     parent: DynamoString;
     timestamp: DynamoString;
     author: DynamoString;
+    userId: DynamoString;
 }

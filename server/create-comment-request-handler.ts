@@ -39,17 +39,19 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
 
+    const dynamoComment: DynamoComment = {
+        PK       : { S: 'PAGE#' + request.url },
+        SK       : { S: '#COMMENT#' + commentId },
+        pageUrl  : { S: request.url },
+        comment  : { S: request.comment },
+        parent   : { S: parent },
+        timestamp: { S: timestamp },
+        author   : { S: userDetails.name },
+        userId   : { S: userDetails.userId }
+    };
     const params: PutItemInput = {
         TableName: 'FLAMEWARS',
-        Item: {
-            PK       : { S: 'PAGE#' + request.url },
-            SK       : { S: '#COMMENT#' + commentId },
-            pageUrl  : { S: request.url },
-            comment  : { S: request.comment },
-            parent   : { S: parent },
-            timestamp: { S: timestamp },
-            author   : { S: userDetails.name }
-        } as DynamoComment
+        Item: dynamoComment
     };
 
     return dynamo.putItem(params)
@@ -60,6 +62,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
                 comment: {
                     id: commentId,
                     author: {
+                        id: userDetails.userId,
                         name: userDetails.name
                     },
                     text: request.comment,
