@@ -5,6 +5,7 @@ module.exports = [
         entry: {
             'create-comment-request-handler': './server/create-comment-request-handler.ts',
             'get-comments': './server/get-comments.ts',
+            'get-number-of-comments': './server/get-number-of-comments.ts',
             'delete-comment': './server/delete-comment.ts'
         },
         output: {

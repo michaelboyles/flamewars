@@ -9,6 +9,39 @@ import { SignIn } from './components/SignIn'
 import { ReplyForm } from './components/ReplyForm';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 
+const commentAnchor = '#comments';
+
+function getFlamewarsLinks(): HTMLAnchorElement[] {
+    const allLinks = document.getElementsByTagName('a');
+    const flameWarsLinks: HTMLAnchorElement[] = [];
+    for (let i = 0; i < allLinks.length; i++) {
+        const item = allLinks.item(i);
+        if (item.href.endsWith(commentAnchor)) {
+            flameWarsLinks.push(item);
+        }
+    }
+    return flameWarsLinks;
+}
+
+function removeFragment(url: string) {
+    return url.substr(0, url.length - commentAnchor.length);   
+}
+
+function applyCountToCommentLinks() {
+    const links = getFlamewarsLinks();
+    const queryString = '?urls=' + links.map(link => removeFragment(link.href)).join(',');
+
+    const COUNT_URL = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comment-count';
+    fetch(COUNT_URL + queryString)
+        .then(resp => resp.json())
+        .then(json => {
+            for (const url in json) {
+                const matchingLink = links.find(link => removeFragment(link.href) === url);
+                if (matchingLink) matchingLink.text = json[url] + ' Comments';
+            }
+        }); 
+}
+
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return authorization && comment.author.id.endsWith(authorization.id);
 }
@@ -76,4 +109,5 @@ const Comments = () => {
     );
 }
 
+window.addEventListener('load', applyCountToCommentLinks);
 ReactDOM.render(<Comments />, document.getElementById('comments'));
