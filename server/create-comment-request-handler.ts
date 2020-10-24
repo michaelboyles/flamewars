@@ -8,15 +8,11 @@ import { getGoogleDetails } from './user-details';
 import type { UserDetails } from './user-details';
 import { MAX_COMMENT_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
+import { CORS_HEADERS } from './common';
 
 AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
-const responseHeaders = {
-    'Access-Control-Allow-Origin': 'http://localhost:8080',
-    'Access-Control-Allow-Methods': 'POST'
-};
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const request : PostCommentRequest = JSON.parse(event.body);
@@ -24,7 +20,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     if (!isValid(request)) {
         return {
             statusCode: 400,
-            headers: responseHeaders,
+            headers: CORS_HEADERS,
             body: JSON.stringify({"success": false})
         } as ApiGatewayResponse;
     }
@@ -74,7 +70,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
             };
             return {
                 statusCode: 200,
-                headers: responseHeaders,
+                headers: CORS_HEADERS,
                 body: JSON.stringify(body)
             } as ApiGatewayResponse;
         });

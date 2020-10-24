@@ -2,15 +2,11 @@ import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
+import { CORS_HEADERS } from './common';
 
 AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
-const responseHeaders = {
-    'Access-Control-Allow-Origin': 'http://localhost:8080',
-    'Access-Control-Allow-Methods': 'GET'
-};
 
 type UrlAndCount = {
     url: string;
@@ -49,7 +45,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
 
     const response: ApiGatewayResponse = {
         statusCode: 200,
-        headers: responseHeaders,
+        headers: CORS_HEADERS,
         body: JSON.stringify(body)
     }
     return response;

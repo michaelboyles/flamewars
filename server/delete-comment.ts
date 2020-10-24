@@ -2,15 +2,11 @@ import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
+import { CORS_HEADERS } from './common';
 
 AWS.config.update({region: 'eu-west-2'});
 
 const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
-const responseHeaders = {
-    'Access-Control-Allow-Origin': 'http://localhost:8080',
-    'Access-Control-Allow-Methods': 'DELETE'
-};
 
 export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;
@@ -34,7 +30,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
                 console.log(err, err.stack);
                 const response: ApiGatewayResponse = {
                     statusCode: 500,
-                    headers: responseHeaders,
+                    headers: CORS_HEADERS,
                     body: JSON.stringify(event)
                 };
                 reject(response);
@@ -42,7 +38,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
             else {
                 const response: ApiGatewayResponse = {
                     statusCode: 200,
-                    headers: responseHeaders,
+                    headers: CORS_HEADERS,
                     body: JSON.stringify({success: true, abbc: 'abasbas', foo: data})
                 };
                 resolve(response);
