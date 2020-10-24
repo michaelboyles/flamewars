@@ -7,7 +7,7 @@ import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-r
 import type { LocalAuthorization } from './components/SignIn'
 import { SignIn } from './components/SignIn'
 import { ReplyForm } from './components/ReplyForm';
-import { AWS_GET_URL } from '../config';
+import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return authorization && comment.author.id.endsWith(authorization.id);
@@ -26,7 +26,7 @@ const ShowComment = (props: {comment: Comment, authorization: LocalAuthorization
 
     if (isDeleted && !replies.length) return null;
 
-    const text = isDeleted ? 'Comment was deleted' : props.comment.text;
+    const text = isDeleted ? DELETED_MESSAGE : props.comment.text;
     return (
         <li className='comment'>
             <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />

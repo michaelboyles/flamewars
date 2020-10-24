@@ -4,6 +4,7 @@ import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
+import { DELETED_MESSAGE } from '../config';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -24,15 +25,20 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     const comments: Comment[] = [];
     items.forEach((item: DynamoComment) => {
         if (item.parent.S === parentId) {
+            const children = sortToHeirarchy(items, item.SK.S);
+            if (item.isDeleted.BOOL && !children.length) {
+                return;
+            }
+            const text = item.isDeleted.BOOL ? DELETED_MESSAGE : item.comment.S;
             comments.push({
                 id: item.SK.S,
                 author: {
                     id: item.userId.S,
                     name: item.author.S
                 },
-                text: item.comment.S,
+                text: text,
                 timestamp: item.timestamp.S,
-                replies: sortToHeirarchy(items, item.SK.S)
+                replies: children
             });
         }
     });

@@ -15,6 +15,10 @@ export interface DynamoString {
     S: string;
 }
 
+export interface DynamoBoolean {
+    BOOL: boolean;
+}
+
 export interface DynamoComment extends PutItemInputAttributeMap {
     PK: DynamoString;
     SK: DynamoString;
@@ -24,4 +28,5 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     timestamp: DynamoString;
     author: DynamoString;
     userId: DynamoString;
+    isDeleted: DynamoBoolean;
 }

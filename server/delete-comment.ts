@@ -1,7 +1,7 @@
 import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
 import * as AWS from 'aws-sdk';
 import type { Handler } from 'aws-lambda'
-import type { DeleteItemInput } from 'aws-sdk/clients/dynamodb';
+import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -17,15 +17,19 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     const commentId = event.queryStringParameters.commentId;
 
     //TODO check if they are really the owner first
-    const deleteComment: DeleteItemInput = {
+    const deleteComment: UpdateItemInput = {
         TableName: 'FLAMEWARS',
         Key: {
             PK: { S: 'PAGE#' + url },
             SK: { S: commentId }
+        },
+        UpdateExpression: 'SET isDeleted = :d',
+        ExpressionAttributeValues: {
+            ':d': { BOOL: true }
         }
     };
     return new Promise((resolve, reject) => {
-        dynamo.deleteItem(deleteComment, (err, data) => {
+        dynamo.updateItem(deleteComment, (err, data) => {
             if (err) {
                 console.log(err, err.stack);
                 const response: ApiGatewayResponse = {

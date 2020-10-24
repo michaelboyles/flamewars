@@ -48,7 +48,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         parent   : { S: parent },
         timestamp: { S: timestamp },
         author   : { S: userDetails.name },
-        userId   : { S: userDetails.userId }
+        userId   : { S: userDetails.userId },
+        isDeleted: { BOOL: false }
     };
     const params: PutItemInput = {
         TableName: 'FLAMEWARS',
