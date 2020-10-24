@@ -4,12 +4,13 @@ import { LoadingSpinner } from './LoadingSpinner'
 import type { Comment, CommentId } from '../../dist/comment'
 import type { Authorization, PostCommentRequest } from '../../dist/post-comment-request'
 import { AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
+import { normalizeUrl } from '../../common/util';
 
 type CommentConsumer = (comment: Comment) => void;
 
 function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void, inReplyTo?: CommentId) {
     const request: PostCommentRequest = {
-        url: window.location.toString(),
+        url: normalizeUrl(window.location.toString()),
         comment: text,
         inReplyTo: inReplyTo,
         authorization: authorization

@@ -9,6 +9,7 @@ import type { UserDetails } from './user-details';
 import { MAX_COMMENT_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
+import { normalizeUrl } from '../common/util'
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -39,7 +40,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const dynamoComment: DynamoComment = {
         PK       : { S: 'PAGE#' + request.url },
         SK       : { S: commentId },
-        pageUrl  : { S: request.url },
+        pageUrl  : { S: normalizeUrl(request.url) },
         comment  : { S: request.comment },
         parent   : { S: parent },
         timestamp: { S: timestamp },
