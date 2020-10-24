@@ -35,13 +35,13 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
             break;
     }
 
-    const commentId = new Date().toISOString(); //TODO uuid?
+    const commentId = '#COMMENT#' + new Date().toISOString(); //TODO uuid?
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
 
     const dynamoComment: DynamoComment = {
         PK       : { S: 'PAGE#' + request.url },
-        SK       : { S: '#COMMENT#' + commentId },
+        SK       : { S: commentId },
         pageUrl  : { S: request.url },
         comment  : { S: request.comment },
         parent   : { S: parent },
