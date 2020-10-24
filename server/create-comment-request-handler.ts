@@ -7,6 +7,7 @@ import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { getGoogleDetails } from './user-details';
 import type { UserDetails } from './user-details';
 import { MAX_COMMENT_LENGTH } from '../config'
+import { v4 as uuid } from 'uuid';
 
 AWS.config.update({region: 'eu-west-2'});
 
@@ -35,7 +36,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, context
             break;
     }
 
-    const commentId = '#COMMENT#' + new Date().toISOString(); //TODO uuid?
+    const commentId = '#COMMENT#' + uuid();
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
 
