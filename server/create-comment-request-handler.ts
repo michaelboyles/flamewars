@@ -18,7 +18,7 @@ const responseHeaders = {
     'Access-Control-Allow-Methods': 'POST'
 };
 
-export const handler: Handler = async function(event: ApiGatewayRequest, context) {
+export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const request : PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid(request)) {

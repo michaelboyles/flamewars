@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 import './style.scss';
 import { formatPastDate } from './time';
-import type { Authorization } from '../dist/post-comment-request'
 import type { Comment, GetAllCommentsResponse } from '../dist/get-all-comments-response'
 import type { LocalAuthorization } from './components/SignIn'
 import { SignIn } from './components/SignIn'

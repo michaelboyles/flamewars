@@ -12,7 +12,7 @@ const responseHeaders = {
     'Access-Control-Allow-Methods': 'DELETE'
 };
 
-export const handler: Handler = function(event: ApiGatewayRequest, context) {
+export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;
     const commentId = event.queryStringParameters.commentId;
 

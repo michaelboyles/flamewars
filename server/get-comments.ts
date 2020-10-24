@@ -39,7 +39,7 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     return comments;
 }
 
-export const handler: Handler = function(event: ApiGatewayRequest, context) {
+export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;
     const params: QueryInput = {
         TableName: 'FLAMEWARS',
