@@ -10,13 +10,6 @@ import { SignIn } from './components/SignIn'
 import { ReplyForm } from './components/ReplyForm';
 import { AWS_GET_URL } from '../config';
 
-function deleteComment(authorization: LocalAuthorization, comment: Comment) {
-    console.log("MBMB", comment);
-    fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(comment.id)}`, { method: 'DELETE' })
-        .then(response => response.ok ? alert('Deleted') : alert('Failed'))
-        .catch(e => console.log(e));
-}
-
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return authorization && comment.author.id.endsWith(authorization.id);
 }
@@ -24,15 +17,25 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
 const ShowComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
+    const [isDeleted, setDeleted] = useState(false);
 
+    const deleteComment = () => {
+        fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(props.comment.id)}`, { method: 'DELETE' })
+            .then(response => { if (response.ok) setDeleted(true); })
+            .catch(e => console.log(e));
+    }
+
+    if (isDeleted && !replies.length) return null;
+
+    const text = isDeleted ? 'Comment was deleted' : props.comment.text;
     return (
         <li className='comment'>
             <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
-                { isOwner(props.authorization, props.comment) ? <a onClick={() => deleteComment(props.authorization, props.comment)}>Delete</a> : null  }
-                <span className='content'>{props.comment.text}</span>
+                { isOwner(props.authorization, props.comment) ?<a onClick={() => deleteComment()}>Delete</a> : null }
+                <span className='content'>{text}</span>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
                 {
                     isReplyOpen ? <ReplyForm authorization={props.authorization}
