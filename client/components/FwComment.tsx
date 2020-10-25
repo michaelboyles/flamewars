@@ -30,9 +30,9 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
-                { isOwner(props.authorization, props.comment) ?<a onClick={() => deleteComment()}>Delete</a> : null }
+                { isOwner(props.authorization, props.comment) ?<a className='delete-btn' onClick={() => deleteComment()}>Delete</a> : null }
                 <span className='content'>{text}</span>
-                <a onClick={() => setReplyOpen(!isReplyOpen)} className={isReplyOpen ? 'open' : 'closed'}>Reply</a>
+                <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
                 {
                     isReplyOpen ? <ReplyForm authorization={props.authorization}
                                              afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}

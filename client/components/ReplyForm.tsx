@@ -54,12 +54,12 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
         );
     };
     return (
-        <form onSubmit={onSubmit}>
+        <form className='reply-form' onSubmit={onSubmit}>
             {isSubmitting ? <LoadingSpinner /> : null}
             <textarea value={text} onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
+            <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>Post</button>
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
-            <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>Post</button>
         </form>
     );
 }
