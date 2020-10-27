@@ -45,6 +45,11 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!props.authorization) {
+            setError('Please sign in first');
+            return;
+        }
+
         setIsSubmitting(true);
         submitComment(
             text,
