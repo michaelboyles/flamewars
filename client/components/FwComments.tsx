@@ -23,7 +23,7 @@ export const FwComments = () => {
             <SignIn authorization={authorization} setAuthorization={setAuthorization} />
             <ReplyForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} />
             <ul className='comments'>
-                { comments.map(comment => <FwComment comment={comment} authorization={authorization} />) }
+                { comments.map(comment => <FwComment key={comment.id} comment={comment} authorization={authorization} />) }
             </ul>
         </>
     );

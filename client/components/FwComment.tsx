@@ -41,7 +41,7 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
                 }
                 {
                     replies.length ?
-                        <ul>{ replies.map(reply => <FwComment comment={reply} authorization={props.authorization} />) }</ul>
+                        <ul>{ replies.map(reply => <FwComment key={reply.id} comment={reply} authorization={props.authorization} />) }</ul>
                         :
                         null
                 }
