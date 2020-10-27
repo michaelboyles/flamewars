@@ -29,9 +29,10 @@ function submitComment(text: string, authorization: Authorization, afterSubmit: 
 
 const CommentLengthMessage = (props: {length: number}) => {
     const charsRemaining = MAX_COMMENT_LENGTH - props.length;
+    if (charsRemaining === MAX_COMMENT_LENGTH) return null;
     const noun = Math.abs(charsRemaining) === 1 ? 'character' : 'characters';
     return (
-        <span>
+        <span className='chars-remaining-msg'>
             { charsRemaining < 0 ? `Too long by ${Math.abs(charsRemaining)} ${noun}` : `${charsRemaining} ${noun} remaining`}
         </span>
     )

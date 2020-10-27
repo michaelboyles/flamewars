@@ -1,5 +1,13 @@
+$grey: #7d7d7d;
+$dark-grey: #2d2d2d;
+$almost-black: #222;
+
 form .loading-spinner {
     position: absolute;
+}
+
+#comments {
+    color: $almost-black;
 }
 
 .reply-form {
@@ -35,6 +43,10 @@ form .loading-spinner {
             background-color: #3d7e9a;
         }
     }
+
+    .chars-remaining-msg {
+        color: $grey;
+    }
 }
 
 .comments {
@@ -46,6 +58,7 @@ form .loading-spinner {
     .comment {
         display: flex;
         width: 100%;
+        margin-bottom: 15px;
 
         .portrait {
             width: 50px;
@@ -59,11 +72,19 @@ form .loading-spinner {
                 margin-right: 10px;
                 font-weight: bold;
             }
+            .timestamp { 
+                color: $grey;
+            }
             .content {
                 display: block;
+                margin: 3px 0px 5px 0;
             }
             .reply-btn {
                 cursor: pointer;
+                color: $grey;
+                &:hover {
+                    color: $dark-grey;
+                }
             }
             .delete-btn {
                 display: none;
