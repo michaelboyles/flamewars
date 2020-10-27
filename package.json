@@ -17,6 +17,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.1.21",
+    "react-markdown": "^5.0.2",
     "run": "^1.4.0",
     "uuid": "^8.3.1"
   },
