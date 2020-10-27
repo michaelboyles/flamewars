@@ -23,7 +23,9 @@ export const FwComments = () => {
             <SignIn authorization={authorization} setAuthorization={setAuthorization} />
             <ReplyForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} />
             <ul className='comments'>
-                { comments.map(comment => <FwComment key={comment.id} comment={comment} authorization={authorization} />) }
+                { comments
+                    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+                    .map(comment => <FwComment key={comment.id} comment={comment} authorization={authorization} />) }
             </ul>
         </>
     );
