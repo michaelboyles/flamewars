@@ -1,5 +1,5 @@
 import React = require('react');
-import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import GoogleLogin, { GoogleLoginResponse, useGoogleLogout } from 'react-google-login';
 import type { Authorization } from '../../dist/post-comment-request';
 import { GOOGLE_CLIENT_ID } from '../../config'
 
@@ -10,8 +10,10 @@ export interface LocalAuthorization extends Authorization
 }
 
 export const SignIn = (props: {authorization: LocalAuthorization, setAuthorization: (la: LocalAuthorization) => void }) => {
+    const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
+    const signOut = () => { googleSignOut(); props.setAuthorization(null); }
     return props.authorization ? 
-        <span>Signed in as {props.authorization.name}</span>
+        <span>Signed in as {props.authorization.name} <a onClick={signOut}>(sign out)</a></span>
         :
         <GoogleLogin 
             clientId={GOOGLE_CLIENT_ID}
