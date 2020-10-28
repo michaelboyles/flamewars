@@ -18,8 +18,10 @@ function queryForUrl(url: string): Promise<UrlAndCount> {
         TableName: 'FLAMEWARS',
         KeyConditionExpression: "PK = :u", 
         ExpressionAttributeValues: {
-            ':u': { S: 'PAGE#' + url }
-        }, 
+            ':u': { S: 'PAGE#' + url },
+            ':d': { BOOL: false }
+        },
+        FilterExpression: "isDeleted = :d",
         Select: 'COUNT'
     };
 
