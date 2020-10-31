@@ -12,7 +12,7 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
 }
 
 function addAutoLinks(comment: string) : string {
-    return comment.replace(/(https?:\/\/[^\s]+)/gi, '[$1]($1)');
+    return comment.replace(/((?<!]\()https?:\/\/[^\s)]+)/gi, '[$1]($1)');
 }
 
 export const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
