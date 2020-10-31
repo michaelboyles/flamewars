@@ -11,13 +11,6 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return authorization && comment.author.id.endsWith(authorization.id);
 }
 
-function addLineBreaks(comment: string) {
-    // Replace any newline that is not preceeded or followed by another new line (since if there are 2, they will become a <p>), and *is* followed by a 
-    // word character (because some markdown such as --- on the following line indicates a title, and we can leave that as-is), with a literal slash and
-    // a newline. This will make ReactMarkdown add a <br>
-    return comment.replace(/(?<!\n)\n(?!\n)(?=\w)/g, '\\\n')
-}
-
 export const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
@@ -31,7 +24,7 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
 
     if (isDeleted && !replies.length) return null;
 
-    const text = isDeleted ? DELETED_MESSAGE : addLineBreaks(props.comment.text);
+    const text = isDeleted ? DELETED_MESSAGE : props.comment.text;
     return (
         <li className='comment'>
             <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
