@@ -1,3 +1,4 @@
+$almost-white: #fbfbfb;
 $grey: #7d7d7d;
 $dark-grey: #2d2d2d;
 $almost-black: #222;
@@ -83,6 +84,34 @@ form .loading-spinner {
             .content {
                 display: block;
                 margin: 3px 0px 5px 0;
+
+                *:first-child {
+                    margin-top: 0;
+                }
+
+                pre code, blockquote {
+                    display: block;
+                    border-left: 3px solid;
+                    background: $almost-white;
+                    padding: 5px 10px;
+                }
+                pre code {
+                    border-color: #3d7e9a;
+                }
+                blockquote {
+                    margin-left: 0;
+                    border-color: $grey;
+                    font-style: italic;
+
+                    *:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+
+                hr {
+                    border: 0;
+                    border-top: 1px solid $grey;
+                }
             }
             .reply-btn {
                 cursor: pointer;
