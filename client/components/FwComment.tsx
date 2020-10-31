@@ -11,6 +11,10 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return authorization && comment.author.id.endsWith(authorization.id);
 }
 
+function addAutoLinks(comment: string) : string {
+    return comment.replace(/(https?:\/\/[^\s]+)/gi, '[$1]($1)');
+}
+
 export const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
@@ -24,7 +28,7 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
 
     if (isDeleted && !replies.length) return null;
 
-    const text = isDeleted ? DELETED_MESSAGE : props.comment.text;
+    const text = isDeleted ? DELETED_MESSAGE : addAutoLinks(props.comment.text);
     return (
         <li className='comment'>
             <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
