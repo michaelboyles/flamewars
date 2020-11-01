@@ -6,7 +6,7 @@ import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { getGoogleDetails } from './user-details';
 import type { UserDetails } from './user-details';
-import { MAX_COMMENT_LENGTH } from '../config'
+import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
@@ -78,7 +78,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
 }
 
 function isValid(request: PostCommentRequest){
-    return request.url
+    return request.url && request.url.length <= MAX_FIELD_LENGTH
         && request.comment && request.comment.length <= MAX_COMMENT_LENGTH
+        && (!request.inReplyTo || request.inReplyTo.length <= MAX_FIELD_LENGTH)
         && request.authorization;
 }
