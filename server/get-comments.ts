@@ -1,5 +1,4 @@
-import type { ApiGatewayRequest, ApiGatewayResponse, DynamoComment } from './aws';
-import * as AWS from 'aws-sdk';
+import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
@@ -7,9 +6,7 @@ import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { DELETED_MESSAGE } from '../config';
 import { CORS_HEADERS } from './common';
 
-AWS.config.update({region: 'eu-west-2'});
-
-const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const dynamo = getDynamoDb();
 
 function convertDataToResponse(data: QueryOutput) : GetAllCommentsResponse {
     return {

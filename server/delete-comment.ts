@@ -1,12 +1,9 @@
-import type { ApiGatewayRequest, ApiGatewayResponse } from './aws';
-import * as AWS from 'aws-sdk';
+import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
 
-AWS.config.update({region: 'eu-west-2'});
-
-const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const dynamo = getDynamoDb();
 
 export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;

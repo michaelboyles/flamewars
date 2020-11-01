@@ -1,7 +1,6 @@
 import type { PostCommentRequest } from '../dist/post-comment-request'
 import type { PostCommentResponse } from '../dist/post-comment-response'
-import type { ApiGatewayRequest, ApiGatewayResponse, DynamoComment } from './aws';
-import * as AWS from 'aws-sdk';
+import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { getGoogleDetails } from './user-details';
@@ -11,9 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
 
-AWS.config.update({region: 'eu-west-2'});
-
-const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const dynamo = getDynamoDb();
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const request : PostCommentRequest = JSON.parse(event.body);

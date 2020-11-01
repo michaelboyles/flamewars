@@ -1,4 +1,5 @@
 import { PutItemInputAttributeMap } from "aws-sdk/clients/dynamodb";
+import * as AWS from 'aws-sdk';
 
 export interface ApiGatewayRequest {
     body: string;
@@ -29,4 +30,9 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     author: DynamoString;
     userId: DynamoString;
     isDeleted: DynamoBoolean;
+}
+
+export function getDynamoDb() {
+    AWS.config.update({region: 'eu-west-2'});
+    return new AWS.DynamoDB({apiVersion: '2012-08-10'});
 }
