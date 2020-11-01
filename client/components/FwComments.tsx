@@ -2,11 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { AWS_GET_URL } from '../../config';
 import { Comment, GetAllCommentsResponse } from '../../dist/get-all-comments-response';
-import { FwComment } from './FwComment';
-import { ReplyForm } from './ReplyForm';
+import FwComment from './FwComment';
+import ReplyForm from './ReplyForm';
 import { LocalAuthorization, SignIn } from './SignIn';
 
-export const FwComments = () => {
+const FwComments = () => {
     const [comments, setComments] = useState([] as Comment[]);
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
 
@@ -30,3 +30,5 @@ export const FwComments = () => {
         </>
     );
 }
+
+export default FwComments;

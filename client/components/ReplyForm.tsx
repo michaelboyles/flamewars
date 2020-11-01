@@ -1,6 +1,6 @@
 import React = require('react');
 import { useState } from 'react';
-import { LoadingSpinner } from './LoadingSpinner'
+import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../dist/comment'
 import type { Authorization, PostCommentRequest } from '../../dist/post-comment-request'
 import { AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
@@ -38,7 +38,7 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
-export const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId}) => {
+const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId}) => {
     const [text, setText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
@@ -69,3 +69,5 @@ export const ReplyForm = (props: {authorization: Authorization, afterSubmit: Com
         </form>
     );
 }
+
+export default ReplyForm;

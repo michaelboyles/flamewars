@@ -4,7 +4,7 @@ import { LocalAuthorization } from './SignIn';
 import type { Comment } from '../../dist/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
 import { formatPastDate } from '../time';
-import { ReplyForm } from './ReplyForm';
+import ReplyForm from './ReplyForm';
 import DefaultAvatar from './DefaultAvatar';
 import ReactMarkdown = require('react-markdown');
 
@@ -16,7 +16,7 @@ function addAutoLinks(comment: string) : string {
     return comment.replace(/((?<!]\()https?:\/\/[^\s)]+)/gi, '[$1]($1)');
 }
 
-export const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
+const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(false);
@@ -59,3 +59,5 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
         </li>
     );
 }
+
+export default FwComment;

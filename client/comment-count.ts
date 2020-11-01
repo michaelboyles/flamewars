@@ -14,7 +14,7 @@ function getFlamewarsLinks(): HTMLAnchorElement[] {
     return flameWarsLinks;
 }
 
-export function applyCountToCommentLinks() {
+function applyCountToCommentLinks() {
     const links = getFlamewarsLinks();
     const queryString = '?urls=' + links.map(link => normalizeUrl(link.href)).join(',');
 
@@ -27,3 +27,5 @@ export function applyCountToCommentLinks() {
             }
         }); 
 }
+
+export default applyCountToCommentLinks;
