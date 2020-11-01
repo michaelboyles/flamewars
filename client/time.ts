@@ -41,4 +41,11 @@ function formatPastDate(timestamp: number) {
     return `${quantity} ${unit}${quantity == 1 ? '' : 's'} ago`; 
 }
 
-export { formatPastDate }
+function formatFullTime(timestamp: number) {
+    const isoDatetime = new Date(timestamp).toISOString();
+    return isoDatetime
+        .substr(0, isoDatetime.length - 5) // period, 3 digit millis, and Z
+        .replace('T', ' ');
+}
+
+export { formatPastDate, formatFullTime }

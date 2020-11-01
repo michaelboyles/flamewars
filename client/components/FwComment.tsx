@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LocalAuthorization } from './SignIn';
 import type { Comment } from '../../dist/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
-import { formatPastDate } from '../time';
+import { formatPastDate, formatFullTime } from '../time';
 import ReplyForm from './ReplyForm';
 import DefaultAvatar from './DefaultAvatar';
 import ReactMarkdown = require('react-markdown');
@@ -14,6 +14,12 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
 
 function addAutoLinks(comment: string) : string {
     return comment.replace(/((?<!]\()https?:\/\/[^\s)]+)/gi, '[$1]($1)');
+}
+
+const Timestamp = (props: {timestamp: number}) => {
+    return (
+        <span className='timestamp' title={formatFullTime(props.timestamp)}>{formatPastDate(props.timestamp)}</span>
+    )
 }
 
 const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
@@ -37,7 +43,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             }
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
-                <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
+                <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
                 { isOwner(props.authorization, props.comment) ?<a className='delete-btn' onClick={() => deleteComment()}>Delete</a> : null }
                 <ReactMarkdown className='content'>{text}</ReactMarkdown>
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
