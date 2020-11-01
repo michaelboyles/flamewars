@@ -25,13 +25,12 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
         }
     };
     return new Promise((resolve, reject) => {
-        dynamo.updateItem(deleteComment, (err, data) => {
+        dynamo.updateItem(deleteComment, (err, _data) => {
             if (err) {
-                console.log(err, err.stack);
                 const response: ApiGatewayResponse = {
                     statusCode: 500,
                     headers: CORS_HEADERS,
-                    body: JSON.stringify(event)
+                    body: JSON.stringify({success: false})
                 };
                 reject(response);
             }
@@ -39,7 +38,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
                 const response: ApiGatewayResponse = {
                     statusCode: 200,
                     headers: CORS_HEADERS,
-                    body: JSON.stringify({success: true, abbc: 'abasbas', foo: data})
+                    body: JSON.stringify({success: true})
                 };
                 resolve(response);
             }
