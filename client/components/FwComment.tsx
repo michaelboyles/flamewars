@@ -28,9 +28,11 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
     const [isDeleted, setDeleted] = useState(false);
 
     const deleteComment = () => {
+        const shouldDelete = confirm('Are you sure you want to delete this comment?');
+        if (!shouldDelete) return;
         fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(props.comment.id)}`, { method: 'DELETE' })
             .then(response => { if (response.ok) setDeleted(true); })
-            .catch(e => console.log(e));
+            .catch(e => console.error(e));
     }
 
     if (isDeleted && !replies.length) return null;
