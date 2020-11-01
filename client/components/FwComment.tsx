@@ -5,6 +5,7 @@ import type { Comment } from '../../dist/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
 import { formatPastDate } from '../time';
 import { ReplyForm } from './ReplyForm';
+import DefaultAvatar from './DefaultAvatar';
 import ReactMarkdown = require('react-markdown');
 
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
@@ -31,7 +32,9 @@ export const FwComment = (props: {comment: Comment, authorization: LocalAuthoriz
     const text = isDeleted ? DELETED_MESSAGE : addAutoLinks(props.comment.text);
     return (
         <li className='comment'>
-            <img className='portrait' src={props.comment.author.portraitUrl ? props.comment.author.portraitUrl : 'https://via.placeholder.com/100x100' } />
+            {
+                props.comment.author.portraitUrl ? <img className='portrait' src={props.comment.author.portraitUrl} /> : <DefaultAvatar colour='#222' />
+            }
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <span className='timestamp'>{formatPastDate(Date.parse(props.comment.timestamp))}</span>
