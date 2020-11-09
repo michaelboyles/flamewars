@@ -3,22 +3,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Post comment request",
   "type": "object",
-  "definitions": {
-    "authorization": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "string",
-          "minLength": 1
-        },
-        "tokenProvider": {
-          "type": "string",
-          "enum": ["Google"]
-        }
-      },
-      "required": ["token", "tokenProvider"]
-    }
-  },
   "properties": {
     "url": {
       "type": "string"
@@ -30,7 +14,7 @@
       "$ref": "comment.schema.json#/definitions/commentId"
     },
     "authorization": {
-      "$ref": "#/definitions/authorization"
+      "$ref": "authorization.schema.json"
     }
   },
   "required": ["url", "comment", "authorization"]

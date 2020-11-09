@@ -1,0 +1,19 @@
+{
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Authorization",
+    "type": "object",
+        "properties": {
+            "token": {
+                "type": "string",
+                "minLength": 1
+            },
+            "tokenProvider": {
+                "type": "string",
+                "enum": ["Google"]
+            }
+    },
+    "required": ["token", "tokenProvider"]
+}
+
+
