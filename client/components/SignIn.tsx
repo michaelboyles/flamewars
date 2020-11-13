@@ -9,6 +9,13 @@ export interface LocalAuthorization extends Authorization
     id: string;
 }
 
+export function onlyAuthorization(localAuth: LocalAuthorization): Authorization {
+    return {
+        token: localAuth.token,
+        tokenProvider: localAuth.tokenProvider
+    }
+}
+
 export const SignIn = (props: {authorization: LocalAuthorization, setAuthorization: (la: LocalAuthorization) => void }) => {
     const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
     const signOut = () => { googleSignOut(); props.setAuthorization(null); }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { LocalAuthorization } from './SignIn';
+import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../dist/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
 import { formatPastDate, formatFullTime } from '../time';
@@ -30,7 +30,11 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
         if (!shouldDelete) return;
-        fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(props.comment.id)}`, { method: 'DELETE' })
+        fetch(AWS_GET_URL + `?url=${encodeURIComponent(window.location.toString())}&commentId=${encodeURIComponent(props.comment.id)}`,
+            {
+                method: 'DELETE',
+                body: JSON.stringify({authorization: onlyAuthorization(props.authorization)})
+            })
             .then(response => { if (response.ok) setDeleted(true); })
             .catch(e => console.error(e));
     }
