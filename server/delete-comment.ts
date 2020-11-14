@@ -3,23 +3,32 @@ import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
 import { DeleteCommentRequest } from '../dist/delete-comment-request'
-import { getGoogleDetails, UserDetails } from './user-details';
+import { AuthenticationResult, getGoogleDetails } from './user-details';
 
 const dynamo = getDynamoDb();
+
+function checkAuthentication(request: DeleteCommentRequest): Promise<AuthenticationResult> {
+    switch (request.authorization.tokenProvider) {
+        case 'Google':
+            return getGoogleDetails(request.authorization.token);
+    }
+}
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;
     const commentId = event.queryStringParameters.commentId;
     const request: DeleteCommentRequest = JSON.parse(event.body);
 
-    let userDetails: UserDetails;
-    switch (request.authorization.tokenProvider) {
-        case 'Google':
-            userDetails = await getGoogleDetails(request.authorization.token);
-            break;
+    const authResult: AuthenticationResult = await checkAuthentication(request);
+    if (!authResult.isValid) {
+        const response: ApiGatewayResponse = {
+            statusCode: 403,
+            headers: CORS_HEADERS,
+            body: JSON.stringify({success: false, error: 'Not authorized'}) //TODO define schema
+        };
+        return Promise.resolve(response);
     }
 
-    // TODO better error handling if you are not the owner, e.g. 403
     const deleteComment: UpdateItemInput = {
         TableName: 'FLAMEWARS',
         Key: {
@@ -29,7 +38,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         UpdateExpression: 'SET isDeleted = :d',
         ExpressionAttributeValues: {
             ':d': { BOOL: true },
-            ':u': { S: userDetails.userId }
+            ':u': { S: authResult.userDetails.userId }
         },
         ConditionExpression: 'userId = :u'
     };

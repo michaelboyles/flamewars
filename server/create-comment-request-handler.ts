@@ -3,8 +3,7 @@ import type { PostCommentResponse } from '../dist/post-comment-response'
 import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
-import { getGoogleDetails } from './user-details';
-import type { UserDetails } from './user-details';
+import { AuthenticationResult, getGoogleDetails } from './user-details';
 import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
@@ -12,8 +11,15 @@ import { normalizeUrl } from '../common/util'
 
 const dynamo = getDynamoDb();
 
+function checkAuthentication(request: PostCommentRequest): Promise<AuthenticationResult> {
+    switch (request.authorization.tokenProvider) {
+        case 'Google':
+            return getGoogleDetails(request.authorization.token);
+    }
+}
+
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
-    const request : PostCommentRequest = JSON.parse(event.body);
+    const request: PostCommentRequest = JSON.parse(event.body);
 
     if (!isValid(request)) {
         return {
@@ -23,12 +29,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         } as ApiGatewayResponse;
     }
 
-    let userDetails: UserDetails;
-    switch (request.authorization.tokenProvider) {
-        case 'Google':
-            userDetails = await getGoogleDetails(request.authorization.token);
-            break;
-    }
+    const authResult: AuthenticationResult = await checkAuthentication(request);
 
     const commentId = '#COMMENT#' + uuid();
     const timestamp = new Date().toISOString();
@@ -41,8 +42,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         comment  : { S: request.comment },
         parent   : { S: parent },
         timestamp: { S: timestamp },
-        author   : { S: userDetails.name },
-        userId   : { S: userDetails.userId },
+        author   : { S: authResult.userDetails.name },
+        userId   : { S: authResult.userDetails.userId },
         isDeleted: { BOOL: false }
     };
     const params: PutItemInput = {
@@ -58,8 +59,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                 comment: {
                     id: commentId,
                     author: {
-                        id: userDetails.userId,
-                        name: userDetails.name
+                        id: authResult.userDetails.userId,
+                        name: authResult.userDetails.name
                     },
                     text: request.comment,
                     timestamp: timestamp,
