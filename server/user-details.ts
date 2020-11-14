@@ -1,5 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import { GOOGLE_CLIENT_ID } from '../config';
+import { Authorization } from '../dist/authorization';
 
 export type UserDetails = {
     userId: string;
@@ -11,7 +12,7 @@ export type AuthenticationResult = {
     userDetails?: UserDetails;
 }
 
-export const getGoogleDetails = async (token: string): Promise<AuthenticationResult> => {
+const getGoogleDetails = async (token: string): Promise<AuthenticationResult> => {
     const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
     try {
@@ -32,5 +33,14 @@ export const getGoogleDetails = async (token: string): Promise<AuthenticationRes
         return {
             isValid: false
         }
+    }
+}
+
+export function checkAuthentication(authorization: Authorization): Promise<AuthenticationResult> {
+    switch (authorization.tokenProvider) {
+        case 'Google':
+            return getGoogleDetails(authorization.token);
+        default: 
+            throw new Error('Unsupported token provider ' + authorization.tokenProvider);
     }
 }

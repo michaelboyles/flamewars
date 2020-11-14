@@ -3,20 +3,13 @@ import type { PostCommentResponse } from '../dist/post-comment-response'
 import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
-import { AuthenticationResult, getGoogleDetails } from './user-details';
+import { AuthenticationResult, checkAuthentication } from './user-details';
 import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
 
 const dynamo = getDynamoDb();
-
-function checkAuthentication(request: PostCommentRequest): Promise<AuthenticationResult> {
-    switch (request.authorization.tokenProvider) {
-        case 'Google':
-            return getGoogleDetails(request.authorization.token);
-    }
-}
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const request: PostCommentRequest = JSON.parse(event.body);
@@ -29,7 +22,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         } as ApiGatewayResponse;
     }
 
-    const authResult: AuthenticationResult = await checkAuthentication(request);
+    const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
 
     const commentId = '#COMMENT#' + uuid();
     const timestamp = new Date().toISOString();
