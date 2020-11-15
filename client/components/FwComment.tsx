@@ -59,15 +59,13 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                                              inReplyTo={props.comment.id} />
                                 : null
                 }
-                {
-                    replies.length ?
-                        <ul className='comments'>{ replies
-                                .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                                .map(reply => <FwComment key={reply.id} comment={reply} authorization={props.authorization} />) }</ul>
-                        :
-                        null
-                }
             </div>
+            <ul className='replies'>{
+                !replies.length ? null : 
+                    replies
+                        .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+                        .map(reply => <FwComment key={reply.id} comment={reply} authorization={props.authorization} />)
+            }</ul>
         </li>
     );
 }
