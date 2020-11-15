@@ -11,7 +11,7 @@ const FwComments = () => {
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
 
     useEffect(() => {
-        fetch(AWS_GET_URL + '?url=' + window.location.toString())
+        fetch(`${AWS_GET_URL}/${encodeURIComponent(window.location.toString())}`)
             .then(response => response.json())
             .then(json => setComments((json as GetAllCommentsResponse).comments))
             .catch(e => console.log(e));
