@@ -2,7 +2,7 @@ import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
-import { GetCommentCountResponse, CommentCount } from '../dist/comment-count'
+import { GetCommentCountResponse, CommentCount } from '../common/types/comment-count'
 
 const MAX_URLS = 30;
 const dynamo = getDynamoDb();

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { LocalAuthorization, onlyAuthorization } from './SignIn';
-import type { Comment } from '../../dist/get-all-comments-response'
+import type { Comment } from '../../common/types/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
 import { formatPastDate, formatFullTime } from '../time';
 import ReplyForm from './ReplyForm';

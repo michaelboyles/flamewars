@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { AWS_GET_URL } from '../../config';
-import { Comment, GetAllCommentsResponse } from '../../dist/get-all-comments-response';
+import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 import FwComment from './FwComment';
 import ReplyForm from './ReplyForm';
 import { LocalAuthorization, SignIn } from './SignIn';

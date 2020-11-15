@@ -2,7 +2,7 @@ import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
-import { DeleteCommentRequest } from '../dist/delete-comment-request'
+import { DeleteCommentRequest } from '../common/types/delete-comment-request'
 import { AuthenticationResult, checkAuthentication } from './user-details';
 
 const dynamo = getDynamoDb();

@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import { GOOGLE_CLIENT_ID } from '../config';
-import { Authorization } from '../dist/authorization';
+import { Authorization } from '../common/types/authorization';
 
 export type UserDetails = {
     userId: string;

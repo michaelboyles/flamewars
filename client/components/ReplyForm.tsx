@@ -1,8 +1,8 @@
 import React = require('react');
 import { useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
-import type { Comment, CommentId } from '../../dist/comment'
-import type { Authorization, PostCommentRequest } from '../../dist/post-comment-request'
+import type { Comment, CommentId } from '../../common/types/comment'
+import type { Authorization, PostCommentRequest } from '../../common/types/post-comment-request'
 import { AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 

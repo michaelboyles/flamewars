@@ -1,5 +1,5 @@
-import type { PostCommentRequest } from '../dist/post-comment-request'
-import type { PostCommentResponse } from '../dist/post-comment-response'
+import type { PostCommentRequest } from '../common/types/post-comment-request'
+import type { PostCommentResponse } from '../common/types/post-comment-response'
 import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';

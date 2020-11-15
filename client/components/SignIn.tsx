@@ -1,6 +1,6 @@
 import React = require('react');
 import GoogleLogin, { GoogleLoginResponse, useGoogleLogout } from 'react-google-login';
-import type { Authorization } from '../../dist/post-comment-request';
+import type { Authorization } from '../../common/types/post-comment-request';
 import { GOOGLE_CLIENT_ID } from '../../config'
 import { GoogleIcon } from './GoogleIcon';
 

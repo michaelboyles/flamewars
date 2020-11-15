@@ -1,6 +1,6 @@
 const COMMENT_ANCHOR = '#comments';
 const COUNT_URL = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comment-count';
-import { GetCommentCountResponse } from  '../dist/comment-count'
+import { GetCommentCountResponse } from  '../common/types/comment-count'
 import { normalizeUrl } from '../common/util'
 
 function getFlamewarsLinks(): HTMLAnchorElement[] {

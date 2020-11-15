@@ -1,6 +1,6 @@
 import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
-import type { GetAllCommentsResponse, Comment } from '../dist/get-all-comments-response'
+import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { DELETED_MESSAGE } from '../config';
