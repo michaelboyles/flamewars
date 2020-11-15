@@ -4,18 +4,9 @@
   "title": "Delete comment request",
   "type": "object",
   "properties": {
-    "url": {
-      "type": "string"
-    },
-    "comment": {
-      "type": "string"
-    },
-    "inReplyTo": {
-      "$ref": "comment.schema.json#/definitions/commentId"
-    },
     "authorization": {
       "$ref": "authorization.schema.json"
     }
   },
-  "required": ["url", "comment", "authorization"]
+  "required": ["authorization"]
 }

@@ -29,8 +29,8 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         return Promise.resolve(getErrorResponse(403, 'Invalid authentication token'));
     }
 
-    const url = event.queryStringParameters.url;
-    const commentId = event.queryStringParameters.commentId;
+    const url = decodeURIComponent(event.pathParameters.url);
+    const commentId = event.pathParameters.comment;
     const deleteComment: UpdateItemInput = {
         TableName: 'FLAMEWARS',
         Key: {
