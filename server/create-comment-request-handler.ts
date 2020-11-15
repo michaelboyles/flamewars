@@ -1,6 +1,6 @@
 import type { PostCommentRequest } from '../common/types/post-comment-request'
 import type { PostCommentResponse } from '../common/types/post-comment-response'
-import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { AuthenticationResult, checkAuthentication } from './user-details';
@@ -24,20 +24,21 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
 
-    const commentId = '#COMMENT#' + uuid();
+    const commentId = uuid();
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
 
     const dynamoComment: DynamoComment = {
         PK       : { S: 'PAGE#' + request.url },
-        SK       : { S: commentId },
+        SK       : { S: COMMENT_ID_PREFIX + commentId },
         pageUrl  : { S: normalizeUrl(request.url) },
-        comment  : { S: request.comment },
+        commentText: { S: request.comment },
         parent   : { S: parent },
         timestamp: { S: timestamp },
         author   : { S: authResult.userDetails.name },
         userId   : { S: authResult.userDetails.userId },
-        isDeleted: { BOOL: false }
+        isDeleted: { BOOL: false },
+        isEdited:  { BOOL: false }
     };
     const params: PutItemInput = {
         TableName: 'FLAMEWARS',
@@ -57,6 +58,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                     },
                     text: request.comment,
                     timestamp: timestamp,
+                    isEdited: false,
                     replies: []
                 }
             };

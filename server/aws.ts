@@ -1,9 +1,12 @@
 import { PutItemInputAttributeMap } from "aws-sdk/clients/dynamodb";
 import * as AWS from 'aws-sdk';
 
+export const COMMENT_ID_PREFIX: string = '#COMMENT#';
+
 export interface ApiGatewayRequest {
     body: string;
     queryStringParameters: any;
+    pathParameters: any;
 }
 
 export interface ApiGatewayResponse {
@@ -24,12 +27,13 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     PK: DynamoString;
     SK: DynamoString;
     pageUrl: DynamoString;
-    comment: DynamoString;
+    commentText: DynamoString;
     parent: DynamoString;
     timestamp: DynamoString;
     author: DynamoString;
     userId: DynamoString;
     isDeleted: DynamoBoolean;
+    isEdited: DynamoBoolean;
 }
 
 export function getDynamoDb() {

@@ -6,7 +6,8 @@ module.exports = [
             'create-comment-request-handler': './server/create-comment-request-handler.ts',
             'get-comments': './server/get-comments.ts',
             'get-number-of-comments': './server/get-number-of-comments.ts',
-            'delete-comment': './server/delete-comment.ts'
+            'delete-comment': './server/delete-comment.ts',
+            'edit-comment': './server/edit-comment.ts'
         },
         output: {
             filename: '[name].js',

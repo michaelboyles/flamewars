@@ -3,10 +3,29 @@ import { useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { Authorization, PostCommentRequest } from '../../common/types/post-comment-request'
-import { AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
+import type { EditCommentRequest } from '../../common/types/edit-comment-request'
+import { AWS_GET_URL, AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 
 type CommentConsumer = (comment: Comment) => void;
+
+function editComment(commentId: CommentId, text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void) {
+    const request: EditCommentRequest = {
+        comment: text,
+        authorization: authorization
+    };
+    console.log("MB", commentId);
+    fetch(`${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${commentId}`, {
+            body: JSON.stringify(request),
+            method: 'PATCH'
+        })
+        .then(r => {
+            if (!r.ok) throw new Error();
+            return r.json();
+        })
+        .then(json => afterSubmit(json.comment))
+        .catch(() => onError())
+}
 
 function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void, inReplyTo?: CommentId) {
     const request: PostCommentRequest = {
@@ -38,8 +57,9 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
-const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, inReplyTo?: CommentId}) => {
-    const [text, setText] = useState('');
+const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer,
+                            inReplyTo?: CommentId, initialText?: string, buttonLabel?: string, isEdit: boolean }) => {
+    const [text, setText] = useState(props.initialText || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
@@ -51,19 +71,30 @@ const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentCon
         }
 
         setIsSubmitting(true);
-        submitComment(
-            text,
-            props.authorization,
-            comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },
-            () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); },
-            props.inReplyTo
-        );
+        if (props.isEdit) {
+            editComment(
+                props.inReplyTo, //TODO a hack
+                text,
+                props.authorization,
+                _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment)},
+                () => {}
+            )
+        }
+        else {
+            submitComment(
+                text,
+                props.authorization,
+                comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },
+                () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); },
+                props.inReplyTo
+            );
+        }
     };
     return (
         <form className='reply-form' onSubmit={onSubmit}>
             {isSubmitting ? <LoadingSpinner /> : null}
             <textarea value={text} onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
-            <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>Post</button>
+            <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>{props.buttonLabel || 'Post'}</button>
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
         </form>

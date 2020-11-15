@@ -1,4 +1,4 @@
-import { ApiGatewayRequest, ApiGatewayResponse, DynamoComment, getDynamoDb } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
@@ -23,13 +23,14 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
                 return;
             }
             comments.push({
-                id: item.SK.S,
+                id: item.SK.S.substr(COMMENT_ID_PREFIX.length),
                 author: {
                     id: item.isDeleted.BOOL ? 'ANONYMOUS' : item.userId.S,
                     name: item.isDeleted.BOOL ? 'Anonymous' : item.author.S
                 },
-                text: item.isDeleted.BOOL ? DELETED_MESSAGE : item.comment.S,
+                text: item.isDeleted.BOOL ? DELETED_MESSAGE : item.commentText.S,
                 timestamp: item.timestamp.S,
+                isEdited: item.isEdited.BOOL,
                 replies: children
             });
         }

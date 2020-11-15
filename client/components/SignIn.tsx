@@ -34,7 +34,7 @@ export const SignIn = (props: {authorization: LocalAuthorization, setAuthorizati
                     name: (resp as GoogleLoginResponse).getBasicProfile().getName(),
                     id: (resp as GoogleLoginResponse).getId()
                 })} 
-                isSignedIn={props.authorization !== null}
+                isSignedIn={true}
                 render={renderProps => (
                     <a className='sign-in-icon' onClick={renderProps.onClick} title='Google'><GoogleIcon color='#222' /></a>
                 )}

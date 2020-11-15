@@ -132,9 +132,9 @@ form .loading-spinner {
                     border-top: 1px solid $grey;
                 }
             }
-            .reply-btn {
+            .reply-btn, .edit-btn {
                 display: inline-block;
-                margin-bottom: 15px;
+                margin: 0 15px 20px 0;
                 cursor: pointer;
                 color: $grey;
 

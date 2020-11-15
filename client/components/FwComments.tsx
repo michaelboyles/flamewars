@@ -21,7 +21,7 @@ const FwComments = () => {
     return (
         <>
             <SignIn authorization={authorization} setAuthorization={setAuthorization} />
-            <ReplyForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} />
+            <ReplyForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} isEdit={false} />
             <ul className='comments'>
                 { comments
                     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))

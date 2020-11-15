@@ -26,6 +26,8 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [text, setText] = useState(props.comment.text);
 
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
@@ -39,9 +41,12 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             .catch(e => console.error(e));
     }
 
+    const onEditClick = () => {
+        setIsEditing(!isEditing);
+    }
+
     if (isDeleted && !replies.length) return null;
 
-    const text = isDeleted ? DELETED_MESSAGE : addAutoLinks(props.comment.text);
     return (
         <li className='comment'>
             {
@@ -50,13 +55,30 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
-                { isOwner(props.authorization, props.comment) ?<a className='delete-btn' onClick={() => deleteComment()}>Delete</a> : null }
-                <ReactMarkdown className='content'>{text}</ReactMarkdown>
+                {
+                    isOwner(props.authorization, props.comment) ? <a className='delete-btn' onClick={() => deleteComment()}>Delete</a> : null
+                }
+                { props.comment.isEdited ? <span>Edited</span> : null }
+                {
+                    !isEditing ? 
+                        <ReactMarkdown className='content'>{addAutoLinks(text)}</ReactMarkdown> :
+                        <ReplyForm authorization={props.authorization}
+                                   initialText={text}
+                                   afterSubmit={comment => { setText(comment.text); setIsEditing(false); }}
+                                   buttonLabel='Save edit'
+                                   isEdit={true}
+                                   inReplyTo={props.comment.id} //TODO a hack
+                        />
+                }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
+                {
+                    isOwner(props.authorization, props.comment) ? <a className='edit-btn' onClick={() => { onEditClick() }}>Edit</a> : null
+                }
                 {
                     isReplyOpen ? <ReplyForm authorization={props.authorization}
                                              afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
-                                             inReplyTo={props.comment.id} />
+                                             inReplyTo={props.comment.id}
+                                             isEdit={false} />
                                 : null
                 }
             </div>
