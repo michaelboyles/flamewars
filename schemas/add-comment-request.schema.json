@@ -14,5 +14,6 @@
       "$ref": "authorization.schema.json"
     }
   },
-  "required": ["comment", "authorization"]
+  "required": ["comment", "authorization"],
+  "additionalProperties": false
 }

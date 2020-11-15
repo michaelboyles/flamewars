@@ -13,7 +13,6 @@
             "enum": ["Google"]
         }
     },
+    "additionalProperties": false,
     "required": ["token", "tokenProvider"]
 }
-
-

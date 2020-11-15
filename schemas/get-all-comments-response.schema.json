@@ -11,5 +11,6 @@
             }
         }
     },
-    "required": ["comments"]
+    "required": ["comments"],
+    "additionalProperties": false
   }

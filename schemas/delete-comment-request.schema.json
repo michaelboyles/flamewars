@@ -8,5 +8,6 @@
       "$ref": "authorization.schema.json"
     }
   },
-  "required": ["authorization"]
+  "required": ["authorization"],
+  "additionalProperties": false
 }

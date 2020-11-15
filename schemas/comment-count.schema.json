@@ -29,5 +29,6 @@
             "type": "boolean"
         }
     },
-    "required": ["counts", "success"]
+    "required": ["counts", "success"],
+    "additionalProperties": false
 }

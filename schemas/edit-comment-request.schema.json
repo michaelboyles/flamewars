@@ -13,5 +13,6 @@
       "description": "Authorization which proves the user has the right to edit this comment"
     }
   },
-  "required": ["comment", "authorization"]
+  "required": ["comment", "authorization"],
+  "additionalProperties": false
 }
