@@ -80,10 +80,10 @@ form .loading-spinner {
             float: right;
 
             .author-name {
-                margin-right: 10px;
                 font-weight: bold;
             }
-            .timestamp { 
+            .timestamp, .edit-indicator { 
+                margin-left: 15px;
                 color: $grey;
             }
             .content {
@@ -146,7 +146,6 @@ form .loading-spinner {
                 visibility: hidden;
                 color: #c02d2e;
                 cursor: pointer;
-                margin-left: 10px;
             }
 
             &:hover {

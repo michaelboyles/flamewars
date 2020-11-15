@@ -22,6 +22,11 @@ const Timestamp = (props: {timestamp: number}) => {
     )
 }
 
+const EditIndicator = (props: {isEdited: boolean}) => {
+    if (!props.isEdited) return null;
+    return <span className='edit-indicator'>Edited</span>
+}
+
 const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
@@ -55,10 +60,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
-                {
-                    isOwner(props.authorization, props.comment) ? <a className='delete-btn' onClick={() => deleteComment()}>Delete</a> : null
-                }
-                { props.comment.isEdited ? <span>Edited</span> : null }
+                <EditIndicator isEdited={props.comment.isEdited} />
                 {
                     !isEditing ? 
                         <ReactMarkdown className='content'>{addAutoLinks(text)}</ReactMarkdown> :
@@ -72,7 +74,12 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
                 {
-                    isOwner(props.authorization, props.comment) ? <a className='edit-btn' onClick={() => { onEditClick() }}>Edit</a> : null
+                    !isOwner(props.authorization, props.comment) ?
+                        null :
+                        <>
+                            <a className='edit-btn' onClick={() => { onEditClick() }}>Edit</a>
+                            <a className='delete-btn' onClick={() => deleteComment()}>Delete</a>
+                        </>
                 }
                 {
                     isReplyOpen ? <ReplyForm authorization={props.authorization}
