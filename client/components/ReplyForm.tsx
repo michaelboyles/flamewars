@@ -2,9 +2,9 @@ import React = require('react');
 import { useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
-import type { Authorization, PostCommentRequest } from '../../common/types/post-comment-request'
+import type { Authorization, AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { AWS_GET_URL, AWS_SUBMIT_URL, MAX_COMMENT_LENGTH } from '../../config';
+import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 
 type CommentConsumer = (comment: Comment) => void;
@@ -14,7 +14,6 @@ function editComment(commentId: CommentId, text: string, authorization: Authoriz
         comment: text,
         authorization: authorization
     };
-    console.log("MB", commentId);
     fetch(`${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${commentId}`, {
             body: JSON.stringify(request),
             method: 'PATCH'
@@ -28,13 +27,12 @@ function editComment(commentId: CommentId, text: string, authorization: Authoriz
 }
 
 function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void, inReplyTo?: CommentId) {
-    const request: PostCommentRequest = {
-        url: normalizeUrl(window.location.toString()),
+    const request: AddCommentRequest = {
         comment: text,
         inReplyTo: inReplyTo,
         authorization: authorization
     };
-    fetch(AWS_SUBMIT_URL, {
+    fetch(`${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`, {
             body: JSON.stringify(request),
             method: 'POST'
         })

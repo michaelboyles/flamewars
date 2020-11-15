@@ -1,12 +1,9 @@
 {
   "$id": "TODO, after pushing",
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Post comment request",
+  "title": "Add comment request",
   "type": "object",
   "properties": {
-    "url": {
-      "type": "string"
-    },
     "comment": {
       "type": "string"
     },
@@ -17,5 +14,5 @@
       "$ref": "authorization.schema.json"
     }
   },
-  "required": ["url", "comment", "authorization"]
+  "required": ["comment", "authorization"]
 }

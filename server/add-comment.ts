@@ -1,10 +1,10 @@
-import type { PostCommentRequest } from '../common/types/post-comment-request'
-import type { PostCommentResponse } from '../common/types/post-comment-response'
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws';
+import type { AddCommentRequest } from '../common/types/add-comment-request'
+import type { AddCommentResponse } from '../common/types/add-comment-response'
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws'
 import type { Handler } from 'aws-lambda'
-import { PutItemInput } from 'aws-sdk/clients/dynamodb';
-import { AuthenticationResult, checkAuthentication } from './user-details';
-import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
+import { PutItemInput } from 'aws-sdk/clients/dynamodb'
+import { AuthenticationResult, checkAuthentication } from './user-details'
+import { AWS_GET_URL, MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
@@ -12,7 +12,7 @@ import { normalizeUrl } from '../common/util'
 const dynamo = getDynamoDb();
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
-    const request: PostCommentRequest = JSON.parse(event.body);
+    const request: AddCommentRequest = JSON.parse(event.body);
 
     if (!isValid(request)) {
         return {
@@ -27,11 +27,12 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const commentId = uuid();
     const timestamp = new Date().toISOString();
     const parent = request.inReplyTo ? request.inReplyTo : '';
+    const url = normalizeUrl(decodeURIComponent(event.pathParameters.url));
 
     const dynamoComment: DynamoComment = {
-        PK       : { S: 'PAGE#' + request.url },
+        PK       : { S: 'PAGE#' + url },
         SK       : { S: COMMENT_ID_PREFIX + commentId },
-        pageUrl  : { S: normalizeUrl(request.url) },
+        pageUrl  : { S: url },
         commentText: { S: request.comment },
         parent   : { S: parent },
         timestamp: { S: timestamp },
@@ -48,7 +49,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     return dynamo.putItem(params)
         .promise()
         .then(() => {
-            const body: PostCommentResponse = {
+            const body: AddCommentResponse = {
                 success: true,
                 comment: {
                     id: commentId,
@@ -63,16 +64,15 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                 }
             };
             return {
-                statusCode: 200,
-                headers: CORS_HEADERS,
+                statusCode: 201,
+                headers: {...CORS_HEADERS, location: `${AWS_GET_URL}/${encodeURIComponent(url)}/${commentId}` },
                 body: JSON.stringify(body)
             } as ApiGatewayResponse;
         });
 }
 
-function isValid(request: PostCommentRequest){
-    return request.url && request.url.length <= MAX_FIELD_LENGTH
-        && request.comment && request.comment.length <= MAX_COMMENT_LENGTH
+function isValid(request: AddCommentRequest){
+    return request.comment && request.comment.length <= MAX_COMMENT_LENGTH
         && (!request.inReplyTo || request.inReplyTo.length <= MAX_FIELD_LENGTH)
         && request.authorization;
 }
