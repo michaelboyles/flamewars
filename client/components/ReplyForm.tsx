@@ -9,33 +9,8 @@ import { normalizeUrl } from '../../common/util';
 
 type CommentConsumer = (comment: Comment) => void;
 
-function editComment(commentId: CommentId, text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void) {
-    const request: EditCommentRequest = {
-        comment: text,
-        authorization: authorization
-    };
-    fetch(`${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${commentId}`, {
-            body: JSON.stringify(request),
-            method: 'PATCH'
-        })
-        .then(r => {
-            if (!r.ok) throw new Error();
-            return r.json();
-        })
-        .then(json => afterSubmit(json.comment))
-        .catch(() => onError())
-}
-
-function submitComment(text: string, authorization: Authorization, afterSubmit: CommentConsumer, onError: () => void, inReplyTo?: CommentId) {
-    const request: AddCommentRequest = {
-        comment: text,
-        inReplyTo: inReplyTo,
-        authorization: authorization
-    };
-    fetch(`${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`, {
-            body: JSON.stringify(request),
-            method: 'POST'
-        })
+function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterSubmit: CommentConsumer, onError: () => void) {
+    fetch(url, { body: JSON.stringify(request), method: method})
         .then(r => {
             if (!r.ok) throw new Error();
             return r.json();
@@ -70,21 +45,30 @@ const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentCon
 
         setIsSubmitting(true);
         if (props.isEdit) {
-            editComment(
-                props.inReplyTo, //TODO a hack
-                text,
-                props.authorization,
-                _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment)},
+            const request: EditCommentRequest = {
+                comment: text,
+                authorization: props.authorization
+            };
+            sendRequest(
+                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.inReplyTo}`, //TODO a hack
+                'PATCH',
+                request,
+                _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment) },
                 () => {}
             )
         }
         else {
-            submitComment(
-                text,
-                props.authorization,
+            const request: AddCommentRequest = {
+                comment: text,
+                inReplyTo: props.inReplyTo,
+                authorization: props.authorization
+            };
+            sendRequest(
+                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
+                'POST',
+                request,
                 comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },
-                () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); },
-                props.inReplyTo
+                () => { setError('There was a problem submitting your comment'); setIsSubmitting(false); }
             );
         }
     };
