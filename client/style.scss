@@ -88,14 +88,21 @@ form .loading-spinner {
             }
             .content {
                 display: block;
-                margin: 3px 0px 5px 0;
+                margin: 0.3em 0 0.6em 0;
 
-                *:first-child {
+                > *:first-child {
                     margin-top: 0;
+                }
+                > *:last-child {
+                    margin-bottom: 0;
                 }
                 
                 a {
                     color: #3d7e9a;
+                }
+
+                ul {
+                    list-style: disc;
                 }
 
                 pre code, blockquote {
@@ -112,7 +119,10 @@ form .loading-spinner {
                     border-color: $grey;
                     font-style: italic;
 
-                    *:last-child {
+                    > *:first-child {
+                        margin-top: 0;
+                    }
+                    > *:last-child {
                         margin-bottom: 0;
                     }
                 }
