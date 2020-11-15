@@ -7,6 +7,14 @@ import { AuthenticationResult, checkAuthentication } from './user-details';
 
 const dynamo = getDynamoDb();
 
+function getErrorResponse(statusCode: number, message: string): ApiGatewayResponse {
+    return {
+        statusCode: statusCode,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({success: false, error: message}) //TODO define schema
+    };
+}
+
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const url = event.queryStringParameters.url;
     const commentId = event.queryStringParameters.commentId;
@@ -14,12 +22,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
     if (!authResult.isValid) {
-        const response: ApiGatewayResponse = {
-            statusCode: 403,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({success: false, error: 'Invalid token'}) //TODO define schema
-        };
-        return Promise.resolve(response);
+        return Promise.resolve(getErrorResponse(403, 'Invalid authentication token'));
     }
 
     const deleteComment: UpdateItemInput = {
@@ -38,12 +41,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     return new Promise((resolve, reject) => {
         dynamo.updateItem(deleteComment, (err, _data) => {
             if (err) {
-                const response: ApiGatewayResponse = {
-                    statusCode: 500,
-                    headers: CORS_HEADERS,
-                    body: JSON.stringify({success: false})
-                };
-                reject(response);
+                reject(err);
             }
             else {
                 const response: ApiGatewayResponse = {
@@ -54,5 +52,13 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                 resolve(response);
             }
         })
+    })
+    .catch(err => {
+        if (err.code === 'ConditionalCheckFailedException') {
+            return getErrorResponse(403, 'Not authorized to delete');
+        }
+        else {
+            return getErrorResponse(500, 'Server error');
+        }
     });
 }
