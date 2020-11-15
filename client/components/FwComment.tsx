@@ -27,6 +27,23 @@ const EditIndicator = (props: {isEdited: boolean}) => {
     return <span className='edit-indicator'>Edited</span>
 }
 
+const OwnerActions = (props: {isOwner: boolean, onEdit: () => void, onDelete: () => void}) => {
+    if (!isOwner) return null;
+    return (
+        <>
+            <a className='edit-btn' onClick={props.onEdit}>Edit</a>
+            <a className='delete-btn' onClick={props.onDelete}>Delete</a>
+        </>
+    )
+}
+
+const Portrait = (props: {url: string}) => {
+    if (props.url) {
+        return <img className='portrait' src={props.url} />;
+    } 
+    return <DefaultAvatar colour='#222' />;
+}
+
 const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
@@ -46,17 +63,11 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             .catch(e => console.error(e));
     }
 
-    const onEditClick = () => {
-        setIsEditing(!isEditing);
-    }
-
     if (isDeleted && !replies.length) return null;
 
     return (
         <li className='comment'>
-            {
-                props.comment.author.portraitUrl ? <img className='portrait' src={props.comment.author.portraitUrl} /> : <DefaultAvatar colour='#222' />
-            }
+            <Portrait url={props.comment.author.portraitUrl}/>
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
@@ -73,14 +84,9 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                         />
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
-                {
-                    !isOwner(props.authorization, props.comment) ?
-                        null :
-                        <>
-                            <a className='edit-btn' onClick={() => { onEditClick() }}>Edit</a>
-                            <a className='delete-btn' onClick={() => deleteComment()}>Delete</a>
-                        </>
-                }
+                <OwnerActions isOwner={isOwner(props.authorization, props.comment)}
+                              onEdit={() => setIsEditing(!isEditing)}
+                              onDelete={deleteComment} />
                 {
                     isReplyOpen ? <ReplyForm authorization={props.authorization}
                                              afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
