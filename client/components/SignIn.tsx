@@ -2,7 +2,7 @@ import React = require('react');
 import GoogleLogin, { GoogleLoginResponse, useGoogleLogout } from 'react-google-login';
 import type { Authorization } from '../../common/types/add-comment-request';
 import { GOOGLE_CLIENT_ID } from '../../config'
-import { GoogleIcon } from './GoogleIcon';
+import GoogleIcon from './GoogleIcon';
 
 export interface LocalAuthorization extends Authorization
 {
