@@ -10,6 +10,14 @@ form .loading-spinner {
 #comments {
     color: $almost-black;
     white-space: pre-line;
+
+    .sign-in-icon {
+        display: inline-block;
+        margin-left: 8px;
+        height: 18px;
+        width: 18px;
+        cursor: pointer;
+    }
 }
 
 .reply-form {
@@ -61,11 +69,6 @@ form .loading-spinner {
     .comment {
         display: flex;
         width: 100%;
-        margin-bottom: 15px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
 
         .portrait {
             width: 50px;
@@ -119,8 +122,11 @@ form .loading-spinner {
                 }
             }
             .reply-btn {
+                display: inline-block;
+                margin-bottom: 15px;
                 cursor: pointer;
                 color: $grey;
+
                 &:hover {
                     color: $dark-grey;
                 }

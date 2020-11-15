@@ -2,6 +2,7 @@ import React = require('react');
 import GoogleLogin, { GoogleLoginResponse, useGoogleLogout } from 'react-google-login';
 import type { Authorization } from '../../dist/post-comment-request';
 import { GOOGLE_CLIENT_ID } from '../../config'
+import { GoogleIcon } from './GoogleIcon';
 
 export interface LocalAuthorization extends Authorization
 {
@@ -22,14 +23,20 @@ export const SignIn = (props: {authorization: LocalAuthorization, setAuthorizati
     return props.authorization ? 
         <span>Signed in as {props.authorization.name} <a onClick={signOut}>(sign out)</a></span>
         :
-        <GoogleLogin 
-            clientId={GOOGLE_CLIENT_ID}
-            onSuccess={resp => props.setAuthorization({
-                token: (resp as GoogleLoginResponse).tokenId,   //TODO how to remove 'as'?
-                tokenProvider: 'Google',
-                name: (resp as GoogleLoginResponse).getBasicProfile().getName(),
-                id: (resp as GoogleLoginResponse).getId()
-            })} 
-            isSignedIn={true}
-        />
+        <>
+            Sign in via: 
+            <GoogleLogin 
+                clientId={GOOGLE_CLIENT_ID}
+                onSuccess={resp => props.setAuthorization({
+                    token: (resp as GoogleLoginResponse).tokenId,   //TODO how to remove 'as'?
+                    tokenProvider: 'Google',
+                    name: (resp as GoogleLoginResponse).getBasicProfile().getName(),
+                    id: (resp as GoogleLoginResponse).getId()
+                })} 
+                isSignedIn={true}
+                render={renderProps => (
+                    <a className='sign-in-icon' onClick={renderProps.onClick} title='Google'><GoogleIcon color='#222' /></a>
+                )}
+            />
+        </>
 }

@@ -61,7 +61,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 }
                 {
                     replies.length ?
-                        <ul>{ replies
+                        <ul className='comments'>{ replies
                                 .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
                                 .map(reply => <FwComment key={reply.id} comment={reply} authorization={props.authorization} />) }</ul>
                         :
