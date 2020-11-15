@@ -20,6 +20,7 @@ export function onlyAuthorization(localAuth: LocalAuthorization): Authorization 
 export const SignIn = (props: {authorization: LocalAuthorization, setAuthorization: (la: LocalAuthorization) => void }) => {
     const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
     const signOut = () => { googleSignOut(); props.setAuthorization(null); }
+
     return props.authorization ? 
         <span>Signed in as {props.authorization.name} <a onClick={signOut}>(sign out)</a></span>
         :
@@ -33,7 +34,7 @@ export const SignIn = (props: {authorization: LocalAuthorization, setAuthorizati
                     name: (resp as GoogleLoginResponse).getBasicProfile().getName(),
                     id: (resp as GoogleLoginResponse).getId()
                 })} 
-                isSignedIn={true}
+                isSignedIn={props.authorization !== null}
                 render={renderProps => (
                     <a className='sign-in-icon' onClick={renderProps.onClick} title='Google'><GoogleIcon color='#222' /></a>
                 )}
