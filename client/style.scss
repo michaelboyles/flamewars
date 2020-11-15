@@ -149,7 +149,7 @@ form .loading-spinner {
     .replies {
         clear: both;
         list-style-type: none;
-        width: 100%;
+        width: calc(100% - 65px);
         margin: 0 0 0 65px;
         padding: 0;
     }
