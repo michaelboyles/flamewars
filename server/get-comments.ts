@@ -22,14 +22,13 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
             if (item.isDeleted.BOOL && !children.length) {
                 return;
             }
-            const text = item.isDeleted.BOOL ? DELETED_MESSAGE : item.comment.S;
             comments.push({
                 id: item.SK.S,
                 author: {
-                    id: item.userId.S,
-                    name: item.author.S
+                    id: item.isDeleted.BOOL ? 'ANONYMOUS' : item.userId.S,
+                    name: item.isDeleted.BOOL ? 'Anonymous' : item.author.S
                 },
-                text: text,
+                text: item.isDeleted.BOOL ? DELETED_MESSAGE : item.comment.S,
                 timestamp: item.timestamp.S,
                 replies: children
             });
