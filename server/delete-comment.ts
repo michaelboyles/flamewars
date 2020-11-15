@@ -16,15 +16,21 @@ function getErrorResponse(statusCode: number, message: string): ApiGatewayRespon
 }
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
-    const url = event.queryStringParameters.url;
-    const commentId = event.queryStringParameters.commentId;
-    const request: DeleteCommentRequest = JSON.parse(event.body);
+    let request: DeleteCommentRequest;
+    try {
+        request = JSON.parse(event.body);
+    } 
+    catch(err) {
+        return Promise.resolve(getErrorResponse(400, 'Invalid JSON body'));
+    }
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
     if (!authResult.isValid) {
         return Promise.resolve(getErrorResponse(403, 'Invalid authentication token'));
     }
 
+    const url = event.queryStringParameters.url;
+    const commentId = event.queryStringParameters.commentId;
     const deleteComment: UpdateItemInput = {
         TableName: 'FLAMEWARS',
         Key: {
