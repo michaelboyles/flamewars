@@ -30,8 +30,11 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
-const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer,
-                            inReplyTo?: CommentId, initialText?: string, buttonLabel?: string, isEdit: boolean }) => {
+const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, initialText?: string, buttonLabel?: string,
+                             type: 'ADD' | 'EDIT' | 'REPLY',
+                             inReplyTo?: CommentId,       // Required if type == REPLY
+                             commentId?: CommentId}) => { // Required if type == EDIT         
+    
     const [text, setText] = useState(props.initialText || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
@@ -44,13 +47,13 @@ const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentCon
         }
 
         setIsSubmitting(true);
-        if (props.isEdit) {
+        if (props.type === 'EDIT') {
             const request: EditCommentRequest = {
                 comment: text,
                 authorization: props.authorization
             };
             sendRequest(
-                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.inReplyTo}`, //TODO a hack
+                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentId}`,
                 'PATCH',
                 request,
                 _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment) },
@@ -83,4 +86,4 @@ const ReplyForm = (props: {authorization: Authorization, afterSubmit: CommentCon
     );
 }
 
-export default ReplyForm;
+export default CommentForm;

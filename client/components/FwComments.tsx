@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { AWS_GET_URL } from '../../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 import FwComment from './FwComment';
-import ReplyForm from './ReplyForm';
+import CommentForm from './CommentForm';
 import { LocalAuthorization, SignIn } from './SignIn';
 
 const FwComments = () => {
@@ -21,7 +21,7 @@ const FwComments = () => {
     return (
         <>
             <SignIn authorization={authorization} setAuthorization={setAuthorization} />
-            <ReplyForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} isEdit={false} />
+            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} type='ADD' />
             <ul className='comments'>
                 { comments
                     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))

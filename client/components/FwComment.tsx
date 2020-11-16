@@ -4,7 +4,7 @@ import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../common/types/get-all-comments-response'
 import { AWS_GET_URL } from '../../config';
 import { formatPastDate, formatFullTime } from '../time';
-import ReplyForm from './ReplyForm';
+import CommentForm from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';
 import ReactMarkdown = require('react-markdown');
 
@@ -75,12 +75,12 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 {
                     !isEditing ? 
                         <ReactMarkdown className='content'>{addAutoLinks(text)}</ReactMarkdown> :
-                        <ReplyForm authorization={props.authorization}
-                                   initialText={text}
-                                   afterSubmit={comment => { setText(comment.text); setIsEditing(false); }}
-                                   buttonLabel='Save edit'
-                                   isEdit={true}
-                                   inReplyTo={props.comment.id} //TODO a hack
+                        <CommentForm authorization={props.authorization}
+                                     initialText={text}
+                                     afterSubmit={comment => { setText(comment.text); setIsEditing(false); }}
+                                     buttonLabel='Save edit'
+                                     type='EDIT'
+                                     commentId={props.comment.id}
                         />
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
@@ -88,10 +88,10 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                               onEdit={() => setIsEditing(!isEditing)}
                               onDelete={deleteComment} />
                 {
-                    isReplyOpen ? <ReplyForm authorization={props.authorization}
-                                             afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
-                                             inReplyTo={props.comment.id}
-                                             isEdit={false} />
+                    isReplyOpen ? <CommentForm authorization={props.authorization}
+                                               afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
+                                               inReplyTo={props.comment.id}
+                                               type='REPLY' />
                                 : null
                 }
             </div>
