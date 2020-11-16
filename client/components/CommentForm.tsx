@@ -57,7 +57,7 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
                 'PATCH',
                 request,
                 _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment) },
-                () => {}
+                () => { setError('There was a problem submitting your edit'); setIsSubmitting(false); }
             )
         }
         else {
