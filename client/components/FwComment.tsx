@@ -37,11 +37,11 @@ const OwnerActions = (props: {isOwner: boolean, onEdit: () => void, onDelete: ()
     )
 }
 
-const Portrait = (props: {url: string}) => {
+const Portrait = (props: {username: string, url: string}) => {
     if (props.url) {
         return <img className='portrait' src={props.url} />;
     } 
-    return <DefaultAvatar colour='#222' />;
+    return <DefaultAvatar username={props.username} bgcolour='#f3f3f3' />;
 }
 
 const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
@@ -67,7 +67,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
 
     return (
         <li className='comment'>
-            <Portrait url={props.comment.author.portraitUrl}/>
+            <Portrait username={props.comment.author.id} url={props.comment.author.portraitUrl}/>
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
