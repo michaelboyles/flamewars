@@ -9,7 +9,7 @@ import DefaultAvatar from './DefaultAvatar';
 import ReactMarkdown = require('react-markdown');
 
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
-    return authorization && comment.author.id.endsWith(authorization.id);
+    return (!!authorization) && comment.author.id.endsWith(authorization.id);
 }
 
 function addAutoLinks(comment: string) : string {
@@ -28,7 +28,7 @@ const EditIndicator = (props: {isEdited: boolean}) => {
 }
 
 const OwnerActions = (props: {isOwner: boolean, onEdit: () => void, onDelete: () => void}) => {
-    if (!isOwner) return null;
+    if (!props.isOwner) return null;
     return (
         <>
             <a className='edit-btn' onClick={props.onEdit}>Edit</a>
