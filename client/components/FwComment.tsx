@@ -41,7 +41,7 @@ const Portrait = (props: {username: string, url: string}) => {
     if (props.url) {
         return <img className='portrait' src={props.url} />;
     } 
-    return <DefaultAvatar username={props.username} bgcolour='#f3f3f3' />;
+    return <DefaultAvatar username={props.username} bgcolour='#fff' />;
 }
 
 const FwComment = (props: {comment: Comment, authorization: LocalAuthorization}) => {
