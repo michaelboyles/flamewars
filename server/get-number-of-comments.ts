@@ -32,12 +32,11 @@ function failResponse(): ApiGatewayResponse {
 function queryForUrl(url: string): Promise<CommentCount> {
     const params: QueryInput = {
         TableName: 'FLAMEWARS',
-        KeyConditionExpression: "PK = :u", 
+        KeyConditionExpression: 'PK = :u', 
         ExpressionAttributeValues: {
-            ':u': { S: 'PAGE#' + url },
-            ':d': { BOOL: false }
+            ':u': { S: 'PAGE#' + url }
         },
-        FilterExpression: "isDeleted = :d",
+        FilterExpression: 'attribute_not_exists(deletedAt)',
         Select: 'COUNT'
     };
 

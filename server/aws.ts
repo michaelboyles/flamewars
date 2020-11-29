@@ -32,8 +32,8 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     timestamp: DynamoString;
     author: DynamoString;
     userId: DynamoString;
-    isDeleted: DynamoBoolean;
-    isEdited: DynamoBoolean;
+    deletedAt?: DynamoString;
+    editedAt?: DynamoString;
 }
 
 export function getDynamoDb() {

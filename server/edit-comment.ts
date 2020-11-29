@@ -37,9 +37,9 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
             PK: { S: 'PAGE#' + url },
             SK: { S: COMMENT_ID_PREFIX + commentId }
         },
-        UpdateExpression: 'SET isEdited = :e, commentText = :c',
+        UpdateExpression: 'SET editedAt = :ts, commentText = :c',
         ExpressionAttributeValues: {
-            ':e': { BOOL: true },
+            ':ts': { S: new Date().toISOString() },
             ':c': { S: request.comment },
             ':u': { S: authResult.userDetails.userId }
         },

@@ -18,19 +18,20 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     const comments: Comment[] = [];
     items.forEach((item: DynamoComment) => {
         if (item.parent.S === parentId) {
+            const isDeleted = !!(item.deletedAt?.S);
             const children = sortToHeirarchy(items, item.SK.S);
-            if (item.isDeleted.BOOL && !children.length) {
+            if (isDeleted && !children.length) {
                 return;
             }
             comments.push({
                 id: item.SK.S.substr(COMMENT_ID_PREFIX.length),
                 author: {
-                    id: item.isDeleted.BOOL ? 'ANONYMOUS' : item.userId.S,
-                    name: item.isDeleted.BOOL ? 'Anonymous' : item.author.S
+                    id: isDeleted ? 'ANONYMOUS' : item.userId.S,
+                    name: isDeleted ? 'Anonymous' : item.author.S
                 },
-                text: item.isDeleted.BOOL ? DELETED_MESSAGE : item.commentText.S,
+                text: isDeleted ? DELETED_MESSAGE : item.commentText.S,
                 timestamp: item.timestamp.S,
-                isEdited: item.isEdited.BOOL,
+                isEdited: !!(item.editedAt?.S),
                 replies: children
             });
         }

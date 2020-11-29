@@ -37,9 +37,9 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
             PK: { S: 'PAGE#' + url },
             SK: { S: COMMENT_ID_PREFIX + commentId }
         },
-        UpdateExpression: 'SET isDeleted = :d',
+        UpdateExpression: 'SET deletedAt = :ts',
         ExpressionAttributeValues: {
-            ':d': { BOOL: true },
+            ':ts': { S: new Date().toISOString() },
             ':u': { S: authResult.userDetails.userId }
         },
         ConditionExpression: 'userId = :u'
