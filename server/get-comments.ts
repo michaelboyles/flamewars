@@ -31,7 +31,7 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
                 },
                 text: isDeleted ? DELETED_MESSAGE : item.commentText.S,
                 timestamp: item.timestamp.S,
-                isEdited: !!(item.editedAt?.S),
+                isEdited: !isDeleted && !!(item.editedAt?.S),
                 replies: children
             });
         }
