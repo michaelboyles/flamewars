@@ -26,7 +26,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
 
     const commentId = uuid();
     const timestamp = new Date().toISOString();
-    const parent = request.inReplyTo ? request.inReplyTo : '';
+    const parent = request.inReplyTo ? (COMMENT_ID_PREFIX + request.inReplyTo) : '';
     const url = normalizeUrl(decodeURIComponent(event.pathParameters.url));
 
     const dynamoComment: DynamoComment = {
