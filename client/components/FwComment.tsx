@@ -49,6 +49,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isEdited, setIsEdited] = useState(props.comment.isEdited);
     const [text, setText] = useState(props.comment.text);
 
     const deleteComment = () => {
@@ -71,13 +72,13 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
-                <EditIndicator isEdited={props.comment.isEdited} />
+                <EditIndicator isEdited={isEdited} />
                 {
                     !isEditing ? 
                         <ReactMarkdown className='content'>{addAutoLinks(text)}</ReactMarkdown> :
                         <CommentForm authorization={props.authorization}
                                      initialText={text}
-                                     afterSubmit={comment => { setText(comment.text); setIsEditing(false); }}
+                                     afterSubmit={comment => { setText(comment.text); setIsEditing(false); setIsEdited(true);  }}
                                      buttonLabel='Save edit'
                                      type='EDIT'
                                      commentId={props.comment.id}
