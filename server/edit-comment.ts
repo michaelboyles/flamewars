@@ -43,7 +43,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
             ':c': { S: request.comment },
             ':u': { S: authResult.userDetails.userId }
         },
-        ConditionExpression: 'userId = :u'
+        ConditionExpression: 'userId = :u AND attribute_not_exists(deletedAt)'
     };
     return new Promise((resolve, reject) => {
         dynamo.updateItem(updateComment, (err, _data) => {
