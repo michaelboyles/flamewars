@@ -3,7 +3,7 @@ import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
-import { DELETED_MESSAGE } from '../config';
+import { DELETED_AUTHOR, DELETED_AUTHOR_ID, DELETED_MESSAGE } from '../config';
 import { CORS_HEADERS } from './common';
 
 const dynamo = getDynamoDb();
@@ -26,8 +26,8 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
             comments.push({
                 id: item.SK.S.substr(COMMENT_ID_PREFIX.length),
                 author: {
-                    id: isDeleted ? 'ANONYMOUS' : item.userId.S,
-                    name: isDeleted ? 'Anonymous' : item.author.S
+                    id: isDeleted ? DELETED_AUTHOR_ID : item.userId.S,
+                    name: isDeleted ? DELETED_AUTHOR : item.author.S
                 },
                 text: isDeleted ? DELETED_MESSAGE : item.commentText.S,
                 timestamp: item.timestamp.S,
