@@ -15,6 +15,10 @@ function getErrorResponse(statusCode: number, message: string): ApiGatewayRespon
     };
 }
 
+function isValid(request: EditCommentRequest): boolean {
+    return request.comment && request.comment.trim().length > 0;
+}
+
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     let request: EditCommentRequest;
     try {
@@ -22,6 +26,10 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     } 
     catch(err) {
         return Promise.resolve(getErrorResponse(400, 'Invalid JSON body'));
+    }
+
+    if (!isValid(request)) {
+        return Promise.resolve(getErrorResponse(400, 'Comment cannot be empty'));
     }
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
