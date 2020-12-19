@@ -45,6 +45,10 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
             setError('Please sign in first');
             return;
         }
+        if (!text) {
+            setError('Comment cannot be blank');
+            return;
+        }
 
         setIsSubmitting(true);
         if (props.type === 'EDIT') {
