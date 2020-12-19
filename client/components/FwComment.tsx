@@ -60,7 +60,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 method: 'DELETE',
                 body: JSON.stringify({authorization: onlyAuthorization(props.authorization)})
             })
-            .then(response => { if (response.ok) setDeleted(true); })
+            .then(response => { if (response.ok) { setDeleted(true); setIsEditing(false); } })
             .catch(e => console.error(e));
     }
 
