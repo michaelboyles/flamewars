@@ -45,7 +45,7 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
             setError('Please sign in first');
             return;
         }
-        if (!text) {
+        if (!text || text.trim().length === 0) {
             setError('Comment cannot be blank');
             return;
         }
