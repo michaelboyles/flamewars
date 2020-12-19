@@ -27,8 +27,8 @@ const EditIndicator = (props: {isEdited: boolean}) => {
     return <span className='edit-indicator'>Edited</span>
 }
 
-const OwnerActions = (props: {isOwner: boolean, onEdit: () => void, onDelete: () => void}) => {
-    if (!props.isOwner) return null;
+const OwnerActions = (props: {isOwner: boolean, isDeleted: boolean, onEdit: () => void, onDelete: () => void}) => {
+    if (!props.isOwner || props.isDeleted) return null;
     return (
         <>
             <a className='edit-btn' onClick={props.onEdit}>Edit</a>
@@ -93,6 +93,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
                 <OwnerActions isOwner={isOwner(props.authorization, props.comment)}
+                              isDeleted={isDeleted}
                               onEdit={() => setIsEditing(!isEditing)}
                               onDelete={deleteComment} />
                 {
