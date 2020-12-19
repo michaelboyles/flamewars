@@ -64,6 +64,14 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
             .catch(e => console.error(e));
     }
 
+    const afterSubmitEdit = (comment: Comment) => {
+        setIsEditing(false);
+        if (comment.text !== props.comment.text) {
+            setText(comment.text);
+            setIsEdited(true);
+        }
+    }
+
     if (isDeleted && !replies.length) return null;
 
     return (
@@ -77,11 +85,10 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                     !isEditing ? 
                         <ReactMarkdown className='content'>{addAutoLinks(isDeleted ? DELETED_MESSAGE : text)}</ReactMarkdown> :
                         <CommentForm authorization={props.authorization}
-                                     initialText={text}
-                                     afterSubmit={comment => { setText(comment.text); setIsEditing(false); setIsEdited(true);  }}
+                                     commentToEdit={props.comment}
+                                     afterSubmit={afterSubmitEdit}
                                      buttonLabel='Save edit'
                                      type='EDIT'
-                                     commentId={props.comment.id}
                         />
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>

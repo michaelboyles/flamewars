@@ -30,12 +30,12 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
-const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, initialText?: string, buttonLabel?: string,
+const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, buttonLabel?: string,
                              type: 'ADD' | 'EDIT' | 'REPLY',
-                             inReplyTo?: CommentId,       // Required if type == REPLY
-                             commentId?: CommentId}) => { // Required if type == EDIT         
+                             inReplyTo?: CommentId,         // Required if type == REPLY
+                             commentToEdit?: Comment}) => { // Required if type == EDIT
     
-    const [text, setText] = useState(props.initialText || '');
+    const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
@@ -48,15 +48,27 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
 
         setIsSubmitting(true);
         if (props.type === 'EDIT') {
+            if (text === props.commentToEdit.text) {
+                setIsSubmitting(false);
+                setError(null);
+                props.afterSubmit(props.commentToEdit);
+                return;
+            }
+
             const request: EditCommentRequest = {
                 comment: text,
                 authorization: props.authorization
             };
             sendRequest(
-                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentId}`,
+                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
                 'PATCH',
                 request,
-                _comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit({text: text} as Comment) },
+                _comment => {
+                    setText('');
+                    setIsSubmitting(false); 
+                    setError(null);
+                    props.afterSubmit({...props.commentToEdit, text: text})
+                },
                 () => { setError('There was a problem submitting your edit'); setIsSubmitting(false); }
             )
         }
