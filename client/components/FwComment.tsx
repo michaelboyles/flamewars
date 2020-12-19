@@ -31,8 +31,8 @@ const OwnerActions = (props: {isOwner: boolean, isDeleted: boolean, onEdit: () =
     if (!props.isOwner || props.isDeleted) return null;
     return (
         <>
-            <a className='edit-btn' onClick={props.onEdit}>Edit</a>
-            <a className='delete-btn' onClick={props.onDelete}>Delete</a>
+            <a className='btn edit-btn' onClick={props.onEdit}>Edit</a>
+            <a className='btn delete-btn' onClick={props.onDelete}>Delete</a>
         </>
     )
 }
@@ -91,7 +91,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                                      type='EDIT'
                         />
                 }
-                <a onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
+                <a onClick={() => setReplyOpen(!isReplyOpen)} className={'btn reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
                 <OwnerActions isOwner={isOwner(props.authorization, props.comment)}
                               isDeleted={isDeleted}
                               onEdit={() => setIsEditing(!isEditing)}

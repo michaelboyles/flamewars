@@ -133,10 +133,12 @@ form .loading-spinner {
                     border-top: 1px solid $grey;
                 }
             }
-            .reply-btn, .edit-btn {
+            .btn {
                 display: inline-block;
                 margin: 0 15px 20px 0;
                 cursor: pointer;
+            }
+            .reply-btn, .edit-btn {
                 color: $grey;
 
                 &:hover {
@@ -146,7 +148,10 @@ form .loading-spinner {
             .delete-btn {
                 visibility: hidden;
                 color: #c02d2e;
-                cursor: pointer;
+
+                &:hover {
+                    color: #a91f20;
+                }
             }
 
             &:hover {
