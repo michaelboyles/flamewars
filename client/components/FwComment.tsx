@@ -85,7 +85,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                     !isEditing ? 
                         <ReactMarkdown className='content'>{addAutoLinks(isDeleted ? DELETED_MESSAGE : text)}</ReactMarkdown> :
                         <CommentForm authorization={props.authorization}
-                                     commentToEdit={props.comment}
+                                     commentToEdit={{...props.comment, text: text}} // In case the user already editted this comment once
                                      afterSubmit={afterSubmitEdit}
                                      buttonLabel='Save edit'
                                      type='EDIT'
