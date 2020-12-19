@@ -1,4 +1,4 @@
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, getDynamoDb } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
@@ -34,7 +34,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const deleteComment: UpdateItemInput = {
         TableName: 'FLAMEWARS',
         Key: {
-            PK: { S: 'PAGE#' + url },
+            PK: { S: PAGE_ID_PREFIX + url },
             SK: { S: COMMENT_ID_PREFIX + commentId }
         },
         UpdateExpression: 'SET deletedAt = :ts',

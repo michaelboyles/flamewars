@@ -1,6 +1,7 @@
 import { PutItemInputAttributeMap } from "aws-sdk/clients/dynamodb";
 import * as AWS from 'aws-sdk';
 
+export const PAGE_ID_PREFIX: string = 'PAGE#';
 export const COMMENT_ID_PREFIX: string = '#COMMENT#';
 
 export interface ApiGatewayRequest {

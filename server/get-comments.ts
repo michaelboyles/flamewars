@@ -1,4 +1,4 @@
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
@@ -45,7 +45,7 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
         TableName: 'FLAMEWARS',
         KeyConditionExpression: "PK = :u", 
         ExpressionAttributeValues: {
-            ':u': { S: 'PAGE#' + url }
+            ':u': { S: PAGE_ID_PREFIX + url }
         }, 
         Select: 'ALL_ATTRIBUTES'
     };

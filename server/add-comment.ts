@@ -1,6 +1,6 @@
 import type { AddCommentRequest } from '../common/types/add-comment-request'
 import type { AddCommentResponse } from '../common/types/add-comment-response'
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb } from './aws'
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws'
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb'
 import { AuthenticationResult, checkAuthentication } from './user-details'
@@ -30,7 +30,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const url = normalizeUrl(decodeURIComponent(event.pathParameters.url));
 
     const dynamoComment: DynamoComment = {
-        PK       : { S: 'PAGE#' + url },
+        PK       : { S: PAGE_ID_PREFIX + url },
         SK       : { S: COMMENT_ID_PREFIX + commentId },
         pageUrl  : { S: url },
         commentText: { S: request.comment },

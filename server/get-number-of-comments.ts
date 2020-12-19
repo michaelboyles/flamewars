@@ -1,4 +1,4 @@
-import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
@@ -34,7 +34,7 @@ function queryForUrl(url: string): Promise<CommentCount> {
         TableName: 'FLAMEWARS',
         KeyConditionExpression: 'PK = :u', 
         ExpressionAttributeValues: {
-            ':u': { S: 'PAGE#' + url }
+            ':u': { S: PAGE_ID_PREFIX + url }
         },
         FilterExpression: 'attribute_not_exists(deletedAt)',
         Select: 'COUNT'
