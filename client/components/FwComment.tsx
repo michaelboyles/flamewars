@@ -6,14 +6,10 @@ import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
 import { formatPastDate, formatFullTime } from '../time';
 import CommentForm from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';
-import ReactMarkdown = require('react-markdown');
+import Markdown from './Markdown';
 
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return (!!authorization) && comment.author.id.endsWith(authorization.id);
-}
-
-function addAutoLinks(comment: string) : string {
-    return comment.replace(/((?<!]\()https?:\/\/[^\s)]+)/gi, '[$1]($1)');
 }
 
 const Timestamp = (props: {timestamp: number}) => {
@@ -83,7 +79,7 @@ const FwComment = (props: {comment: Comment, authorization: LocalAuthorization})
                 <EditIndicator isEdited={isEdited} />
                 {
                     !isEditing ? 
-                        <ReactMarkdown className='content'>{addAutoLinks(isDeleted ? DELETED_MESSAGE : text)}</ReactMarkdown> :
+                        <Markdown text={isDeleted ? DELETED_MESSAGE : text} /> :
                         <CommentForm authorization={props.authorization}
                                      commentToEdit={{...props.comment, text: text}} // In case the user already editted this comment once
                                      afterSubmit={afterSubmitEdit}

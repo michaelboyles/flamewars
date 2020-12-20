@@ -7,7 +7,7 @@ import type { EditCommentRequest } from '../../common/types/edit-comment-request
 import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
-import ReactMarkdown = require('react-markdown');
+import Markdown from './Markdown';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
@@ -104,7 +104,7 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
                 onChange={setText}
                 selectedTab={selectedTab}
                 onTabChange={setSelectedTab}
-                generateMarkdownPreview={markdown => Promise.resolve(<ReactMarkdown children={markdown}/>) }
+                generateMarkdownPreview={markdown => Promise.resolve(<Markdown text={markdown}/>) }
                 //omitted: checked-list, header, save-image, strikethrough
                 toolbarCommands={[['bold', 'italic'], ['link', 'quote', 'code', 'image'], ['unordered-list', 'ordered-list']]} 
             />
