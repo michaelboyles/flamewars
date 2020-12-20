@@ -209,4 +209,25 @@ form .loading-spinner {
         transform: rotate(360deg);
     }
 }
-  
+
+.react-mde {
+    .mde-header {
+        .mde-tabs button {
+            &:focus {
+                outline: none;
+            }
+    
+            &.selected {
+                border-bottom: 0px;
+                margin-bottom: 0;
+                padding-bottom: 7px;
+            }
+        }
+
+        ul.mde-header-group.hidden {
+            width: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    }
+}

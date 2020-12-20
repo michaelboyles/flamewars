@@ -105,6 +105,8 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
                 selectedTab={selectedTab}
                 onTabChange={setSelectedTab}
                 generateMarkdownPreview={markdown => Promise.resolve(<ReactMarkdown children={markdown}/>) }
+                //omitted: checked-list, header, save-image, strikethrough
+                toolbarCommands={[['bold', 'italic'], ['link', 'quote', 'code', 'image'], ['unordered-list', 'ordered-list']]} 
             />
             <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>{props.buttonLabel || 'Post'}</button>
             <CommentLengthMessage length={text.length} />
