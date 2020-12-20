@@ -6,6 +6,10 @@ import type { Authorization, AddCommentRequest } from '../../common/types/add-co
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
 import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
+import ReactMde from 'react-mde';
+import ReactMarkdown = require('react-markdown');
+
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 type CommentConsumer = (comment: Comment) => void;
 
@@ -38,6 +42,7 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
     const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -94,7 +99,13 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
     return (
         <form className='reply-form' onSubmit={onSubmit}>
             {isSubmitting ? <LoadingSpinner /> : null}
-            <textarea value={text} onChange={e => setText(e.target.value)} readOnly={isSubmitting} ></textarea>
+            <ReactMde
+                value={text}
+                onChange={setText}
+                selectedTab={selectedTab}
+                onTabChange={setSelectedTab}
+                generateMarkdownPreview={markdown => Promise.resolve(<ReactMarkdown children={markdown}/>) }
+            />
             <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>{props.buttonLabel || 'Post'}</button>
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
