@@ -11,6 +11,11 @@ import Markdown from './Markdown';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
+// ReactMde has the concept of collecting actions into group but we can't use them because flexbox for responsive layout
+// needs 1 DOM element containing all actions. Visual groupings are achieved by CSS instead.
+// Omitted actions: checked-list, header, save-image, strikethrough
+const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', 'unordered-list', 'ordered-list']];
+
 type CommentConsumer = (comment: Comment) => void;
 
 function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterSubmit: CommentConsumer, onError: () => void) {
@@ -105,8 +110,7 @@ const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentC
                 selectedTab={selectedTab}
                 onTabChange={setSelectedTab}
                 generateMarkdownPreview={markdown => Promise.resolve(<Markdown text={markdown}/>) }
-                //omitted: checked-list, header, save-image, strikethrough
-                toolbarCommands={[['bold', 'italic'], ['link', 'quote', 'code', 'image'], ['unordered-list', 'ordered-list']]} 
+                toolbarCommands={TOOLBAR_COMMANDS} 
             />
             <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>{props.buttonLabel || 'Post'}</button>
             <CommentLengthMessage length={text.length} />

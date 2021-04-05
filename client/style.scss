@@ -212,22 +212,59 @@ form .loading-spinner {
 
 .react-mde {
     .mde-header {
-        .mde-tabs button {
-            &:focus {
-                outline: none;
-            }
-    
-            &.selected {
-                border-bottom: 0px;
-                margin-bottom: 0;
-                padding-bottom: 7px;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .mde-tabs {
+            height: 42px;
+            align-items: flex-end;
+
+            button {
+                $vertical-pad: 10px;
+                padding: $vertical-pad 17px;
+                margin: 0 6px;
+                border-radius: 4px 4px 0 0;
+
+                &.selected {
+                    // Shift the button slightly down to achieve a break in the border 
+                    padding-top: #{$vertical-pad - 1px};
+                    padding-bottom: #{$vertical-pad + 2px};
+                    position: relative;
+                    border-bottom: 0;
+                    top: 1px;
+
+                    background: white;
+                }
+
+                &:focus {
+                    outline: none;
+                }
             }
         }
 
-        ul.mde-header-group.hidden {
-            width: 0px;
-            padding-left: 0px;
-            padding-right: 0px;
+        .mde-header-group {
+            flex-wrap: wrap;
+            background: white;
+            border-top: 1px solid #c8ccd0;
+
+            .mde-header-item {
+                button {
+                    &[data-name="italic"], &[data-name="image"] {
+                        margin-right: 20px;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (min-width: 550px) {
+        .mde-header {
+            flex-direction: row;
+
+            .mde-header-group {
+                background: transparent;
+                border-top: 0;
+            }
         }
     }
 }
