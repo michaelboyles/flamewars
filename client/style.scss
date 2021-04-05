@@ -250,6 +250,10 @@ form .loading-spinner {
 
             .mde-header-item {
                 button {
+                    &:hover {
+                        color: #6d9baf;
+                    }
+
                     &[data-name="italic"], &[data-name="image"] {
                         margin-right: 20px;
                     }
