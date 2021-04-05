@@ -90,6 +90,7 @@ form .loading-spinner {
             .content {
                 display: block;
                 margin: 0.3em 0 0.6em 0;
+                overflow: hidden; // only needed for e.g. zalgo abuse
 
                 > *:first-child {
                     margin-top: 0;
@@ -255,6 +256,10 @@ form .loading-spinner {
                 }
             }
         }
+    }
+
+    .mde-preview {
+        overflow: hidden; // only needed for e.g. zalgo abuse
     }
 
     @media (min-width: 550px) {
