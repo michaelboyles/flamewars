@@ -18,6 +18,15 @@ const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', '
 
 type CommentConsumer = (comment: Comment) => void;
 
+interface Props {
+    authorization: Authorization,
+    afterSubmit: CommentConsumer,
+    buttonLabel?: string,
+    type: 'ADD' | 'EDIT' | 'REPLY',
+    inReplyTo?: CommentId,  // Required if type == REPLY
+    commentToEdit?: Comment // Required if type == EDIT
+}
+
 function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterSubmit: CommentConsumer, onError: () => void) {
     fetch(url, { body: JSON.stringify(request), method: method})
         .then(r => {
@@ -39,11 +48,7 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
-const CommentForm = (props: {authorization: Authorization, afterSubmit: CommentConsumer, buttonLabel?: string,
-                             type: 'ADD' | 'EDIT' | 'REPLY',
-                             inReplyTo?: CommentId,         // Required if type == REPLY
-                             commentToEdit?: Comment}) => { // Required if type == EDIT
-    
+const CommentForm = (props: Props) => { 
     const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
