@@ -2,6 +2,8 @@ $almost-white: #fbfbfb;
 $grey: #7d7d7d;
 $dark-grey: #2d2d2d;
 $almost-black: #222;
+$accent: #6d9baf;
+$accent-dark: #3d7e9a;
 
 form .loading-spinner {
     position: absolute;
@@ -41,7 +43,7 @@ form .loading-spinner {
     }
 
     button[type="submit"] {
-        background-color: #6d9baf;
+        background-color: $accent;
         color: white;
         padding: 4px 8px;
         border-radius: 4px;
@@ -51,7 +53,7 @@ form .loading-spinner {
         cursor: pointer;
 
         &:hover {
-            background-color: #3d7e9a;
+            background-color: $accent-dark;
         }
     }
 
@@ -100,7 +102,7 @@ form .loading-spinner {
                 }
                 
                 a {
-                    color: #3d7e9a;
+                    color: $accent-dark;
                 }
 
                 ul {
@@ -114,7 +116,7 @@ form .loading-spinner {
                     padding: 5px 10px;
                 }
                 pre code {
-                    border-color: #3d7e9a;
+                    border-color: $accent-dark;
                 }
                 blockquote {
                     margin-left: 0;
@@ -185,10 +187,10 @@ form .loading-spinner {
         width: 20px;
         height: 20px;
         margin: 8px;
-        border: 3px solid #222;
+        border: 3px solid $almost-black;
         border-radius: 50%;
         animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #222 transparent transparent transparent;
+        border-color: $almost-black transparent transparent transparent;
 
         &:nth-child(1) {
             animation-delay: -0.45s;
@@ -251,7 +253,7 @@ form .loading-spinner {
             .mde-header-item {
                 button {
                     &:hover {
-                        color: #6d9baf;
+                        color: $accent-dark;
                     }
 
                     &[data-name="italic"], &[data-name="image"] {
