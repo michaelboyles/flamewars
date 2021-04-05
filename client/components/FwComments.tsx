@@ -5,6 +5,7 @@ import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comm
 import FwComment from './FwComment';
 import CommentForm from './CommentForm';
 import { LocalAuthorization, SignIn } from './SignIn';
+import { AuthContext } from '../context/AuthContext';
 
 const FwComments = () => {
     const [comments, setComments] = useState([] as Comment[]);
@@ -19,15 +20,15 @@ const FwComments = () => {
     );
 
     return (
-        <>
-            <SignIn authorization={authorization} setAuthorization={setAuthorization} />
-            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} authorization={authorization} type='ADD' />
+        <AuthContext.Provider value={{authorization, setAuthorization}}>
+            <SignIn />
+            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='ADD' />
             <ul className='comments'>
                 { comments
                     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                    .map(comment => <FwComment key={comment.id} comment={comment} authorization={authorization} />) }
+                    .map(comment => <FwComment key={comment.id} comment={comment} />) }
             </ul>
-        </>
+        </AuthContext.Provider>
     );
 }
 

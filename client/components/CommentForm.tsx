@@ -1,13 +1,14 @@
 import React = require('react');
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
-import type { Authorization, AddCommentRequest } from '../../common/types/add-comment-request'
+import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
 import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
+import { AuthContext } from '../context/AuthContext';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
@@ -19,7 +20,6 @@ const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', '
 type CommentConsumer = (comment: Comment) => void;
 
 interface Props {
-    authorization: Authorization,
     afterSubmit: CommentConsumer,
     buttonLabel?: string,
     type: 'ADD' | 'EDIT' | 'REPLY',
@@ -53,10 +53,11 @@ const CommentForm = (props: Props) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+    const { authorization } = useContext(AuthContext);
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!props.authorization) {
+        if (!authorization) {
             setError('Please sign in first');
             return;
         }
@@ -76,7 +77,7 @@ const CommentForm = (props: Props) => {
 
             const request: EditCommentRequest = {
                 comment: text,
-                authorization: props.authorization
+                authorization
             };
             sendRequest(
                 `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
@@ -95,7 +96,7 @@ const CommentForm = (props: Props) => {
             const request: AddCommentRequest = {
                 comment: text,
                 inReplyTo: props.inReplyTo,
-                authorization: props.authorization
+                authorization
             };
             sendRequest(
                 `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
