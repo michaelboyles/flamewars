@@ -5,10 +5,6 @@ $almost-black: #222;
 $accent: #6d9baf;
 $accent-dark: #3d7e9a;
 
-form .loading-spinner {
-    position: absolute;
-}
-
 #comments {
     color: $almost-black;
     white-space: pre-line;
@@ -54,6 +50,10 @@ form .loading-spinner {
 
         &:hover {
             background-color: $accent-dark;
+        }
+
+        .loading-spinner {
+            margin-left: 10px;
         }
     }
 
@@ -175,22 +175,23 @@ form .loading-spinner {
 }
 
 .loading-spinner {
+    $size: 12px;
+
     display: inline-block;
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: $size;
+    height: $size;
 
     div {
         box-sizing: border-box;
         display: block;
         position: absolute;
-        width: 20px;
-        height: 20px;
-        margin: 8px;
-        border: 3px solid $almost-black;
+        width: $size;
+        height: $size;
+        border: #{$size * 0.2} solid $almost-white;
         border-radius: 50%;
         animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: $almost-black transparent transparent transparent;
+        border-color: $almost-white transparent transparent transparent;
 
         &:nth-child(1) {
             animation-delay: -0.45s;

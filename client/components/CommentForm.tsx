@@ -48,6 +48,18 @@ const CommentLengthMessage = (props: {length: number}) => {
     )
 }
 
+const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: boolean}) => {
+    let label = props.label || 'Post';
+    if (props.isSubmitting) {
+        label = 'Submitting\u2026';
+    }
+    return (
+        <button type="submit" disabled={props.disabled}>
+            {label}{props.isSubmitting ? <LoadingSpinner /> : null}
+        </button>
+    )
+}
+
 const CommentForm = (props: Props) => { 
     const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,7 +121,6 @@ const CommentForm = (props: Props) => {
     };
     return (
         <form className='reply-form' onSubmit={onSubmit}>
-            {isSubmitting ? <LoadingSpinner /> : null}
             <ReactMde
                 value={text}
                 onChange={setText}
@@ -118,7 +129,11 @@ const CommentForm = (props: Props) => {
                 generateMarkdownPreview={markdown => Promise.resolve(<Markdown text={markdown}/>) }
                 toolbarCommands={TOOLBAR_COMMANDS} 
             />
-            <button type="submit" disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}>{props.buttonLabel || 'Post'}</button>
+            <SubmitButton
+                disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
+                label={props.buttonLabel}
+                isSubmitting={isSubmitting}
+            />
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
         </form>
