@@ -11,7 +11,11 @@ import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
 
-import 'react-mde/lib/styles/css/react-mde-all.css';
+// There is an -all but we don't want the preview styles
+import 'react-mde/lib/styles/css/react-mde.css';
+import 'react-mde/lib/styles/css/react-mde-editor.css';
+import 'react-mde/lib/styles/css/react-mde-suggestions.css';
+import 'react-mde/lib/styles/css/react-mde-toolbar.css';
 
 // ReactMde has the concept of collecting actions into group but we can't use them because flexbox for responsive layout
 // needs 1 DOM element containing all actions. Visual groupings are achieved by CSS instead.

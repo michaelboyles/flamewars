@@ -122,6 +122,55 @@ $accent-dark: #3d7e9a;
             color: $grey;
         }
     }
+
+    .content {
+        display: block;
+        margin: 0.3em 0 0.6em 0;
+        overflow: hidden; // only needed for e.g. zalgo abuse
+    
+        > *:first-child {
+            margin-top: 0;
+        }
+        > *:last-child {
+            margin-bottom: 0;
+        }
+        
+        a {
+            color: $accent-dark;
+        }
+    
+        ul {
+            list-style: disc;
+        }
+    
+        pre code, blockquote {
+            display: block;
+            border-left: 3px solid;
+            background: $almost-white;
+            padding: 5px 10px;
+        }
+        pre code {
+            border-color: $accent-dark;
+        }
+        blockquote {
+            margin-left: 0;
+            margin-right: 0;
+            border-color: $grey;
+            font-style: italic;
+    
+            > *:first-child {
+                margin-top: 0;
+            }
+            > *:last-child {
+                margin-bottom: 0;
+            }
+        }
+    
+        hr {
+            border: 0;
+            border-top: 1px solid $grey;
+        }
+    }
 }
 
 .comments {
@@ -150,54 +199,6 @@ $accent-dark: #3d7e9a;
             .timestamp, .edit-indicator { 
                 margin-left: 15px;
                 color: $grey;
-            }
-            .content {
-                display: block;
-                margin: 0.3em 0 0.6em 0;
-                overflow: hidden; // only needed for e.g. zalgo abuse
-
-                > *:first-child {
-                    margin-top: 0;
-                }
-                > *:last-child {
-                    margin-bottom: 0;
-                }
-                
-                a {
-                    color: $accent-dark;
-                }
-
-                ul {
-                    list-style: disc;
-                }
-
-                pre code, blockquote {
-                    display: block;
-                    border-left: 3px solid;
-                    background: $almost-white;
-                    padding: 5px 10px;
-                }
-                pre code {
-                    border-color: $accent-dark;
-                }
-                blockquote {
-                    margin-left: 0;
-                    margin-right: 0;
-                    border-color: $grey;
-                    font-style: italic;
-
-                    > *:first-child {
-                        margin-top: 0;
-                    }
-                    > *:last-child {
-                        margin-bottom: 0;
-                    }
-                }
-
-                hr {
-                    border: 0;
-                    border-top: 1px solid $grey;
-                }
             }
             .btn {
                 display: inline-block;
@@ -329,6 +330,7 @@ $accent-dark: #3d7e9a;
 
     .mde-preview {
         overflow: hidden; // only needed for e.g. zalgo abuse
+        padding: 8px 10px;
     }
 
     @media (min-width: 550px) {
