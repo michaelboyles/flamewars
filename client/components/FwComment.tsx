@@ -85,7 +85,7 @@ const FwComment = (props: {comment: Comment}) => {
                         <CommentForm commentToEdit={{...props.comment, text: text}} // In case the user already editted this comment once
                                      afterSubmit={afterSubmitEdit}
                                      buttonLabel='Save edit'
-                                     type='EDIT'
+                                     type='edit'
                         />
                 }
                 <a onClick={() => setReplyOpen(!isReplyOpen)} className={'btn reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
@@ -96,7 +96,7 @@ const FwComment = (props: {comment: Comment}) => {
                 {
                     isReplyOpen ? <CommentForm afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
                                                inReplyTo={props.comment.id}
-                                               type='REPLY' />
+                                               type='reply' />
                                 : null
                 }
             </div>

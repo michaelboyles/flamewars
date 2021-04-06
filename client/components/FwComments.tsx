@@ -28,7 +28,7 @@ const FwComments = () => {
             {
                 authorization ? <span>Signed in as {authorization.name} <a onClick={signOut}>(sign out)</a></span> : null
             }
-            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='ADD' />
+            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
             <ul className='comments'>
                 { comments
                     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))

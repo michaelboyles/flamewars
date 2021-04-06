@@ -19,7 +19,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', 'unordered-list', 'ordered-list']];
 
 type CommentConsumer = (comment: Comment) => void;
-type CommentType = 'ADD' | 'EDIT' | 'REPLY';
+type CommentType = 'add' | 'edit' | 'reply';
 
 interface Props {
     afterSubmit: CommentConsumer,
@@ -41,12 +41,12 @@ function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterS
 
 function getPlaceholder(type: CommentType) {
     switch (type) {
-        case 'ADD':
+        case 'add':
             return 'Leave a comment\u2026';
-        case 'EDIT':
+        case 'edit':
             // Bit of an edge case where the user is editing their comment and removed all the text
             return 'Your edit cannot be blank'
-        case 'REPLY':
+        case 'reply':
             return 'Leave a reply\u2026'
     }
 }
@@ -79,6 +79,7 @@ const CommentForm = (props: Props) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+    const [hasBeenFocused, setHasBeenFocused] = useState(false);
     const { authorization } = useContext(AuthContext);
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +90,7 @@ const CommentForm = (props: Props) => {
         }
 
         setIsSubmitting(true);
-        if (props.type === 'EDIT') {
+        if (props.type === 'edit') {
             if (text === props.commentToEdit.text) {
                 setIsSubmitting(false);
                 setError(null);
@@ -133,13 +134,13 @@ const CommentForm = (props: Props) => {
     const textAreaRef = useRef<HTMLTextAreaElement>();
     useEffect(() => {
         // User clicked a button to do this, so focus the text area for them
-        if (props.type === 'EDIT' || props.type === 'REPLY') {
+        if (props.type === 'edit' || props.type === 'reply') {
             textAreaRef.current?.focus();
         }
     }, []);
 
     return (
-        <form className='reply-form' onSubmit={onSubmit}>
+        <form className={`reply-form ${props.type}`} onSubmit={onSubmit}>
             <ReactMde
                 value={text}
                 onChange={setText}
@@ -149,8 +150,11 @@ const CommentForm = (props: Props) => {
                 toolbarCommands={TOOLBAR_COMMANDS} 
                 childProps={{
                     textArea: {
+                        className: 'mde-text' + (hasBeenFocused ? ' focused-once' : ''),
+                        onFocus: () => setHasBeenFocused(true),
+                        placeholder: getPlaceholder(props.type),
                         ref: textAreaRef,
-                        placeholder: getPlaceholder(props.type)
+                        style: { height: undefined }
                     }
                 }}
             />
