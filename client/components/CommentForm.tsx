@@ -4,11 +4,13 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
+import { AWS_GET_URL, GOOGLE_CLIENT_ID, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
+import { SignIn } from './SignIn';
+import { useGoogleLogout } from 'react-google-login';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
@@ -82,10 +84,6 @@ const CommentForm = (props: Props) => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!authorization) {
-            setError('Please sign in first');
-            return;
-        }
         if (!text || text.trim().length === 0) {
             setError('Comment cannot be blank');
             return;
@@ -132,6 +130,7 @@ const CommentForm = (props: Props) => {
             );
         }
     };
+
     return (
         <form className='reply-form' onSubmit={onSubmit}>
             <ReactMde
@@ -147,11 +146,17 @@ const CommentForm = (props: Props) => {
                     }
                 }}
             />
-            <SubmitButton
-                disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
-                label={props.buttonLabel}
-                isSubmitting={isSubmitting}
-            />
+            {
+                authorization ?
+                    (
+                        <SubmitButton
+                            disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
+                            label={props.buttonLabel}
+                            isSubmitting={isSubmitting}
+                        />
+                    )
+                    : <SignIn />
+            }
             <CommentLengthMessage length={text.length} />
             { error ? <p>{error}</p> : null }
         </form>
