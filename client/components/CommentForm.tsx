@@ -18,11 +18,12 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', 'unordered-list', 'ordered-list']];
 
 type CommentConsumer = (comment: Comment) => void;
+type CommentType = 'ADD' | 'EDIT' | 'REPLY';
 
 interface Props {
     afterSubmit: CommentConsumer,
     buttonLabel?: string,
-    type: 'ADD' | 'EDIT' | 'REPLY',
+    type: CommentType,
     inReplyTo?: CommentId,  // Required if type == REPLY
     commentToEdit?: Comment // Required if type == EDIT
 }
@@ -35,6 +36,18 @@ function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterS
         })
         .then(json => afterSubmit(json.comment))
         .catch(() => onError())
+}
+
+function getPlaceholder(type: CommentType) {
+    switch (type) {
+        case 'ADD':
+            return 'Leave a comment\u2026';
+        case 'EDIT':
+            // Bit of an edge case where the user is editing their comment and removed all the text
+            return 'Your edit cannot be blank'
+        case 'REPLY':
+            return 'Leave a reply\u2026'
+    }
 }
 
 const CommentLengthMessage = (props: {length: number}) => {
@@ -128,6 +141,11 @@ const CommentForm = (props: Props) => {
                 onTabChange={setSelectedTab}
                 generateMarkdownPreview={markdown => Promise.resolve(<Markdown text={markdown}/>) }
                 toolbarCommands={TOOLBAR_COMMANDS} 
+                childProps={{
+                    textArea: {
+                        placeholder: getPlaceholder(props.type)
+                    }
+                }}
             />
             <SubmitButton
                 disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
