@@ -131,14 +131,6 @@ const CommentForm = (props: Props) => {
         }
     };
 
-    const textAreaRef = useRef<HTMLTextAreaElement>();
-    useEffect(() => {
-        // User clicked a button to do this, so focus the text area for them
-        if (props.type === 'edit' || props.type === 'reply') {
-            textAreaRef.current?.focus();
-        }
-    }, []);
-
     return (
         <form className={`reply-form ${props.type}`} onSubmit={onSubmit}>
             <ReactMde
@@ -150,10 +142,11 @@ const CommentForm = (props: Props) => {
                 toolbarCommands={TOOLBAR_COMMANDS} 
                 childProps={{
                     textArea: {
+                        // User clicked a button to do this, so focus it for them
+                        autoFocus: (props.type === 'edit' || props.type === 'reply'),
                         className: 'mde-text' + (hasBeenFocused ? ' focused-once' : ''),
                         onFocus: () => setHasBeenFocused(true),
                         placeholder: getPlaceholder(props.type),
-                        ref: textAreaRef,
                         style: { height: undefined }
                     }
                 }}
