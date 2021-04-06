@@ -1,16 +1,15 @@
 import React = require('react');
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { AWS_GET_URL, GOOGLE_CLIENT_ID, MAX_COMMENT_LENGTH } from '../../config';
+import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
-import { useGoogleLogout } from 'react-google-login';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
@@ -131,6 +130,14 @@ const CommentForm = (props: Props) => {
         }
     };
 
+    const textAreaRef = useRef<HTMLTextAreaElement>();
+    useEffect(() => {
+        // User clicked a button to do this, so focus the text area for them
+        if (props.type === 'EDIT' || props.type === 'REPLY') {
+            textAreaRef.current?.focus();
+        }
+    }, []);
+
     return (
         <form className='reply-form' onSubmit={onSubmit}>
             <ReactMde
@@ -142,6 +149,7 @@ const CommentForm = (props: Props) => {
                 toolbarCommands={TOOLBAR_COMMANDS} 
                 childProps={{
                     textArea: {
+                        ref: textAreaRef,
                         placeholder: getPlaceholder(props.type)
                     }
                 }}
