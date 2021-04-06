@@ -6,6 +6,8 @@ import { GOOGLE_CLIENT_ID } from '../../config'
 import { AuthContext } from '../context/AuthContext';
 import GoogleIcon from './GoogleIcon';
 
+import './SignIn.scss';
+
 export interface LocalAuthorization extends Authorization {
     name: string;
     id: string;

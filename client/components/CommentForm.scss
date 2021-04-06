@@ -1,0 +1,144 @@
+@use '../theme.scss' as *;
+@use '../style.scss';
+
+#comments .reply-form {
+    margin-bottom: 10px;
+
+    // If it's the main comment box at the top then we want the textarea to be as small as possible so that users
+    // who just want to read the comments don't have to scroll as far to get to them. So start the box off very short
+    // and expand it a bit if they click inside it.
+    $font-size: 14px;
+    $line-height: 1.5;
+    $vertical-pad: 8px;
+    $min-height: #{($font-size * $line-height) + (2 * $vertical-pad)};
+    $default-height: 80px;
+    // Expandable main comment box
+    &.add textarea {
+        transition: min-height 0.4s ease-out;
+
+        height: $min-height;
+        min-height: $min-height;
+
+        &.focused-once {
+            min-height: $default-height;
+        }
+    }
+    // edit and reply boxes can behave normally
+    &:not(.add) {
+        textarea {
+            height: $default-height;
+            min-height: $default-height;
+        }
+    }
+
+    textarea {
+        box-sizing: border-box;
+        
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        max-height: 350px;
+        padding: $vertical-pad 10px;
+
+        overflow: auto;
+        overflow-wrap: break-word;
+        font-size: $font-size;
+        font-family: "Helvetica Neue", arial, sans-serif;
+        line-height: $line-height;
+    }
+
+    button[type="submit"] {
+        background-color: $accent;
+        color: white;
+        padding: 7px 15px;
+        border-radius: 0 0 4px 4px;
+        outline: none;
+        border: none;
+        margin-right: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $accent-dark;
+        }
+
+        .loading-spinner {
+            margin-left: 10px;
+        }
+    }
+
+    .chars-remaining-msg {
+        color: $grey;
+    }
+
+    .react-mde {
+        .mde-header {
+            flex-direction: column;
+            justify-content: space-between;
+    
+            .mde-tabs {
+                height: 42px;
+                align-items: flex-end;
+    
+                button {
+                    $vertical-pad: 10px;
+                    padding: $vertical-pad 17px;
+                    margin: 0 6px;
+                    border-radius: 4px 4px 0 0;
+    
+                    &.selected {
+                        // Shift the button slightly down to achieve a break in the border 
+                        padding-top: #{$vertical-pad - 1px};
+                        padding-bottom: #{$vertical-pad + 2px};
+                        position: relative;
+                        border-bottom: 0;
+                        top: 1px;
+    
+                        background: white;
+                    }
+    
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+    
+            .mde-header-group {
+                flex-wrap: wrap;
+                background: white;
+                border-top: 1px solid #c8ccd0;
+    
+                .mde-header-item {
+                    button {
+                        &:hover {
+                            color: $accent-dark;
+                        }
+    
+                        &[data-name="italic"], &[data-name="image"] {
+                            margin-right: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    
+        .mde-preview {
+            overflow: hidden; // only needed for e.g. zalgo abuse
+            padding: 8px 10px;
+    
+            .content {
+                @include style.formatted-comment;
+            }
+        }
+    
+        @media (min-width: 550px) {
+            .mde-header {
+                flex-direction: row;
+    
+                .mde-header-group {
+                    background: transparent;
+                    border-top: 0;
+                }
+            }
+        }
+    }    
+}

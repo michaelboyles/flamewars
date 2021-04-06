@@ -8,6 +8,8 @@ import { LocalAuthorization } from './SignIn';
 import { AuthContext } from '../context/AuthContext';
 import { useGoogleLogout } from 'react-google-login';
 
+import './FwComments.scss';
+
 const FwComments = () => {
     const [comments, setComments] = useState([] as Comment[]);
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);

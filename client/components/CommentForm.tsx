@@ -1,5 +1,5 @@
 import React = require('react');
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
@@ -11,6 +11,7 @@ import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
 
+import './CommentForm.scss'
 // There is an -all but we don't want the preview styles
 import 'react-mde/lib/styles/css/react-mde.css';
 import 'react-mde/lib/styles/css/react-mde-editor.css';

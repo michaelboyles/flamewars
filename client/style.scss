@@ -1,346 +1,56 @@
-$almost-white: #fbfbfb;
-$grey: #7d7d7d;
-$dark-grey: #2d2d2d;
-$almost-black: #222;
-$accent: #6d9baf;
-$accent-dark: #3d7e9a;
+@use './theme.scss' as *;
 
 #comments {
     color: $almost-black;
     white-space: pre-line;
+}
 
-    .sign-in {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
+// Used by both comments themselves and the preview
+@mixin formatted-comment {
+    display: block;
+    margin: 0.3em 0 0.6em 0;
+    overflow: hidden; // only needed for e.g. zalgo abuse
 
-        .label {
-            margin-right: 10px;
-        }
-
-        .choices {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-
-            li {
-                display: flex;
-            }
-        }
-
-        .sign-in-button {
-            display: flex;
-            align-items: center;
-
-            background: $almost-white;
-            outline: none;
-            border: 1px solid lightgrey;
-            padding: 8px 12px;
-            border-radius: 3px;
-            cursor: pointer;
-            
-            &:hover, &:focus {
-                border-color: $accent-dark;
-                background: white;
-            }
-
-            .icon {
-                display: inline-block;
-                margin-right: 5px;
-                height: 18px;
-                width: 18px;
-            }
-        }
+    > *:first-child {
+        margin-top: 0;
+    }
+    > *:last-child {
+        margin-bottom: 0;
+    }
+    
+    a {
+        color: $accent-dark;
     }
 
-    .reply-form {
-        margin-bottom: 10px;
-    
-        // If it's the main comment box at the top then we want the textarea to be as small as possible so that users
-        // who just want to read the comments don't have to scroll as far to get to them. So start the box off very short
-        // and expand it a bit if they click inside it.
-        $font-size: 14px;
-        $line-height: 1.5;
-        $vertical-pad: 8px;
-        $min-height: #{($font-size * $line-height) + (2 * $vertical-pad)};
-        $default-height: 80px;
-        // Expandable main comment box
-        &.add textarea {
-            transition: min-height 0.4s ease-out;
-
-            height: $min-height;
-            min-height: $min-height;
-
-            &.focused-once {
-                min-height: $default-height;
-            }
-        }
-        // edit and reply boxes can behave normally
-        &:not(.add) {
-            textarea {
-                height: $default-height;
-                min-height: $default-height;
-            }
-        }
-
-        textarea {
-            box-sizing: border-box;
-            
-            width: 100%;
-            max-width: 100%;
-            min-width: 100%;
-            max-height: 350px;
-            padding: $vertical-pad 10px;
-    
-            overflow: auto;
-            overflow-wrap: break-word;
-            font-size: $font-size;
-            font-family: "Helvetica Neue", arial, sans-serif;
-            line-height: $line-height;
-        }
-    
-        button[type="submit"] {
-            background-color: $accent;
-            color: white;
-            padding: 7px 15px;
-            border-radius: 0 0 4px 4px;
-            outline: none;
-            border: none;
-            margin-right: 10px;
-            cursor: pointer;
-    
-            &:hover {
-                background-color: $accent-dark;
-            }
-    
-            .loading-spinner {
-                margin-left: 10px;
-            }
-        }
-    
-        .chars-remaining-msg {
-            color: $grey;
-        }
+    ul {
+        list-style: disc;
     }
 
-    .content {
+    pre code, blockquote {
         display: block;
-        margin: 0.3em 0 0.6em 0;
-        overflow: hidden; // only needed for e.g. zalgo abuse
-    
+        border-left: 3px solid;
+        background: $almost-white;
+        padding: 5px 10px;
+    }
+    pre code {
+        border-color: $accent-dark;
+    }
+    blockquote {
+        margin-left: 0;
+        margin-right: 0;
+        border-color: $grey;
+        font-style: italic;
+
         > *:first-child {
             margin-top: 0;
         }
         > *:last-child {
             margin-bottom: 0;
         }
-        
-        a {
-            color: $accent-dark;
-        }
-    
-        ul {
-            list-style: disc;
-        }
-    
-        pre code, blockquote {
-            display: block;
-            border-left: 3px solid;
-            background: $almost-white;
-            padding: 5px 10px;
-        }
-        pre code {
-            border-color: $accent-dark;
-        }
-        blockquote {
-            margin-left: 0;
-            margin-right: 0;
-            border-color: $grey;
-            font-style: italic;
-    
-            > *:first-child {
-                margin-top: 0;
-            }
-            > *:last-child {
-                margin-bottom: 0;
-            }
-        }
-    
-        hr {
-            border: 0;
-            border-top: 1px solid $grey;
-        }
-    }
-}
-
-.comments {
-    list-style-type: none;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-
-    .comment {
-        width: 100%;
-
-        .portrait {
-            width: 50px;
-            height: 50px;
-            display: block;
-            float: left;
-            border: 1px solid #e8e8e8;
-        }
-        .body {
-            width: calc(100% - 65px);
-            float: right;
-
-            .author-name {
-                font-weight: bold;
-            }
-            .timestamp, .edit-indicator { 
-                margin-left: 15px;
-                color: $grey;
-            }
-            .btn {
-                display: inline-block;
-                margin: 0 15px 20px 0;
-                cursor: pointer;
-            }
-            .reply-btn, .edit-btn {
-                color: $grey;
-
-                &:hover {
-                    color: $dark-grey;
-                }
-            }
-            .delete-btn {
-                visibility: hidden;
-                color: #c02d2e;
-
-                &:hover {
-                    color: #a91f20;
-                }
-            }
-
-            &:hover {
-                .delete-btn {
-                    visibility: visible;
-                }
-            }
-        }
-    }
-    .replies {
-        clear: both;
-        list-style-type: none;
-        width: calc(100% - 65px);
-        margin: 0 0 0 65px;
-        padding: 0;
-    }
-}
-
-.loading-spinner {
-    $size: 12px;
-
-    display: inline-block;
-    position: relative;
-    width: $size;
-    height: $size;
-
-    div {
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        width: $size;
-        height: $size;
-        border: #{$size * 0.2} solid $almost-white;
-        border-radius: 50%;
-        animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: $almost-white transparent transparent transparent;
-
-        &:nth-child(1) {
-            animation-delay: -0.45s;
-        }
-        &:nth-child(1) {
-            animation-delay: -0.3s;
-        }
-        &:nth-child(3) {
-            animation-delay: -0.15s;
-        }
-    }
-}
-
-@keyframes spinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.react-mde {
-    .mde-header {
-        flex-direction: column;
-        justify-content: space-between;
-
-        .mde-tabs {
-            height: 42px;
-            align-items: flex-end;
-
-            button {
-                $vertical-pad: 10px;
-                padding: $vertical-pad 17px;
-                margin: 0 6px;
-                border-radius: 4px 4px 0 0;
-
-                &.selected {
-                    // Shift the button slightly down to achieve a break in the border 
-                    padding-top: #{$vertical-pad - 1px};
-                    padding-bottom: #{$vertical-pad + 2px};
-                    position: relative;
-                    border-bottom: 0;
-                    top: 1px;
-
-                    background: white;
-                }
-
-                &:focus {
-                    outline: none;
-                }
-            }
-        }
-
-        .mde-header-group {
-            flex-wrap: wrap;
-            background: white;
-            border-top: 1px solid #c8ccd0;
-
-            .mde-header-item {
-                button {
-                    &:hover {
-                        color: $accent-dark;
-                    }
-
-                    &[data-name="italic"], &[data-name="image"] {
-                        margin-right: 20px;
-                    }
-                }
-            }
-        }
     }
 
-    .mde-preview {
-        overflow: hidden; // only needed for e.g. zalgo abuse
-        padding: 8px 10px;
-    }
-
-    @media (min-width: 550px) {
-        .mde-header {
-            flex-direction: row;
-
-            .mde-header-group {
-                background: transparent;
-                border-top: 0;
-            }
-        }
+    hr {
+        border: 0;
+        border-top: 1px solid $grey;
     }
 }

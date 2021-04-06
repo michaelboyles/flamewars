@@ -9,6 +9,8 @@ import DefaultAvatar from './DefaultAvatar';
 import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 
+import './FwComment.scss';
+
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return (!!authorization) && comment.author.id.endsWith(authorization.id);
 }
