@@ -117,8 +117,8 @@
                             color: $accent-dark;
                         }
     
-                        &[data-name="italic"], &[data-name="image"] {
-                            margin-right: 20px;
+                        &[data-name="link"], &[data-name="unordered-list"] {
+                            margin-left: 20px;
                         }
                     }
                 }

@@ -3,6 +3,7 @@ export const AWS_GET_URL = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.c
 export const MAX_COMMENT_LENGTH = 2000
 // Used by various fields to prevent abuse
 export const MAX_FIELD_LENGTH = 200
+export const ALLOW_IMAGES = true
 
 export const DELETED_MESSAGE = 'Comment was deleted';
 export const DELETED_AUTHOR = 'Anonymous';

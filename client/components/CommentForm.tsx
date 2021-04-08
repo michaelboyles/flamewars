@@ -4,7 +4,7 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
+import { ALLOW_IMAGES, AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
@@ -22,7 +22,11 @@ import { useElementSize } from '../hooks/useElementSize';
 // ReactMde has the concept of collecting actions into group but we can't use them because flexbox for responsive layout
 // needs 1 DOM element containing all actions. Visual groupings are achieved by CSS instead.
 // Omitted actions: checked-list, header, save-image, strikethrough
-const TOOLBAR_COMMANDS = [['bold', 'italic', 'link', 'quote', 'code', 'image', 'unordered-list', 'ordered-list']];
+const TOOLBAR_COMMANDS = [[
+    ...(['bold', 'italic', 'link', 'quote', 'code']),
+    ...(ALLOW_IMAGES ? ['image'] : []), 
+    ...['unordered-list', 'ordered-list']
+]];
 
 type CommentConsumer = (comment: Comment) => void;
 type CommentType = 'add' | 'edit' | 'reply';
