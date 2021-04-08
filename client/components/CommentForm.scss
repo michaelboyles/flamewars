@@ -106,6 +106,10 @@
                 flex-wrap: wrap;
                 background: white;
                 border-top: 1px solid #c8ccd0;
+
+                &.hidden {
+                    display: none;
+                }
     
                 .mde-header-item {
                     button {
@@ -129,16 +133,16 @@
                 @include style.formatted-comment;
             }
         }
-    
-        @media (min-width: 550px) {
-            .mde-header {
-                flex-direction: row;
-    
-                .mde-header-group {
-                    background: transparent;
-                    border-top: 0;
-                }
+    }
+
+    &.large {
+        .mde-header {
+            flex-direction: row;
+
+            .mde-header-group {
+                background: transparent;
+                border-top: 0;
             }
         }
-    }    
+    }
 }

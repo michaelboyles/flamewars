@@ -1,5 +1,5 @@
 import React = require('react');
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
@@ -17,6 +17,7 @@ import 'react-mde/lib/styles/css/react-mde.css';
 import 'react-mde/lib/styles/css/react-mde-editor.css';
 import 'react-mde/lib/styles/css/react-mde-suggestions.css';
 import 'react-mde/lib/styles/css/react-mde-toolbar.css';
+import { useElementSize } from '../hooks/useElementSize';
 
 // ReactMde has the concept of collecting actions into group but we can't use them because flexbox for responsive layout
 // needs 1 DOM element containing all actions. Visual groupings are achieved by CSS instead.
@@ -136,8 +137,12 @@ const CommentForm = (props: Props) => {
         }
     };
 
+    const formRef = useRef<HTMLFormElement>();
+    const size = useElementSize(formRef.current);
+    const isLarge = size.width > 500;
+
     return (
-        <form className={`reply-form ${props.type}`} onSubmit={onSubmit}>
+        <form className={`reply-form ${props.type} ${isLarge ? 'large' : ''}`} onSubmit={onSubmit} ref={formRef}>
             <ReactMde
                 value={text}
                 onChange={setText}
