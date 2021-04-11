@@ -63,7 +63,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
             };
             return {
                 statusCode: 201,
-                headers: {...CORS_HEADERS, location: `${AWS_GET_URL}/${encodeURIComponent(url)}/${commentId}` },
+                headers: {...CORS_HEADERS, location: `${AWS_GET_URL}/comments/${encodeURIComponent(url)}/${commentId}` },
                 body: JSON.stringify(body)
             } as ApiGatewayResponse;
         });

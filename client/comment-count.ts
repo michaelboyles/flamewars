@@ -1,7 +1,7 @@
 const COMMENT_ANCHOR = '#comments';
-const COUNT_URL = 'https://4y01mp2xdb.execute-api.eu-west-2.amazonaws.com/default/comment-count';
 import { GetCommentCountResponse } from  '../common/types/comment-count'
 import { normalizeUrl } from '../common/util'
+import { AWS_GET_URL } from '../config';
 
 function getFlamewarsLinks(): HTMLAnchorElement[] {
     const allLinks = document.getElementsByTagName('a');
@@ -19,7 +19,7 @@ function applyCountToCommentLinks() {
     const links = getFlamewarsLinks();
     const queryString = '?urls=' + links.map(link => normalizeUrl(link.href)).join(',');
 
-    fetch(COUNT_URL + queryString)
+    fetch(`${AWS_GET_URL}/comment-count${queryString}`)
         .then(resp => resp.json())
         .then((json: GetCommentCountResponse) => 
             json.counts.forEach(urlAndCount => {

@@ -55,7 +55,7 @@ const FwComment = (props: {comment: Comment}) => {
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
         if (!shouldDelete) return;
-        fetch(`${AWS_GET_URL}/${encodeURIComponent(window.location.toString())}/${props.comment.id}`,
+        fetch(`${AWS_GET_URL}/comments/${encodeURIComponent(window.location.toString())}/${props.comment.id}`,
             {
                 method: 'DELETE',
                 body: JSON.stringify({authorization: onlyAuthorization(authorization)})

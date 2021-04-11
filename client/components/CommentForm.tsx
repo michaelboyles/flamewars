@@ -113,7 +113,7 @@ const CommentForm = (props: Props) => {
                 authorization
             };
             sendRequest(
-                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
+                `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
                 'PATCH',
                 request,
                 _comment => {
@@ -132,7 +132,7 @@ const CommentForm = (props: Props) => {
                 authorization
             };
             sendRequest(
-                `${AWS_GET_URL}/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
+                `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
                 'POST',
                 request,
                 comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },
