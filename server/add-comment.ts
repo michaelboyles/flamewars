@@ -40,7 +40,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         userId   : { S: authResult.userDetails.userId }
     };
     const params: PutItemInput = {
-        TableName: 'FLAMEWARS',
+        TableName: process.env.TABLE_NAME,
         Item: dynamoComment
     };
 

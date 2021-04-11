@@ -31,7 +31,7 @@ function failResponse(): ApiGatewayResponse {
 
 function queryForUrl(url: string): Promise<CommentCount> {
     const params: QueryInput = {
-        TableName: 'FLAMEWARS',
+        TableName: process.env.TABLE_NAME,
         KeyConditionExpression: 'PK = :u', 
         ExpressionAttributeValues: {
             ':u': { S: PAGE_ID_PREFIX + url }

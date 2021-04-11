@@ -40,7 +40,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const url = decodeURIComponent(event.pathParameters.url);
     const commentId = event.pathParameters.comment;
     const updateComment: UpdateItemInput = {
-        TableName: 'FLAMEWARS',
+        TableName: process.env.TABLE_NAME,
         Key: {
             PK: { S: PAGE_ID_PREFIX + url },
             SK: { S: COMMENT_ID_PREFIX + commentId }
