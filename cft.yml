@@ -58,7 +58,7 @@ Resources:
                 AttributeType: "S"
               - AttributeName: "SK"
                 AttributeType: "S"
-            TableName: "FLAMEWARSDB" # TODO change 
+            TableName: !Sub "${AWS::StackName}-comments"
             KeySchema: 
               - AttributeName: "PK"
                 KeyType: "HASH"
@@ -72,7 +72,7 @@ Resources:
         Type: "AWS::Lambda::Function"
         Properties:
             Description: "Handles GET requests for number of comments for a URL"
-            FunctionName: "flamewars-comment-count"
+            FunctionName: !Sub "${AWS::StackName}-comment-count"
             Runtime: "nodejs12.x"
             MemorySize: 128
             Handler: "index.handler"
@@ -91,6 +91,70 @@ Resources:
             FunctionName: !GetAtt LambdaCommentCount.Arn
             Principal: "apigateway.amazonaws.com"
             SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/*"
+
+    LambdaAddComment:
+        Type: "AWS::Lambda::Function"
+        Properties:
+            Description: "Handles POST requests to add a single comment"
+            FunctionName: !Sub "${AWS::StackName}-add-comment"
+            Runtime: "nodejs12.x"
+            MemorySize: 128
+            Handler: "index.handler"
+            Code: 
+                S3Bucket: "michaels-default"
+                S3Key: "add-comment.zip"
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: "PassThrough"
+
+    LambdaGetCommentsForUrl:
+        Type: "AWS::Lambda::Function"
+        Properties:
+            Description: "Handles GET requests to serve all comments for a URL"
+            FunctionName: !Sub "${AWS::StackName}-get-comments-for-url"
+            Runtime: "nodejs12.x"
+            MemorySize: 128
+            Handler: "index.handler"
+            Code: 
+                S3Bucket: "michaels-default"
+                S3Key: "get-comments.zip"
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: "PassThrough"
+
+    LambdaDeleteComment:
+        Type: "AWS::Lambda::Function"
+        Properties:
+            Description: "Handles DELETE requests to delete a single comment"
+            FunctionName: !Sub "${AWS::StackName}-delete-comment"
+            Runtime: "nodejs12.x"
+            MemorySize: 128
+            Handler: "index.handler"
+            Code: 
+                S3Bucket: "michaels-default"
+                S3Key: "delete-comment.zip"
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: "PassThrough"
+
+    LambdaEditComment:
+        Type: "AWS::Lambda::Function"
+        Properties:
+            Description: "Handles PATCH requests to edit a single comment"
+            FunctionName: !Sub "${AWS::StackName}-edit-comment"
+            Runtime: "nodejs12.x"
+            MemorySize: 128
+            Handler: "index.handler"
+            Code: 
+                S3Bucket: "michaels-default"
+                S3Key: "edit-comment.zip"
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: "PassThrough"
 
     ApiGatewayRestApi:
         Type: "AWS::ApiGateway::RestApi"
