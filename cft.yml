@@ -1,5 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Flamewars serverless comment engine"
+Parameters:
+    CorsAllowOrigin:
+        Description: URL to use in CORS allow-origin headers
+        Type: String
+        Default: "*"
 Resources:
     IAMRole:
         Type: "AWS::IAM::Role"
@@ -86,6 +91,7 @@ Resources:
             Environment:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
 
     LambdaPermissionCommentCount:
         Type: "AWS::Lambda::Permission"
@@ -113,6 +119,7 @@ Resources:
             Environment:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
                     
     LambdaPermissionAddComment:
         Type: "AWS::Lambda::Permission"
@@ -140,6 +147,7 @@ Resources:
             Environment:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
 
     LambdaPermissionGetCommentsForUrl:
         Type: "AWS::Lambda::Permission"
@@ -167,6 +175,7 @@ Resources:
             Environment:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
 
     LambdaPermissionDeleteComment:
         Type: "AWS::Lambda::Permission"
@@ -194,6 +203,7 @@ Resources:
             Environment:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
 
     LambdaPermissionEditComment:
         Type: "AWS::Lambda::Permission"
@@ -262,7 +272,7 @@ Resources:
                 CacheNamespace: !Ref ApiGatewayResourceCommentCount
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                         "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'"
                     ResponseTemplates: {}
                     StatusCode: "200"
@@ -281,8 +291,7 @@ Resources:
             ApiKeyRequired: false
             RequestParameters: {}
             MethodResponses: 
-              - 
-                ResponseModels: 
+              - ResponseModels: 
                     "application/json": "Empty"
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
@@ -292,9 +301,8 @@ Resources:
                 ContentHandling: "CONVERT_TO_TEXT"
                 IntegrationHttpMethod: "POST"
                 IntegrationResponses: 
-                  - 
-                    ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                  - ResponseParameters: 
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
                 PassthroughBehavior: "WHEN_NO_MATCH"
@@ -323,7 +331,7 @@ Resources:
                 IntegrationHttpMethod: "POST"
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
                 PassthroughBehavior: "WHEN_NO_MATCH"
@@ -352,7 +360,7 @@ Resources:
                 CacheNamespace: !Ref ApiGatewayResourceCommentsForUrl
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                         "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'"
                     ResponseTemplates: {}
                     StatusCode: "200"
@@ -382,7 +390,7 @@ Resources:
                 IntegrationHttpMethod: "POST"
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
                 PassthroughBehavior: "WHEN_NO_MATCH"
@@ -411,7 +419,7 @@ Resources:
                 IntegrationHttpMethod: "POST"
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
                 PassthroughBehavior: "WHEN_NO_MATCH"
@@ -440,7 +448,7 @@ Resources:
                 IntegrationHttpMethod: "POST"
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
                 PassthroughBehavior: "WHEN_NO_MATCH"
@@ -469,7 +477,7 @@ Resources:
                 CacheNamespace: !Ref ApiGatewayResourceCommentsForUrl
                 IntegrationResponses: 
                   - ResponseParameters: 
-                        "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                         "method.response.header.Access-Control-Allow-Methods": "'POST,PATCH,DELETE,OPTIONS'"
                     ResponseTemplates: {}
                     StatusCode: "200"
@@ -497,6 +505,15 @@ Resources:
     
     ApiGatewayDeployment:
         Type: "AWS::ApiGateway::Deployment"
-        DependsOn: [ApiGatewayMethodCommentCountOPTIONS, ApiGatewayMethodCommentCountGET, ApiGatewayMethodCommentsForUrlGET, ApiGatewayMethodCommentsForUrlOPTIONS, ApiGatewayMethodSingleCommentPOST, ApiGatewayMethodSingleCommentOPTIONS]
+        DependsOn: [
+            ApiGatewayMethodCommentCountOPTIONS,
+            ApiGatewayMethodCommentCountGET,
+            ApiGatewayMethodCommentsForUrlGET,
+            ApiGatewayMethodCommentsForUrlOPTIONS,
+            ApiGatewayMethodSingleCommentDELETE,
+            ApiGatewayMethodSingleCommentPATCH,
+            ApiGatewayMethodSingleCommentPOST,
+            ApiGatewayMethodSingleCommentOPTIONS
+        ]
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
