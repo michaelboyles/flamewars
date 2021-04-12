@@ -9,7 +9,7 @@ Resources:
     IAMRole:
         Type: "AWS::IAM::Role"
         Properties:
-            RoleName: "FlamewarsRole"
+            RoleName: !Sub "${AWS::StackName}-FlamewarsRole"
             Path: "/"
             Description: "Links Flamewars lambdas to Flamewars policy"
             AssumeRolePolicyDocument: 
@@ -32,7 +32,7 @@ Resources:
     IAMManagedPolicy:
         Type: "AWS::IAM::ManagedPolicy"
         Properties:
-            ManagedPolicyName: "FlamewarsPolicy"
+            ManagedPolicyName: !Sub "${AWS::StackName}-FlamewarsPolicy"
             Path: "/"
             Description: "Allows Flamewars lambdas to query DynamoDB"
             PolicyDocument: !Sub |
@@ -80,10 +80,10 @@ Resources:
             FunctionName: !Sub "${AWS::StackName}-comment-count"
             Runtime: "nodejs12.x"
             MemorySize: 128
-            Handler: "index.handler"
+            Handler: "get-number-of-comments.handler"
             Code: 
                 S3Bucket: "michaels-default"
-                S3Key: "get-number-of-comments.zip"
+                S3Key: "flamewars.zip"
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -108,10 +108,10 @@ Resources:
             FunctionName: !Sub "${AWS::StackName}-add-comment"
             Runtime: "nodejs12.x"
             MemorySize: 128
-            Handler: "index.handler"
+            Handler: "add-comment.handler"
             Code: 
                 S3Bucket: "michaels-default"
-                S3Key: "add-comment.zip"
+                S3Key: "flamewars.zip"
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -136,10 +136,10 @@ Resources:
             FunctionName: !Sub "${AWS::StackName}-get-comments-for-url"
             Runtime: "nodejs12.x"
             MemorySize: 128
-            Handler: "index.handler"
+            Handler: "get-comments.handler"
             Code: 
                 S3Bucket: "michaels-default"
-                S3Key: "get-comments.zip"
+                S3Key: "flamewars.zip"
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -164,10 +164,10 @@ Resources:
             FunctionName: !Sub "${AWS::StackName}-delete-comment"
             Runtime: "nodejs12.x"
             MemorySize: 128
-            Handler: "index.handler"
+            Handler: "delete-comment.handler"
             Code: 
                 S3Bucket: "michaels-default"
-                S3Key: "delete-comment.zip"
+                S3Key: "flamewars.zip"
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -192,10 +192,10 @@ Resources:
             FunctionName: !Sub "${AWS::StackName}-edit-comment"
             Runtime: "nodejs12.x"
             MemorySize: 128
-            Handler: "index.handler"
+            Handler: "edit-comment.handler"
             Code: 
                 S3Bucket: "michaels-default"
-                S3Key: "edit-comment.zip"
+                S3Key: "flamewars.zip"
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 

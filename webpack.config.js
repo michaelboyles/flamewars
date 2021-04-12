@@ -10,7 +10,7 @@ module.exports = [
             'edit-comment': './server/edit-comment.ts'
         },
         output: {
-            filename: '[name].js',
+            filename: 'server/[name].js',
             library: 'main',
             libraryTarget: 'commonjs2'
         },
@@ -39,7 +39,7 @@ module.exports = [
         mode: 'production',
         entry: './client/index.tsx',
         output: {
-            filename: 'index.js'
+            filename: 'client/index.js'
         },
         resolve: {
             extensions: ['.ts', '.tsx', '.js']
