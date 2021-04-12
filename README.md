@@ -1,20 +1,13 @@
-Flamewars is a serverless comment engine designed for statically generated blogs (Hugo, Jekyll). It is designed to be hosted in AWS.
+Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) comment engine. You host it yourself in AWS. It is
+designed for websites which run without their own server, for example a statically generated blog or website (Hugo, Jekyll) served
+on [GitHub Pages](https://pages.github.com/). You can install it in just a few minutes.
 
-A serverless architecture allows for a pay-for-what-you-use payment model. For most small blogs, especially those just starting
-out, this is likely to be more cost-effective than a subscription. Comments lend themselves nicely to a serverless model because they
-are not sensitive to cold starts.
+Comments support [markdown](https://en.wikipedia.org/wiki/Markdown), including lists, code blocks and images.
 
-Most services are available on the AWS free tier, meaning that for any reasonable usage you won't pay anything for them.
-
- - API Gateway
- - DynamoDB - free tier (always free up to 25GB, 200M requests per month)
- - Lambda - free tier (always free up to 1M invocations per month)
- - S3 - less than 1MB
- - CloudFormation - free
+A serverless architecture allows you to pay only for what you use. For a small or medium-sized blog with a relatively low number of
+visitors, this is likely to be much more cost-effective than a subscription (or even completely free).
 
 ## Installation
-
-Installation is easy and if you already have an AWS account should take just a few minutes.
 
 ### Server installation
 
@@ -42,6 +35,22 @@ Uninstalling the server will delete the database, including all comments it cont
 
 1. Log in to [AWS](https://aws.amazon.com) and navigate to CloudFormation.
 2. Select the stack you created as part of the installation and click 'Delete'.
+
+## Cost
+
+Most services are available on the AWS free tier, meaning that for any reasonable usage you won't pay anything for them.
+
+ - API Gateway
+ - DynamoDB - free tier (always free up to 25GB, 200M requests per month)
+ - Lambda - free tier (always free up to 1M invocations per month)
+ - S3 - few cents per GB, code uses less than 1MB. Free for the first year
+ - CloudFormation - free
+
+Although some of the services here are not on the free tier, AWS will waive charges below a certain value as it's not worth them
+collecting such small amounts. If your bill totals a few cents then you will pay nothing at all.
+
+It is always worth [setting billing alarms and budgets](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/checklistforunwantedcharges.html)
+to ensure you don't run into any nasty surprises.
 
 ## Alternatives
  
