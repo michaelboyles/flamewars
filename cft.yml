@@ -2,9 +2,16 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: "Flamewars serverless comment engine"
 Parameters:
     CorsAllowOrigin:
-        Description: URL to use in CORS allow-origin headers
+        Description: URL to use in CORS allow-origin headers. This is the base domain of the website you want to add comments to. An asterisk means any URL is permitted.
         Type: String
         Default: "*"
+    ServerCodeBucket:
+        Description: The name of the S3 bucket containing the server's zipped code bundle
+        Type: String
+    ServerCodeFilename:
+        Description: The filename of the server's zipped code bundle within the given S3 bucket
+        Type: String
+        Default: flamewars.zip
 Resources:
     IAMRole:
         Type: "AWS::IAM::Role"
@@ -82,8 +89,8 @@ Resources:
             MemorySize: 128
             Handler: "get-number-of-comments.handler"
             Code: 
-                S3Bucket: "michaels-default"
-                S3Key: "flamewars.zip"
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -110,8 +117,8 @@ Resources:
             MemorySize: 128
             Handler: "add-comment.handler"
             Code: 
-                S3Bucket: "michaels-default"
-                S3Key: "flamewars.zip"
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -138,8 +145,8 @@ Resources:
             MemorySize: 128
             Handler: "get-comments.handler"
             Code: 
-                S3Bucket: "michaels-default"
-                S3Key: "flamewars.zip"
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -166,8 +173,8 @@ Resources:
             MemorySize: 128
             Handler: "delete-comment.handler"
             Code: 
-                S3Bucket: "michaels-default"
-                S3Key: "flamewars.zip"
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -194,8 +201,8 @@ Resources:
             MemorySize: 128
             Handler: "edit-comment.handler"
             Code: 
-                S3Bucket: "michaels-default"
-                S3Key: "flamewars.zip"
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
             Role: !GetAtt IAMRole.Arn
             Timeout: 3
             TracingConfig: 
@@ -517,3 +524,7 @@ Resources:
         ]
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
+Outputs:
+  URL:
+    Description: URL to use in client config
+    Value: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/default"
