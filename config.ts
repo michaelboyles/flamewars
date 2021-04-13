@@ -1,5 +1,4 @@
 // ONLY server
-export const DELETED_AUTHOR = 'Anonymous';
 export const MAX_FIELD_LENGTH = 200; // Used by various fields to prevent abuse
 
 // client and server
