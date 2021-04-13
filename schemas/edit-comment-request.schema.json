@@ -1,5 +1,5 @@
 {
-    "$id": "TODO, after pushing",
+    "$id": "https://github.com/michaelboyles/flamewars/blob/develop/schemas/edit-comment-request.schema.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Edit comment request",
     "description": "A request to edit an existing comment",
