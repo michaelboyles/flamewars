@@ -3,17 +3,13 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Add comment request",
   "type": "object",
+  "extends": {
+    "$ref": "edit-comment-request.schema.json"
+  },
   "properties": {
-    "comment": {
-      "type": "string"
-    },
     "inReplyTo": {
       "$ref": "comment.schema.json#/definitions/commentId"
-    },
-    "authorization": {
-      "$ref": "authorization.schema.json"
     }
   },
-  "required": ["comment", "authorization"],
   "additionalProperties": false
 }
