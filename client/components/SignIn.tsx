@@ -1,6 +1,6 @@
 import React = require('react');
 import { useContext } from 'react';
-import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import type { Authorization } from '../../common/types/add-comment-request';
 import { GOOGLE_CLIENT_ID } from '../../config'
 import { AuthContext } from '../context/AuthContext';
@@ -23,18 +23,25 @@ export function onlyAuthorization(localAuth: LocalAuthorization): Authorization 
 export const SignIn = () => {
     const { setAuthorization } = useContext(AuthContext);
 
+    const onSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+        if (!response.code) { // i.e. is GoogleLoginResponse
+            const loginResponse = response as GoogleLoginResponse;
+            setAuthorization({
+                token: loginResponse.tokenId,
+                tokenProvider: 'Google',
+                name: loginResponse.getBasicProfile().getName(),
+                id: loginResponse.getId()
+            });
+        }
+    };
+
     return (
         <div className='sign-in'>
             <span className='label'>Sign in to comment:</span>
             <ul className='choices'>
                 <GoogleLogin 
                     clientId={GOOGLE_CLIENT_ID}
-                    onSuccess={resp => setAuthorization({
-                        token: (resp as GoogleLoginResponse).tokenId, //TODO how to remove 'as'?
-                        tokenProvider: 'Google',
-                        name: (resp as GoogleLoginResponse).getBasicProfile().getName(),
-                        id: (resp as GoogleLoginResponse).getId()
-                    })} 
+                    onSuccess={onSuccess}
                     isSignedIn={true}
                     render={renderProps => (
                         <li>
