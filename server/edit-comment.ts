@@ -4,6 +4,7 @@ import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { CORS_HEADERS } from './common';
 import { EditCommentRequest } from '../common/types/edit-comment-request'
 import { AuthenticationResult, checkAuthentication } from './user-details';
+import { MAX_COMMENT_LENGTH } from '../config';
 
 const dynamo = getDynamoDb();
 
@@ -16,7 +17,9 @@ function getErrorResponse(statusCode: number, message: string): ApiGatewayRespon
 }
 
 function isValid(request: EditCommentRequest): boolean {
-    return request.comment && request.comment.trim().length > 0;
+    return request.comment
+        && request.comment.length <= MAX_COMMENT_LENGTH
+        && request.comment.trim().length > 0;
 }
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
