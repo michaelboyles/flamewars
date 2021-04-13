@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../common/types/get-all-comments-response'
-import { AWS_GET_URL, DELETED_MESSAGE } from '../../config';
+import { AWS_GET_URL } from '../config';
+import { DELETED_MESSAGE } from '../../config';
 import { formatPastDate, formatFullTime } from '../time';
 import CommentForm from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';

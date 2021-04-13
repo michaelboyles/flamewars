@@ -6,8 +6,12 @@ export const COMMENT_ID_PREFIX: string = '#COMMENT#';
 
 export interface ApiGatewayRequest {
     body: string;
-    queryStringParameters: any;
-    pathParameters: any;
+    queryStringParameters: Record<string, string>;
+    pathParameters: Record<string, string>;
+    requestContext: {
+        domainName: string;
+        path: string;
+    }
 }
 
 export interface ApiGatewayResponse {

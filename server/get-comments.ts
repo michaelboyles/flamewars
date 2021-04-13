@@ -3,8 +3,10 @@ import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
-import { DELETED_AUTHOR, DELETED_AUTHOR_ID, DELETED_MESSAGE } from '../config';
+import { DELETED_AUTHOR, DELETED_MESSAGE } from '../config';
 import { CORS_HEADERS } from './common';
+
+const DELETED_AUTHOR_ID = 'ANONYMOUS';
 
 const dynamo = getDynamoDb();
 

@@ -4,12 +4,13 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { ALLOW_IMAGES, AWS_GET_URL, MAX_COMMENT_LENGTH } from '../../config';
+import { MAX_COMMENT_LENGTH } from '../../config';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
+import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 
 import './CommentForm.scss'
 // There is an -all but we don't want the preview styles

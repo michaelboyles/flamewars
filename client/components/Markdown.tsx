@@ -1,7 +1,7 @@
 import React = require('react');
 import ReactMarkdown = require('react-markdown');
 import { NodeType } from 'react-markdown';
-import { ALLOW_IMAGES } from '../../config';
+import { ALLOW_IMAGES } from '../config';
 
 function addAutoLinks(comment: string) : string {
     return comment.replace(/((?<!]\()https?:\/\/[^\s)]+)/gi, '[$1]($1)');

@@ -4,7 +4,7 @@ import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb'
 import { AuthenticationResult, checkAuthentication } from './user-details'
-import { AWS_GET_URL, MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
+import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
@@ -61,9 +61,15 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                     replies: []
                 }
             };
+            const lastSlash = event.requestContext.path.lastIndexOf('/');
+            const location = 'https://'
+                + event.requestContext.domainName
+                + event.requestContext.path.substr(0, lastSlash + 1) // remove client's generated ID
+                + commentId;
+
             return {
                 statusCode: 201,
-                headers: {...CORS_HEADERS, location: `${AWS_GET_URL}/comments/${encodeURIComponent(url)}/${commentId}` },
+                headers: {...CORS_HEADERS, location},
                 body: JSON.stringify(body)
             } as ApiGatewayResponse;
         });

@@ -1,7 +1,7 @@
 const COMMENT_ANCHOR = '#comments';
 import { GetCommentCountResponse } from  '../common/types/comment-count'
 import { normalizeUrl } from '../common/util'
-import { AWS_GET_URL } from '../config';
+import { AWS_GET_URL } from './config';
 
 function getFlamewarsLinks(): HTMLAnchorElement[] {
     const allLinks = document.getElementsByTagName('a');

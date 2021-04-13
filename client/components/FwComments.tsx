@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { AWS_GET_URL, GOOGLE_CLIENT_ID } from '../../config';
+import { AWS_GET_URL } from '../config';
+import { GOOGLE_CLIENT_ID } from '../../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 import FwComment from './FwComment';
 import CommentForm from './CommentForm';
