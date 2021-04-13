@@ -1,13 +1,13 @@
 {
-  "$id": "TODO, after pushing",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Delete comment request",
-  "type": "object",
-  "properties": {
-    "authorization": {
-      "$ref": "authorization.schema.json"
-    }
-  },
-  "required": ["authorization"],
-  "additionalProperties": false
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Delete comment request",
+    "type": "object",
+    "properties": {
+        "authorization": {
+            "$ref": "authorization.schema.json"
+        }
+    },
+    "required": ["authorization"],
+    "additionalProperties": false
 }

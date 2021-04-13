@@ -1,18 +1,18 @@
 {
-  "$id": "TODO, after pushing",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Edit comment request",
-  "type": "object",
-  "properties": {
-    "comment": {
-      "type": "string",
-      "description": "The new, editted body of the comment"
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Edit comment request",
+    "type": "object",
+    "properties": {
+        "comment": {
+            "type": "string",
+            "description": "The new, editted body of the comment"
+        },
+        "authorization": {
+            "$ref": "authorization.schema.json",
+            "description": "Authorization which proves the user has the right to edit this comment"
+        }
     },
-    "authorization": {
-      "$ref": "authorization.schema.json",
-      "description": "Authorization which proves the user has the right to edit this comment"
-    }
-  },
-  "required": ["comment", "authorization"],
-  "additionalProperties": false
+    "required": ["comment", "authorization"],
+    "additionalProperties": false
 }

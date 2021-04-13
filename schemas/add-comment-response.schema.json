@@ -1,19 +1,19 @@
 {
-  "$id": "TODO, after pushing",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Add comment response",
-  "type": "object",
-  "properties": {
-    "success": {
-      "type": "boolean"
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add comment response",
+    "type": "object",
+    "properties": {
+        "success": {
+            "type": "boolean"
+        },
+        "comment": {
+            "$ref": "comment.schema.json"
+        },
+        "rejectionReason": {
+            "type": "string"
+        }
     },
-    "comment": {
-      "$ref": "comment.schema.json"
-    },
-    "rejectionReason": {
-      "type": "string"
-    }
-  },
-  "required": ["success", "comment"],
-  "additionalProperties": false
+    "required": ["success", "comment"],
+    "additionalProperties": false
 }

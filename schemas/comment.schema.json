@@ -51,4 +51,4 @@
     },
     "required": ["id", "author", "text", "timestamp", "isEdited", "replies"],
     "additionalProperties": false
-  }
+}

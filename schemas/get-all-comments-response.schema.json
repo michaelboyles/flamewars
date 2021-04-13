@@ -13,4 +13,4 @@
     },
     "required": ["comments"],
     "additionalProperties": false
-  }
+}

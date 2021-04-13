@@ -1,15 +1,15 @@
 {
-  "$id": "TODO, after pushing",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Add comment request",
-  "type": "object",
-  "extends": {
-    "$ref": "edit-comment-request.schema.json"
-  },
-  "properties": {
-    "inReplyTo": {
-      "$ref": "comment.schema.json#/definitions/commentId"
-    }
-  },
-  "additionalProperties": false
+    "$id": "TODO, after pushing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add comment request",
+    "type": "object",
+    "extends": {
+        "$ref": "edit-comment-request.schema.json"
+    },
+    "properties": {
+        "inReplyTo": {
+            "$ref": "comment.schema.json#/definitions/commentId"
+        }
+    },
+    "additionalProperties": false
 }
