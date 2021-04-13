@@ -2,6 +2,7 @@
     "$id": "TODO, after pushing",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Add comment response",
+    "description": "A response to a request to add a new comment",
     "type": "object",
     "properties": {
         "success": {

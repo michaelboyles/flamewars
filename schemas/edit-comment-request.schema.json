@@ -2,6 +2,7 @@
     "$id": "TODO, after pushing",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Edit comment request",
+    "description": "A request to edit an existing comment",
     "type": "object",
     "properties": {
         "comment": {

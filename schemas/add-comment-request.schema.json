@@ -2,13 +2,15 @@
     "$id": "TODO, after pushing",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Add comment request",
+    "description": "A request to add a new comment",
     "type": "object",
     "extends": {
         "$ref": "edit-comment-request.schema.json"
     },
     "properties": {
         "inReplyTo": {
-            "$ref": "comment.schema.json#/definitions/commentId"
+            "$ref": "comment.schema.json#/definitions/commentId",
+            "description": "The ID of the comment that this comment is in reply to. Can be omitted if the comment is not a reply."
         }
     },
     "additionalProperties": false
