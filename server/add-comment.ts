@@ -1,10 +1,10 @@
 import type { AddCommentRequest } from '../common/types/add-comment-request'
 import type { AddCommentResponse } from '../common/types/add-comment-response'
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws'
+import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws'
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb'
 import { AuthenticationResult, checkAuthentication } from './user-details'
-import { MAX_COMMENT_LENGTH, MAX_FIELD_LENGTH } from '../config'
+import { MAX_COMMENT_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
 import { CORS_HEADERS } from './common';
 import { normalizeUrl } from '../common/util'
@@ -13,14 +13,6 @@ const dynamo = getDynamoDb();
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     const request: AddCommentRequest = JSON.parse(event.body);
-
-    if (!isValid(request)) {
-        return {
-            statusCode: 400,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({"success": false})
-        } as ApiGatewayResponse;
-    }
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
 
@@ -39,6 +31,14 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         author   : { S: authResult.userDetails.name },
         userId   : { S: authResult.userDetails.userId }
     };
+    const overlongFields = getOverlongFields(dynamoComment, ['commentText']);
+    if (request.comment.length > MAX_COMMENT_LENGTH) {
+        overlongFields.push('commentText');
+    }
+    if (overlongFields.length) {
+        return getFailureResponse('Field(s) are too long: ' + overlongFields.join(', '));
+    }
+
     const params: PutItemInput = {
         TableName: process.env.TABLE_NAME,
         Item: dynamoComment
@@ -75,8 +75,10 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         });
 }
 
-function isValid(request: AddCommentRequest){
-    return request.comment && request.comment.length <= MAX_COMMENT_LENGTH
-        && (!request.inReplyTo || request.inReplyTo.length <= MAX_FIELD_LENGTH)
-        && request.authorization;
+function getFailureResponse(message: string): ApiGatewayResponse {
+    return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({success: false, message})
+    };
 }
