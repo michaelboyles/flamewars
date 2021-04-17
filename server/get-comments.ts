@@ -1,10 +1,10 @@
-import { ApiGatewayRequest, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
-import type { Handler } from 'aws-lambda'
-import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
+import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
-import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { DELETED_MESSAGE } from '../config';
-import { getErrorResponse, getSuccessResponse } from './common';
+import { createHandler, errorResult, successResult } from './common';
+
+import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response';
+import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 
 const DELETED_AUTHOR = 'Anonymous';
 const DELETED_AUTHOR_ID = 'ANONYMOUS';
@@ -42,25 +42,29 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     return comments;
 }
 
-export const handler: Handler = function(event: ApiGatewayRequest, _context) {
-    const url = decodeURIComponent(event.pathParameters.url);
-    const params: QueryInput = {
-        TableName: process.env.TABLE_NAME,
-        KeyConditionExpression: "PK = :u", 
-        ExpressionAttributeValues: {
-            ':u': { S: PAGE_ID_PREFIX + url }
-        }, 
-        Select: 'ALL_ATTRIBUTES'
-    };
+export const handler = createHandler({
+    hasJsonBody: false,
+    requiresAuth: false,
+    handle: event => {
+        const url = decodeURIComponent(event.pathParameters.url);
+        const params: QueryInput = {
+            TableName: process.env.TABLE_NAME,
+            KeyConditionExpression: "PK = :u", 
+            ExpressionAttributeValues: {
+                ':u': { S: PAGE_ID_PREFIX + url }
+            }, 
+            Select: 'ALL_ATTRIBUTES'
+        };
 
-    return new Promise((resolve, reject) => {
-        dynamo.query(params, (err, data) => {
-            if (err) {
-                reject(getErrorResponse(500, err.message));
-            }
-            else {
-                resolve(getSuccessResponse(200, convertDataToResponse(data)));
-            }
-        })
-    });
-}
+        return new Promise(resolve => {
+            dynamo.query(params, (err, data) => {
+                if (err) {
+                    resolve(errorResult(500, err.message));
+                }
+                else {
+                    resolve(successResult(convertDataToResponse(data)));
+                }
+            })
+        });
+    }
+});
