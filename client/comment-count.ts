@@ -27,8 +27,10 @@ function applyCountToCommentLinks() {
             .then(resp => resp.json())
             .then((json: GetCommentCountResponse) => 
                 json.counts.forEach(urlAndCount => {
-                    const matchingLink = links.find(link => normalizeUrl(link.href) === urlAndCount.url);
-                    if (matchingLink) matchingLink.text = urlAndCount.count + ' Comments';
+                    if (urlAndCount.count) {
+                        const matchingLink = links.find(link => normalizeUrl(link.href) === urlAndCount.url);
+                        if (matchingLink) matchingLink.text = urlAndCount.count + ' Comments';
+                    }
                 })
             );
     }
