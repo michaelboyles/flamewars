@@ -1,9 +1,9 @@
 import { ApiGatewayRequest, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { createHandler, errorResult, successResult } from './common';
-import { GetCommentCountResponse, CommentCount } from '../common/types/comment-count'
+import { GetCommentCountResponse, CommentCount } from '../common/types/comment-count';
+import { MAX_URLS_IN_COUNT_REQUEST } from '../config';
 
-const MAX_URLS = 30;
 const dynamo = getDynamoDb();
 
 function getUniqueUrls(request: ApiGatewayRequest): string[] {
@@ -39,8 +39,8 @@ export const handler = createHandler({
     requiresAuth: false,
     handle: async event => {
         const uniqueUrls = getUniqueUrls(event);
-        if (uniqueUrls.length > MAX_URLS) {
-            return errorResult(400, `Max URLs per request is ${MAX_URLS}, got ${uniqueUrls.length}`);
+        if (uniqueUrls.length > MAX_URLS_IN_COUNT_REQUEST) {
+            return errorResult(400, `Max URLs per request is ${MAX_URLS_IN_COUNT_REQUEST}, got ${uniqueUrls.length}`);
         }
     
         const results = await Promise.all(uniqueUrls.map(queryForUrl));
