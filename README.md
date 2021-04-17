@@ -15,7 +15,7 @@ visitors, this is likely to be much more cost-effective than a subscription (or 
  an existing one.
  2. Upload the `flamewars.zip` file and `cft.yml` template.
  3. When they have uploaded, click `cft.yml` and copy the 'Object URL' beginning with `https://`.
- 3. Open CloudFormation, click 'Create stack' > 'With new resources (standard)'.
+ 3. Open [CloudFormation](https://console.aws.amazon.com/cloudformation), click 'Create stack' > 'With new resources (standard)'.
  5. Under the section 'Specify Template', for the field 'Amazon S3 URL' paste the value you copied in step 3. Click next.
  6. Give the stack a name. 'flamewars' will usually be fine. The stack name will be prepended to some resources to prevent name clashes.
  7. Enter a value for each of the parameters. Click next.
