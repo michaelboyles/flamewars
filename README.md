@@ -13,19 +13,20 @@ visitors, this is likely to be much more cost-effective than a subscription (or 
 
 ### Server installation
 
- 1. Log in to [AWS](https://aws.amazon.com). [Create an S3 bucket](https://s3.console.aws.amazon.com/) to store the server code, or you can use
+ 1. If you don't have one, create a [Google client ID](https://console.cloud.google.com/apis/credentials/oauthclient). See [these instructions](https://developers.google.com/identity/protocols/oauth2/). Make note of the ID ending with `apps.googleusercontent.com`.
+ 2. Log in to [AWS](https://aws.amazon.com). [Create an S3 bucket](https://s3.console.aws.amazon.com/) to store the server code, or you can use
  an existing one.
- 2. Upload the `flamewars.zip` file and `cft.yml` template.
- 3. When they have uploaded, click `cft.yml` and copy the 'Object URL' beginning with `https://`.
- 3. Open [CloudFormation](https://console.aws.amazon.com/cloudformation), click 'Create stack' > 'With new resources (standard)'.
- 5. Under the section 'Specify Template', for the field 'Amazon S3 URL' paste the value you copied in step 3. Click next.
- 6. Give the stack a name. 'flamewars' will usually be fine. The stack name will be prepended to some resources to prevent name clashes.
- 7. Enter a value for each of the parameters. Click next.
- 8. On the 'Configure stack options' page, no changes are required. Click next.
- 9. Check the checkbox confirming "*I acknowledge that AWS CloudFormation might create IAM resources with custom names*". The template sets
+ 3. Upload the `flamewars.zip` file and `cft.yml` template.
+ 4. When they have uploaded, click `cft.yml` and copy the 'Object URL' beginning with `https://`.
+ 5. Open [CloudFormation](https://console.aws.amazon.com/cloudformation), click 'Create stack' > 'With new resources (standard)'.
+ 6. Under the section 'Specify Template', for the field 'Amazon S3 URL' paste the value you copied in step 3. Click next.
+ 7. Give the stack a name. 'flamewars' will usually be fine. The stack name will be prepended to some resources to prevent name clashes.
+ 8. Enter a value for each of the parameters. Click next.
+ 9. On the 'Configure stack options' page, no changes are required. Click next.
+ 10. Check the checkbox confirming "*I acknowledge that AWS CloudFormation might create IAM resources with custom names*". The template sets
  up some permissions to allow the lambda functions to connect to the DynamoDB database and this is just confirming that you're okay with that.
- 10. Click 'Create stack' and wait for the resources to be created.
- 11. On the 'Outputs' tab, copy the URL which is generated; you'll need it when setting up the client. You're done!
+ 11. Click 'Create stack' and wait for the resources to be created.
+ 12. On the 'Outputs' tab, copy the URL which is generated; you'll need it when setting up the client. You're done!
 
 ### Client setup
 
