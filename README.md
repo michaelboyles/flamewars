@@ -1,3 +1,5 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/michaelboyles/flamewars/Node.js%20build) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/michaelboyles/flamewars?sort=semver) ![License](https://img.shields.io/github/license/michaelboyles/flamewars)
+
 Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) comment engine. You host it yourself in AWS. It is
 designed for websites which run without their own server, for example a statically generated blog or website (Hugo, Jekyll) served
 on [GitHub Pages](https://pages.github.com/). You can install it in just a few minutes.
