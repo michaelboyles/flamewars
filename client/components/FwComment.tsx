@@ -2,8 +2,7 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../common/types/get-all-comments-response'
-import { AWS_GET_URL } from '../config';
-import { DELETED_MESSAGE } from '../../config';
+import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { formatPastDate, formatFullTime } from '../time';
 import CommentForm from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';
@@ -47,9 +46,9 @@ const Portrait = (props: {username: string, url: string}) => {
 const FwComment = (props: {comment: Comment}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
-    const [isDeleted, setDeleted] = useState(false);
+    const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
     const [isEditing, setIsEditing] = useState(false);
-    const [isEdited, setIsEdited] = useState(props.comment.isEdited);
+    const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
     const [text, setText] = useState(props.comment.text);
     const { authorization } = useContext(AuthContext);
 

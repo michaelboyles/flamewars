@@ -39,8 +39,9 @@
             "type": "string",
             "format": "date-time"
         },
-        "isEdited": {
-            "type": "boolean"
+        "status": {
+            "type": "string",
+            "enum": ["normal", "edited", "deleted"]
         },
         "replies": {
             "type": "array",
@@ -49,6 +50,6 @@
             }
         }
     },
-    "required": ["id", "author", "text", "timestamp", "isEdited", "replies"],
+    "required": ["id", "author", "text", "timestamp", "status", "replies"],
     "additionalProperties": false
 }

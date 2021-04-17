@@ -1,6 +1,5 @@
 import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
-import { DELETED_MESSAGE } from '../config';
 import { createHandler, errorResult, successResult } from './common';
 
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response';
@@ -22,6 +21,7 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
     items.forEach((item: DynamoComment) => {
         if (item.parent.S === parentId) {
             const isDeleted = !!(item.deletedAt?.S);
+            const isEdited = !!(item.editedAt?.S);
             const children = sortToHeirarchy(items, item.SK.S);
             if (isDeleted && !children.length) {
                 return;
@@ -32,9 +32,9 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
                     id: isDeleted ? DELETED_AUTHOR_ID : item.userId.S,
                     name: isDeleted ? DELETED_AUTHOR : item.author.S
                 },
-                text: isDeleted ? DELETED_MESSAGE : item.commentText.S,
+                text: isDeleted ? '' : item.commentText.S,
                 timestamp: item.timestamp.S,
-                isEdited: !isDeleted && !!(item.editedAt?.S),
+                status: isDeleted ? 'deleted' : (isEdited ? 'edited' : 'normal'),
                 replies: children
             });
         }

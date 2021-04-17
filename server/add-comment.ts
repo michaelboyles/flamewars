@@ -54,7 +54,7 @@ export const handler = createHandler<AddCommentRequest>({
                         },
                         text: request.comment,
                         timestamp: timestamp,
-                        isEdited: false,
+                        status: 'normal',
                         replies: []
                     }
                 };
