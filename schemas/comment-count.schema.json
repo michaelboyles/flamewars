@@ -24,11 +24,8 @@
             "items": {
                 "$ref": "#/definitions/commentCount"
             }
-        },
-        "success": {
-            "type": "boolean"
         }
     },
-    "required": ["counts", "success"],
+    "required": ["counts"],
     "additionalProperties": false
 }

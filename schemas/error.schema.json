@@ -1,0 +1,15 @@
+{
+    "$id": "https://github.com/michaelboyles/flamewars/blob/develop/schemas/error.schema.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Error response",
+    "description": "A response to failed request",
+    "type": "object",
+    "properties": {
+        "error": {
+            "type": "string",
+            "description": "The reason the request failed"
+        }
+    },
+    "required": ["error"],
+    "additionalProperties": false
+}

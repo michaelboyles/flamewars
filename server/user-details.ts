@@ -37,6 +37,9 @@ const getGoogleDetails = async (token: string): Promise<AuthenticationResult> =>
 }
 
 export function checkAuthentication(authorization: Authorization): Promise<AuthenticationResult> {
+    if (!authorization?.token || !authorization?.tokenProvider) {
+        return Promise.resolve({isValid: false});
+    }
     switch (authorization.tokenProvider) {
         case 'Google':
             return getGoogleDetails(authorization.token);

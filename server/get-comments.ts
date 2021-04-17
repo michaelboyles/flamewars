@@ -1,10 +1,10 @@
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
+import { ApiGatewayRequest, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response'
 import { ItemList, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { DELETED_MESSAGE } from '../config';
-import { CORS_HEADERS } from './common';
+import { getErrorResponse, getSuccessResponse } from './common';
 
 const DELETED_AUTHOR = 'Anonymous';
 const DELETED_AUTHOR_ID = 'ANONYMOUS';
@@ -56,21 +56,10 @@ export const handler: Handler = function(event: ApiGatewayRequest, _context) {
     return new Promise((resolve, reject) => {
         dynamo.query(params, (err, data) => {
             if (err) {
-                console.log(err, err.stack);
-                const response: ApiGatewayResponse = {
-                    statusCode: 500,
-                    headers: CORS_HEADERS,
-                    body: JSON.stringify(event)
-                };
-                reject(response);
+                reject(getErrorResponse(500, err.message));
             }
             else {
-                const response: ApiGatewayResponse = {
-                    statusCode: 200,
-                    headers: CORS_HEADERS,
-                    body: JSON.stringify(convertDataToResponse(data))
-                };
-                resolve(response);
+                resolve(getSuccessResponse(200, convertDataToResponse(data)));
             }
         })
     });

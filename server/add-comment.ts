@@ -1,12 +1,12 @@
 import type { AddCommentRequest } from '../common/types/add-comment-request'
 import type { AddCommentResponse } from '../common/types/add-comment-response'
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws'
+import { ApiGatewayRequest, COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws'
 import type { Handler } from 'aws-lambda'
 import { PutItemInput } from 'aws-sdk/clients/dynamodb'
 import { AuthenticationResult, checkAuthentication } from './user-details'
 import { MAX_COMMENT_LENGTH } from '../config'
 import { v4 as uuid } from 'uuid';
-import { CORS_HEADERS } from './common';
+import { getErrorResponse, getSuccessResponse } from './common';
 import { normalizeUrl } from '../common/util'
 
 const dynamo = getDynamoDb();
@@ -15,6 +15,9 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
     const request: AddCommentRequest = JSON.parse(event.body);
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
+    if (!authResult.isValid) {
+        return getErrorResponse(403, 'Invalid authentication token');
+    }
 
     const commentId = uuid();
     const timestamp = new Date().toISOString();
@@ -36,7 +39,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         overlongFields.push('commentText');
     }
     if (overlongFields.length) {
-        return getFailureResponse('Field(s) are too long: ' + overlongFields.join(', '));
+        return getErrorResponse(400, 'Field(s) are too long: ' + overlongFields.join(', '));
     }
 
     const params: PutItemInput = {
@@ -48,7 +51,6 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         .promise()
         .then(() => {
             const body: AddCommentResponse = {
-                success: true,
                 comment: {
                     id: commentId,
                     author: {
@@ -67,18 +69,6 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                 + event.requestContext.path.substr(0, lastSlash + 1) // remove client's generated ID
                 + commentId;
 
-            return {
-                statusCode: 201,
-                headers: {...CORS_HEADERS, location},
-                body: JSON.stringify(body)
-            } as ApiGatewayResponse;
+            return getSuccessResponse(201, body, {location});
         });
-}
-
-function getFailureResponse(message: string): ApiGatewayResponse {
-    return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({success: false, message})
-    };
 }

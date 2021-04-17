@@ -5,16 +5,10 @@
     "description": "A response to a request to add a new comment",
     "type": "object",
     "properties": {
-        "success": {
-            "type": "boolean"
-        },
         "comment": {
             "$ref": "comment.schema.json"
-        },
-        "rejectionReason": {
-            "type": "string"
         }
     },
-    "required": ["success", "comment"],
+    "required": ["comment"],
     "additionalProperties": false
 }

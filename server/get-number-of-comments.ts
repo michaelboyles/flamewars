@@ -1,32 +1,15 @@
 import { ApiGatewayRequest, ApiGatewayResponse, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
-import { CORS_HEADERS } from './common';
+import { getErrorResponse, getSuccessResponse } from './common';
 import { GetCommentCountResponse, CommentCount } from '../common/types/comment-count'
 
 const MAX_URLS = 30;
 const dynamo = getDynamoDb();
 
-function isRequestValid(request: ApiGatewayRequest) {
-    return getUniqueUrls(request).length <= MAX_URLS;
-}
-
 function getUniqueUrls(request: ApiGatewayRequest): string[] {
     const urls: string = request.queryStringParameters.urls;
     return Array.from(new Set(urls.split(',')));
-}
-
-function failResponse(): ApiGatewayResponse {
-    const failBody: GetCommentCountResponse = {
-        success: false,
-        counts: [] 
-    };
-    const failResponse: ApiGatewayResponse = {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify(failBody)
-    }
-    return failResponse;
 }
 
 function queryForUrl(url: string): Promise<CommentCount> {
@@ -53,18 +36,15 @@ function queryForUrl(url: string): Promise<CommentCount> {
 }
 
 export const handler: Handler = async function(request: ApiGatewayRequest, _context): Promise<ApiGatewayResponse> {
-    if (!isRequestValid(request)) return failResponse();
+    const uniqueUrls = getUniqueUrls(request);
+    if (uniqueUrls.length > MAX_URLS) {
+        return getErrorResponse(400, `Max URLs per request is ${MAX_URLS}, got ${uniqueUrls.length}`);
+    }
 
-    const results = await Promise.all(getUniqueUrls(request).map(queryForUrl));
+    const results = await Promise.all(uniqueUrls.map(queryForUrl));
     const body: GetCommentCountResponse = {
-        success: true,
         counts: results 
     };
 
-    const response: ApiGatewayResponse = {
-        statusCode: 200,
-        headers: CORS_HEADERS,
-        body: JSON.stringify(body)
-    }
-    return response;
+    return getSuccessResponse(200, body);
 }

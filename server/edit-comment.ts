@@ -1,20 +1,12 @@
-import { ApiGatewayRequest, ApiGatewayResponse, COMMENT_ID_PREFIX, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
+import { ApiGatewayRequest, COMMENT_ID_PREFIX, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
 import type { Handler } from 'aws-lambda'
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
-import { CORS_HEADERS } from './common';
+import { getErrorResponse, getSuccessResponse } from './common';
 import { EditCommentRequest } from '../common/types/edit-comment-request'
 import { AuthenticationResult, checkAuthentication } from './user-details';
 import { MAX_COMMENT_LENGTH } from '../config';
 
 const dynamo = getDynamoDb();
-
-function getErrorResponse(statusCode: number, message: string): ApiGatewayResponse {
-    return {
-        statusCode: statusCode,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({success: false, error: message}) //TODO define schema
-    };
-}
 
 export const handler: Handler = async function(event: ApiGatewayRequest, _context) {
     let request: EditCommentRequest;
@@ -22,12 +14,12 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
         request = JSON.parse(event.body);
     } 
     catch(err) {
-        return Promise.resolve(getErrorResponse(400, 'Invalid JSON body'));
+        return getErrorResponse(400, 'Invalid JSON body');
     }
 
     const authResult: AuthenticationResult = await checkAuthentication(request.authorization);
     if (!authResult.isValid) {
-        return Promise.resolve(getErrorResponse(403, 'Invalid authentication token'));
+        return getErrorResponse(403, 'Invalid authentication token');
     }
 
     const url = decodeURIComponent(event.pathParameters.url);
@@ -62,12 +54,7 @@ export const handler: Handler = async function(event: ApiGatewayRequest, _contex
                 reject(err);
             }
             else {
-                const response: ApiGatewayResponse = {
-                    statusCode: 200,
-                    headers: CORS_HEADERS,
-                    body: JSON.stringify({success: true})
-                };
-                resolve(response);
+                resolve(getSuccessResponse(200, {success: true}));
             }
         })
     })
