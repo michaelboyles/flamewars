@@ -2,7 +2,7 @@ import { ApiGatewayRequest, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
 import { createHandler, errorResult, successResult } from './common';
 import { GetCommentCountResponse, CommentCount } from '../common/types/comment-count';
-import { MAX_URLS_IN_COUNT_REQUEST } from '../config';
+import { MAX_URLS_IN_COUNT_REQUEST } from '../constants';
 
 const dynamo = getDynamoDb();
 

@@ -1,7 +1,7 @@
 const COMMENT_ANCHOR = '#comments';
 import { GetCommentCountResponse } from  '../common/types/comment-count'
 import { normalizeUrl } from '../common/util'
-import { MAX_URLS_IN_COUNT_REQUEST } from '../config';
+import { MAX_URLS_IN_COUNT_REQUEST } from '../constants';
 import { AWS_GET_URL } from './config';
 
 function getFlamewarsLinks(): HTMLAnchorElement[] {
