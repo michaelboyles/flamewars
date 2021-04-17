@@ -5,13 +5,16 @@ Parameters:
         Description: URL to use in CORS allow-origin headers. This is the base domain of the website you want to add comments to. An asterisk means any URL is permitted.
         Type: String
         Default: "*"
+        MinLength: 1
     ServerCodeBucket:
         Description: The name of the S3 bucket containing the server's zipped code bundle
         Type: String
+        MinLength: 1
     ServerCodeFilename:
         Description: The filename of the server's zipped code bundle within the given S3 bucket
         Type: String
         Default: flamewars.zip
+        MinLength: 1
     GoogleClientId:
         Description: The Google client ID to use for verifying user sign-in
         Type: String
