@@ -1,5 +1,4 @@
 import { OAuth2Client } from 'google-auth-library';
-import { GOOGLE_CLIENT_ID } from '../config';
 import { Authorization } from '../common/types/authorization';
 
 export type UserDetails = {
@@ -13,12 +12,13 @@ export type AuthenticationResult = {
 }
 
 const getGoogleDetails = async (token: string): Promise<AuthenticationResult> => {
-    const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const client = new OAuth2Client(clientId);
 
     try {
         const loginTicket = await client.verifyIdToken({
             idToken: token,
-            audience: GOOGLE_CLIENT_ID
+            audience: clientId
         });
         const payload = loginTicket.getPayload();
         return {

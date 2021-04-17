@@ -12,6 +12,10 @@ Parameters:
         Description: The filename of the server's zipped code bundle within the given S3 bucket
         Type: String
         Default: flamewars.zip
+    GoogleClientId:
+        Description: The Google client ID to use for verifying user sign-in
+        Type: String
+        AllowedPattern: ^.+\.apps\.googleusercontent\.com$
 Resources:
     IAMRole:
         Type: "AWS::IAM::Role"
@@ -127,6 +131,7 @@ Resources:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
                     CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
+                    GOOGLE_CLIENT_ID: !Ref GoogleClientId
                     
     LambdaPermissionAddComment:
         Type: "AWS::Lambda::Permission"
@@ -183,6 +188,7 @@ Resources:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
                     CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
+                    GOOGLE_CLIENT_ID: !Ref GoogleClientId
 
     LambdaPermissionDeleteComment:
         Type: "AWS::Lambda::Permission"
@@ -211,6 +217,7 @@ Resources:
                 Variables:
                     TABLE_NAME: !Sub "${AWS::StackName}-comments"
                     CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
+                    GOOGLE_CLIENT_ID: !Ref GoogleClientId
 
     LambdaPermissionEditComment:
         Type: "AWS::Lambda::Permission"

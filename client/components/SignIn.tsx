@@ -2,7 +2,7 @@ import React = require('react');
 import { useContext } from 'react';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import type { Authorization } from '../../common/types/add-comment-request';
-import { GOOGLE_CLIENT_ID } from '../../config'
+import { GOOGLE_CLIENT_ID } from '../config'
 import { AuthContext } from '../context/AuthContext';
 import GoogleIcon from './GoogleIcon';
 
