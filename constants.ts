@@ -1,6 +1,6 @@
-// ONLY server
-export const MAX_FIELD_LENGTH = 200; // Used by various fields to prevent abuse
+// Server only ==============================
+export const MAX_DB_FIELD_LENGTH = 200;
 
-// client and server
+// Client and server ========================
 export const MAX_COMMENT_LENGTH = 2000;
 export const MAX_URLS_IN_COUNT_REQUEST = 30;
