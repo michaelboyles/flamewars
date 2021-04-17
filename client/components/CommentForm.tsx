@@ -4,7 +4,7 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
 import type { EditCommentRequest } from '../../common/types/edit-comment-request'
-import { MAX_COMMENT_LENGTH } from '../../config';
+import { MAX_COMMENT_LENGTH } from '../../constants';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';

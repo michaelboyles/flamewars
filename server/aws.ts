@@ -1,6 +1,6 @@
-import { AttributeValue, PutItemInputAttributeMap } from "aws-sdk/clients/dynamodb";
+import { AttributeValue, PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb';
 import * as AWS from 'aws-sdk';
-import { MAX_FIELD_LENGTH } from "../config";
+import { MAX_FIELD_LENGTH } from '../constants';
 
 export const PAGE_ID_PREFIX: string = 'PAGE#';
 export const COMMENT_ID_PREFIX: string = '#COMMENT#';

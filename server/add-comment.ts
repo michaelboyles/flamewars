@@ -1,6 +1,6 @@
 import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
-import { MAX_COMMENT_LENGTH } from '../config';
+import { MAX_COMMENT_LENGTH } from '../constants';
 import { v4 as uuid } from 'uuid';
 import { createHandler, errorResult } from './common';
 import { normalizeUrl } from '../common/util';

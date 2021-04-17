@@ -1,7 +1,7 @@
 import { COMMENT_ID_PREFIX, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
 import { createHandler, errorResult, successResult } from './common';
 import { EditCommentRequest } from '../common/types/edit-comment-request';
-import { MAX_COMMENT_LENGTH } from '../config';
+import { MAX_COMMENT_LENGTH } from '../constants';
 
 import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 
