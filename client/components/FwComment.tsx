@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../common/types/get-all-comments-response'
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
@@ -51,6 +51,13 @@ const FwComment = (props: {comment: Comment}) => {
     const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
     const [text, setText] = useState(props.comment.text);
     const { authorization } = useContext(AuthContext);
+
+    useEffect(() => {
+        // If user logs out mid-edit then reset edit state
+        if (!authorization && isEditing) {
+            setIsEditing(false);
+        }
+    }, [authorization, isEditing]);
 
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
