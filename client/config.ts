@@ -3,6 +3,7 @@ export type Config = {
     allowImages?: boolean;
     deletedMessage?: string;
     googleClientId?: string;
+    htmlContainerId?: string;
 };
 
 declare var __FLAMEWARS_CONFIG: Config;
@@ -21,3 +22,4 @@ export const AWS_GET_URL = __FLAMEWARS_CONFIG.awsUrl;
 export const ALLOW_IMAGES = __FLAMEWARS_CONFIG.allowImages ?? true;
 export const DELETED_MESSAGE = __FLAMEWARS_CONFIG.deletedMessage ?? 'Comment was deleted';
 export const GOOGLE_CLIENT_ID = __FLAMEWARS_CONFIG.googleClientId ?? metaGoogleId;
+export const HTML_CONTAINER_ID = __FLAMEWARS_CONFIG.htmlContainerId ?? 'comments';

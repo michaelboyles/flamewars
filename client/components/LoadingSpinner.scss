@@ -1,6 +1,6 @@
 @use '../theme.scss' as *;
 
-#comments .loading-spinner {
+.flamewars-container .loading-spinner {
     $size: 12px;
 
     display: inline-block;

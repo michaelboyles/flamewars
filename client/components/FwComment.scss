@@ -1,7 +1,7 @@
 @use '../theme.scss' as *;
 @use '../style.scss';
 
-#comments .comment {
+.flamewars-container .comment {
     width: 100%;
 
     .portrait {

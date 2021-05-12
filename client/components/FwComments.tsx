@@ -26,17 +26,19 @@ const FwComments = () => {
     const signOut = () => { googleSignOut(); setAuthorization(null); }
 
     return (
-        <AuthContext.Provider value={{authorization, setAuthorization}}>
-            {
-                authorization ? <span>Signed in as {authorization.name} <a onClick={signOut}>(sign out)</a></span> : null
-            }
-            <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
-            <ul className='comments'>
-                { comments
-                    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                    .map(comment => <FwComment key={comment.id} comment={comment} />) }
-            </ul>
-        </AuthContext.Provider>
+        <div className='flamewars-container'>
+            <AuthContext.Provider value={{authorization, setAuthorization}}>
+                {
+                    authorization ? <span>Signed in as {authorization.name} <a onClick={signOut}>(sign out)</a></span> : null
+                }
+                <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
+                <ul className='comments'>
+                    { comments
+                        .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+                        .map(comment => <FwComment key={comment.id} comment={comment} />) }
+                </ul>
+            </AuthContext.Provider>
+        </div>
     );
 }
 

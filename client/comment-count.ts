@@ -1,15 +1,14 @@
-const COMMENT_ANCHOR = '#comments';
 import { GetCommentCountResponse } from  '../common/types/comment-count'
 import { normalizeUrl } from '../common/util'
 import { MAX_URLS_IN_COUNT_REQUEST } from '../constants';
-import { AWS_GET_URL } from './config';
+import { AWS_GET_URL, HTML_CONTAINER_ID } from './config';
 
 function getFlamewarsLinks(): HTMLAnchorElement[] {
     const allLinks = document.getElementsByTagName('a');
     const flameWarsLinks: HTMLAnchorElement[] = [];
     for (let i = 0; i < allLinks.length; i++) {
         const item = allLinks.item(i);
-        if (item.href.endsWith(COMMENT_ANCHOR)) {
+        if (item.href.endsWith(HTML_CONTAINER_ID)) {
             flameWarsLinks.push(item);
         }
     }

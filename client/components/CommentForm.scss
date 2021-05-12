@@ -1,7 +1,7 @@
 @use '../theme.scss' as *;
 @use '../style.scss';
 
-#comments .reply-form {
+.flamewars-container .reply-form {
     margin-bottom: 10px;
 
     // If it's the main comment box at the top then we want the textarea to be as small as possible so that users
