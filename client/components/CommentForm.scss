@@ -13,7 +13,7 @@
     $min-height: #{($font-size * $line-height) + (2 * $vertical-pad)};
     $default-height: 80px;
     // Expandable main comment box
-    &.add textarea {
+    &.add textarea.mde-text {
         transition: min-height 0.4s ease-out;
 
         height: $min-height;
@@ -25,13 +25,13 @@
     }
     // edit and reply boxes can behave normally
     &:not(.add) {
-        textarea {
+        textarea.mde-text {
             height: $default-height;
             min-height: $default-height;
         }
     }
 
-    textarea {
+    textarea.mde-text {
         box-sizing: border-box;
         
         width: 100%;
