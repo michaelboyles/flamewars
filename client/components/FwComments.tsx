@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { AWS_GET_URL, GOOGLE_CLIENT_ID } from '../config';
+import { AWS_GET_URL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 import FwComment from './FwComment';
 import CommentForm from './CommentForm';
 import { LocalAuthorization } from './SignIn';
 import { AuthContext } from '../context/AuthContext';
-import { useGoogleLogout } from 'react-google-login';
+import FwHeader from './FwHeader';
 
 import './FwComments.scss';
 
@@ -22,15 +22,10 @@ const FwComments = () => {
       }, []
     );
 
-    const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
-    const signOut = () => { googleSignOut(); setAuthorization(null); }
-
     return (
         <div className='flamewars-container'>
             <AuthContext.Provider value={{authorization, setAuthorization}}>
-                {
-                    authorization ? <span>Signed in as {authorization.name} <a onClick={signOut}>(sign out)</a></span> : null
-                }
+                <FwHeader />
                 <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
                 <ul className='comments'>
                     { comments

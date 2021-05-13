@@ -1,0 +1,16 @@
+@use '../theme.scss' as *;
+
+.flamewars-container .flamewars-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.7em;
+
+    .sign-out {
+        color: $grey;
+        cursor: pointer;
+
+        &:hover {
+            color: $dark-grey;
+        }
+    }
+}
