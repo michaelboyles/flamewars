@@ -15,9 +15,10 @@ function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return (!!authorization) && comment.author.id.endsWith(authorization.id);
 }
 
-const Timestamp = (props: {timestamp: number}) => {
+const Timestamp = (props: {timestamp: Date}) => {
+    const isoTimestamp = props.timestamp.toISOString();
     return (
-        <span className='timestamp' title={formatFullTime(props.timestamp)}>{formatPastDate(props.timestamp)}</span>
+        <time className='timestamp' dateTime={isoTimestamp} title={formatFullTime(props.timestamp)}>{formatPastDate(props.timestamp)}</time>
     )
 }
 
@@ -30,8 +31,8 @@ const OwnerActions = (props: {isOwner: boolean, isDeleted: boolean, onEdit: () =
     if (!props.isOwner || props.isDeleted) return null;
     return (
         <>
-            <a className='btn edit-btn' onClick={props.onEdit}>Edit</a>
-            <a className='btn delete-btn' onClick={props.onDelete}>Delete</a>
+            <button className='edit-btn' onClick={props.onEdit}>Edit</button>
+            <button className='delete-btn' onClick={props.onDelete}>Delete</button>
         </>
     )
 }
@@ -82,11 +83,11 @@ const FwComment = (props: {comment: Comment}) => {
     if (isDeleted && !replies.length) return null;
 
     return (
-        <li className='comment'>
+        <li className='comment' role='comment' data-author={props.comment.author.name}>
             <Portrait username={props.comment.author.id} url={props.comment.author.portraitUrl}/>
             <div className='body'>
                 <span className='author-name'>{props.comment.author.name}</span>
-                <Timestamp timestamp={Date.parse(props.comment.timestamp)} />
+                <Timestamp timestamp={new Date(props.comment.timestamp)} />
                 <EditIndicator isEdited={isEdited} />
                 {
                     !isEditing ? 
@@ -97,7 +98,7 @@ const FwComment = (props: {comment: Comment}) => {
                                      type='edit'
                         />
                 }
-                <a onClick={() => setReplyOpen(!isReplyOpen)} className={'btn reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</a>
+                <button onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</button>
                 <OwnerActions isOwner={isOwner(authorization, props.comment)}
                               isDeleted={isDeleted}
                               onEdit={() => setIsEditing(!isEditing)}

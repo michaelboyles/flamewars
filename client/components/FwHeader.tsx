@@ -12,11 +12,14 @@ const FwHeader = () => {
     const signOut = () => { googleSignOut(); setAuthorization(null); }
 
     return (
-        <div className='flamewars-header'>
-        {
-            authorization ? <span className='user'>Signed in as {authorization.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> : null
-        }
-        </div>
+        <header className='flamewars-header'>
+            <div>
+                <h2>Comments</h2><a href='https://github.com/michaelboyles/flamewars'>Powered by Flamewars</a>
+            </div>
+            {
+                authorization ? <span className='user'>Signed in as {authorization.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> : null
+            }
+        </header>
     )
 }
 

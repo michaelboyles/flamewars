@@ -1,6 +1,6 @@
-function formatPastDate(timestamp: number) {
+function formatPastDate(timestamp: Date) {
     const now = new Date();
-    const age = Math.abs(now.getTime() - timestamp);
+    const age = Math.abs(now.getTime() - timestamp.getTime());
 
     const millisPerSecond = 1000;
     const millisPerMinute = millisPerSecond * 60;
@@ -41,8 +41,8 @@ function formatPastDate(timestamp: number) {
     return `${quantity} ${unit}${quantity == 1 ? '' : 's'} ago`; 
 }
 
-function formatFullTime(timestamp: number) {
-    const isoDatetime = new Date(timestamp).toISOString();
+function formatFullTime(timestamp: Date) {
+    const isoDatetime = timestamp.toISOString();
     return isoDatetime
         .substr(0, isoDatetime.length - 5) // period, 3 digit millis, and Z
         .replace('T', ' ');

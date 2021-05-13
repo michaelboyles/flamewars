@@ -23,7 +23,7 @@ const FwComments = () => {
     );
 
     return (
-        <div className='flamewars-container'>
+        <section className='flamewars-container'>
             <AuthContext.Provider value={{authorization, setAuthorization}}>
                 <FwHeader />
                 <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
@@ -33,7 +33,7 @@ const FwComments = () => {
                         .map(comment => <FwComment key={comment.id} comment={comment} />) }
                 </ul>
             </AuthContext.Provider>
-        </div>
+        </section>
     );
 }
 

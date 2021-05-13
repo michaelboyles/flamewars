@@ -2,12 +2,19 @@
 
 .flamewars-container .flamewars-header {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 0.7em;
+    justify-content: space-between;
+    margin: 1em 0 0.7em 0;
+
+    h2 {
+        display: inline-block;
+        margin: 0 1em 0 0;
+        font-size: 1em;
+    }
 
     .sign-out {
         color: $grey;
         cursor: pointer;
+        white-space: nowrap;
 
         &:hover {
             color: $dark-grey;

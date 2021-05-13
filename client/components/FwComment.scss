@@ -25,10 +25,13 @@
         .content {
             @include style.formatted-comment;
         }
-        .btn {
+        .reply-btn, .edit-btn, .delete-btn {
             display: inline-block;
             margin: 0 15px 20px 0;
             cursor: pointer;
+            background: 0;
+            border: 0;
+            padding: 0;
         }
         .reply-btn, .edit-btn {
             color: $grey;
