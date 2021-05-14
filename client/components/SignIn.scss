@@ -3,7 +3,6 @@
 .flamewars-container .sign-in {
     display: flex;
     align-items: center;
-    margin-top: 10px;
 
     .label {
         margin-right: 10px;
@@ -26,7 +25,7 @@
         background: $almost-white;
         outline: none;
         border: 1px solid lightgrey;
-        padding: 8px 12px;
+        padding: 5px 12px;
         border-radius: 3px;
         cursor: pointer;
         

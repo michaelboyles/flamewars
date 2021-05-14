@@ -1,5 +1,5 @@
 import React = require('react');
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner'
 import type { Comment, CommentId } from '../../common/types/comment'
 import type { AddCommentRequest } from '../../common/types/add-comment-request'
@@ -60,17 +60,6 @@ function getPlaceholder(type: CommentType) {
         case 'reply':
             return 'Leave a reply\u2026'
     }
-}
-
-const CommentLengthMessage = (props: {length: number}) => {
-    const charsRemaining = MAX_COMMENT_LENGTH - props.length;
-    if (charsRemaining === MAX_COMMENT_LENGTH) return null;
-    const noun = Math.abs(charsRemaining) === 1 ? 'character' : 'characters';
-    return (
-        <span className='chars-remaining-msg'>
-            { charsRemaining < 0 ? `Too long by ${Math.abs(charsRemaining)} ${noun}` : `${charsRemaining} ${noun} remaining`}
-        </span>
-    )
 }
 
 const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: boolean}) => {
@@ -142,6 +131,18 @@ const CommentForm = (props: Props) => {
         }
     };
 
+    useEffect(() => {
+        const charsRemaining = MAX_COMMENT_LENGTH - text.length;
+        if (charsRemaining < 0) {
+            const tooMany = Math.abs(charsRemaining);
+            const noun = tooMany === 1 ? 'character' : 'characters';
+            setError(`Too long by ${tooMany} ${noun}`);
+        }
+        else if (error) {
+            setError(null);
+        }
+    }, [error, setError, text.length]);
+
     const formRef = useRef<HTMLFormElement>();
     const size = useElementSize(formRef.current);
     const isLarge = size.width > 500;
@@ -166,19 +167,20 @@ const CommentForm = (props: Props) => {
                     }
                 }}
             />
-            {
-                authorization ?
-                    (
-                        <SubmitButton
-                            disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
-                            label={props.buttonLabel}
-                            isSubmitting={isSubmitting}
-                        />
-                    )
-                    : <SignIn />
-            }
-            <CommentLengthMessage length={text.length} />
-            { error ? <p>{error}</p> : null }
+            <div className='form-footer'>
+                {
+                    authorization ?
+                        (
+                            <SubmitButton
+                                disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
+                                label={props.buttonLabel}
+                                isSubmitting={isSubmitting}
+                            />
+                        )
+                        : <SignIn />
+                }
+                { error ? <span className='form-error'>{error}</span> : null }
+            </div>
         </form>
     );
 }
