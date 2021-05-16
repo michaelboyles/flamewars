@@ -145,7 +145,7 @@ const CommentForm = (props: Props) => {
         else if (error) {
             setError(null);
         }
-    }, [error, setError, text.length]);
+    }, [setError, text.length]);
 
     const formRef = useRef<HTMLFormElement>();
     const size = useElementSize(formRef.current);
