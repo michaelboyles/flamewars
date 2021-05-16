@@ -1,12 +1,12 @@
 {
     "$id": "https://github.com/michaelboyles/flamewars/blob/develop/schemas/add-comment-request.schema.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Add comment request",
     "description": "A request to add a new comment",
     "type": "object",
-    "extends": {
-        "$ref": "edit-comment-request.schema.json"
-    },
+    "allOf": [
+        { "$ref": "edit-comment-request.schema.json" }
+    ],
     "properties": {
         "inReplyTo": {
             "$ref": "comment.schema.json#/definitions/commentId",

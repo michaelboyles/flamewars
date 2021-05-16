@@ -1,6 +1,6 @@
 {
     "$id": "https://github.com/michaelboyles/flamewars/blob/develop/schemas/comment-count.schema.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Get comment count response",
     "type": "object",
     "definitions": {
@@ -20,7 +20,7 @@
     },  
     "properties": {
         "counts": {
-            "type": "boolean",
+            "type": "array",
             "items": {
                 "$ref": "#/definitions/commentCount"
             }

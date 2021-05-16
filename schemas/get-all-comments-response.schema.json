@@ -1,6 +1,6 @@
 {
     "$id": "https://github.com/michaelboyles/flamewars/blob/develop/schemas/get-all-comments-response.schema.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Get all comments response",
     "type": "object",
     "properties": {
