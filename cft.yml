@@ -306,13 +306,15 @@ Resources:
             HttpMethod: "GET"
             AuthorizationType: "NONE"
             ApiKeyRequired: false
-            RequestParameters: {}
+            RequestParameters:
+                "method.request.querystring.urls": true
             MethodResponses: 
               - ResponseModels: 
                     "application/json": "Empty"
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
                 StatusCode: "200"
+            RequestValidatorId: !Ref ApiGatewayParameterValidator
             Integration: 
                 CacheNamespace: !Ref ApiGatewayResourceCommentCount
                 ContentHandling: "CONVERT_TO_TEXT"
@@ -502,6 +504,13 @@ Resources:
                 RequestTemplates: 
                     "application/json": "{\"statusCode\": 200}"
                 TimeoutInMillis: 29000
+
+    ApiGatewayParameterValidator:
+        Type: AWS::ApiGateway::RequestValidator
+        Properties: 
+            RestApiId: !Ref ApiGatewayRestApi
+            ValidateRequestBody: false
+            ValidateRequestParameters: true
 
     ApiGatewayStage:
         Type: "AWS::ApiGateway::Stage"
