@@ -1,9 +1,9 @@
 import React = require('react');
 import { useContext, useEffect, useRef, useState } from 'react';
-import LoadingSpinner from './LoadingSpinner'
-import type { Comment, CommentId } from '../../common/types/comment'
-import type { AddCommentRequest } from '../../common/types/add-comment-request'
-import type { EditCommentRequest } from '../../common/types/edit-comment-request'
+import LoadingSpinner from './LoadingSpinner';
+import type { Comment, CommentId } from '../../common/types/comment';
+import type { AddCommentRequest } from '../../common/types/add-comment-request';
+import type { EditCommentRequest } from '../../common/types/edit-comment-request';
 import { MAX_COMMENT_LENGTH } from '../../constants';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
@@ -11,6 +11,8 @@ import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
+import { useElementSize } from '../hooks/useElementSize';
+import { If } from './If';
 
 import './CommentForm.scss'
 // There is an -all but we don't want the preview styles
@@ -18,7 +20,6 @@ import 'react-mde/lib/styles/css/react-mde.css';
 import 'react-mde/lib/styles/css/react-mde-editor.css';
 import 'react-mde/lib/styles/css/react-mde-suggestions.css';
 import 'react-mde/lib/styles/css/react-mde-toolbar.css';
-import { useElementSize } from '../hooks/useElementSize';
 
 // ReactMde has the concept of collecting actions into group but we can't use them because flexbox for responsive layout
 // needs 1 DOM element containing all actions. Visual groupings are achieved by CSS instead.
@@ -69,7 +70,10 @@ const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: b
     }
     return (
         <button type="submit" disabled={props.disabled}>
-            {label}{props.isSubmitting ? <LoadingSpinner /> : null}
+            {label}
+            <If condition={props.isSubmitting}>
+                <LoadingSpinner />
+            </If>
         </button>
     )
 }
@@ -77,8 +81,8 @@ const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: b
 const CommentForm = (props: Props) => { 
     const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
-    const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+    const [error, setError] = useState<string | null>(null);
+    const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
     const [hasBeenFocused, setHasBeenFocused] = useState(false);
     const { authorization } = useContext(AuthContext);
 
@@ -179,7 +183,9 @@ const CommentForm = (props: Props) => {
                         )
                         : <SignIn />
                 }
-                { error ? <span className='form-error'>{error}</span> : null }
+                <If condition={Boolean(error)}>
+                    <span className='form-error'>{error}</span>
+                </If>
             </div>
         </form>
     );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
 import { LocalAuthorization, onlyAuthorization } from './SignIn';
-import type { Comment } from '../../common/types/get-all-comments-response'
+import type { Comment } from '../../common/types/get-all-comments-response';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { formatPastDate, formatFullTime } from '../time';
 import CommentForm from './CommentForm';
@@ -16,36 +16,21 @@ import './FwComment.scss';
 
 function isOwner(authorization: LocalAuthorization, comment: Comment) {
     return (!!authorization) && comment.author.id.endsWith(authorization.id);
-}
+};
 
 const Timestamp = (props: {timestamp: Date}) => {
     const isoTimestamp = props.timestamp.toISOString();
     return (
         <time className='timestamp' dateTime={isoTimestamp} title={formatFullTime(props.timestamp)}>{formatPastDate(props.timestamp)}</time>
     )
-}
-
-const EditIndicator = (props: {isEdited: boolean}) => {
-    if (!props.isEdited) return null;
-    return <span className='edit-indicator'>Edited</span>
-}
-
-const OwnerActions = (props: {isOwner: boolean, isDeleted: boolean, onEdit: () => void, onDelete: () => void}) => {
-    if (!props.isOwner || props.isDeleted) return null;
-    return (
-        <>
-            <button className='edit-btn' onClick={props.onEdit}>Edit</button>
-            <button className='delete-btn' onClick={props.onDelete}>Delete</button>
-        </>
-    )
-}
+};
 
 const Portrait = (props: {username: string, url: string}) => {
     if (props.url) {
         return <img className='portrait' src={props.url} />;
     } 
     return <DefaultAvatar username={props.username} bgcolour='#fff' />;
-}
+};
 
 const FwComment = (props: {comment: Comment}) => {
     const [replies, setReplies] = useState(props.comment.replies);
@@ -74,7 +59,7 @@ const FwComment = (props: {comment: Comment}) => {
             })
             .then(response => { if (response.ok) { setDeleted(true); setIsEditing(false); } })
             .catch(e => console.error(e));
-    }
+    };
 
     const afterSubmitEdit = (comment: Comment) => {
         setIsEditing(false);
@@ -82,7 +67,7 @@ const FwComment = (props: {comment: Comment}) => {
             setText(comment.text);
             setIsEdited(true);
         }
-    }
+    };
 
     if (isDeleted && !replies.length) return null;
 
@@ -95,7 +80,9 @@ const FwComment = (props: {comment: Comment}) => {
             <div className={bodyClassName}>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={new Date(props.comment.timestamp)} />
-                <EditIndicator isEdited={isEdited} />
+                <If condition={isEdited}>
+                    <span className='edit-indicator'>Edited</span>
+                </If>
                 {
                     !isEditing ? 
                         <Markdown text={isDeleted ? DELETED_MESSAGE : text} /> :
@@ -107,10 +94,10 @@ const FwComment = (props: {comment: Comment}) => {
                 }
                 <button onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</button>
                 <ShareButton className='share-btn' fragment={id} />
-                <OwnerActions isOwner={isOwner(authorization, props.comment)}
-                              isDeleted={isDeleted}
-                              onEdit={() => setIsEditing(!isEditing)}
-                              onDelete={deleteComment} />
+                <If condition={isOwner(authorization, props.comment) && !isDeleted}>
+                    <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
+                    <button className='delete-btn' onClick={deleteComment}>Delete</button>
+                </If>
             </div>
             <If condition={isReplyOpen}>
                 <CommentForm
@@ -128,6 +115,6 @@ const FwComment = (props: {comment: Comment}) => {
             </If>
         </li>
     );
-}
+};
 
 export default FwComment;
