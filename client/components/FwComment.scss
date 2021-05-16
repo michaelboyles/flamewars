@@ -3,17 +3,26 @@
 
 .flamewars-container .comment {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
 
     .portrait {
         width: 50px;
         height: 50px;
         display: block;
-        float: left;
         border: 1px solid #e8e8e8;
+        margin: 5px 8px 0 0;
     }
     .body {
-        width: calc(100% - 65px);
-        float: right;
+        flex-basis: calc(100% - 60px);
+        max-width: calc(100% - 60px);
+        padding: 5px 7px;
+        box-sizing: border-box;
+
+        &.is-selected {
+            background: $highlighted-bg;
+        }
 
         .author-name {
             font-weight: bold;
@@ -25,19 +34,21 @@
         .content {
             @include style.formatted-comment;
         }
-        .reply-btn, .edit-btn, .delete-btn {
+        .reply-btn, .edit-btn, .delete-btn, .share-btn {
+            position: relative;
             display: inline-block;
-            margin: 0 15px 20px 0;
+            margin: 0 15px 0 0;
             cursor: pointer;
             background: 0;
             border: 0;
             padding: 0;
-        }
-        .reply-btn, .edit-btn {
-            color: $grey;
 
-            &:hover {
-                color: $dark-grey;
+            &:not(.delete-btn) {
+                color: $grey;
+
+                &:hover {
+                    color: $dark-grey;
+                }
             }
         }
         .delete-btn {
@@ -48,6 +59,48 @@
                 color: #a91f20;
             }
         }
+        .share-btn .copied {
+            $bg-color: white;
+            $border-color: $grey;
+
+            position: absolute;
+            padding: 5px 10px;
+            background: $bg-color;
+            border: 2px solid $border-color;
+            color: $grey;
+            font-weight: 500;
+            border-radius: 4px;
+            white-space: nowrap;
+            left: -25px;
+            top: 25px;
+
+            &::after {
+                $size: 7px;
+                content:'';
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -$size;
+                width: 0;
+                height: 0;
+                border-bottom: solid $size $bg-color;
+                border-left: solid $size transparent;
+                border-right: solid $size transparent;
+            }
+            &::before {
+                $size: 9px;
+                content:'';
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -$size;
+                width: 0;
+                height: 0;
+                border-bottom: solid $size $border-color;
+                border-left: solid $size transparent;
+                border-right: solid $size transparent;
+            }
+        }
 
         &:hover {
             .delete-btn {
@@ -56,7 +109,6 @@
         }
     }
     .replies {
-        clear: both;
         list-style-type: none;
         width: calc(100% - 65px);
         margin: 0 0 0 65px;

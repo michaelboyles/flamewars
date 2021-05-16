@@ -7,7 +7,10 @@ import { formatPastDate, formatFullTime } from '../time';
 import CommentForm from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';
 import Markdown from './Markdown';
+import { ShareButton } from './ShareButton';
 import { AuthContext } from '../context/AuthContext';
+import { UrlFragmentContext } from '../context/UrlFragmentContext';
+import { If } from './If';
 
 import './FwComment.scss';
 
@@ -52,6 +55,7 @@ const FwComment = (props: {comment: Comment}) => {
     const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
     const [text, setText] = useState(props.comment.text);
     const { authorization } = useContext(AuthContext);
+    const { fragment } = useContext(UrlFragmentContext);
 
     useEffect(() => {
         // If user logs out mid-edit then reset edit state
@@ -82,10 +86,13 @@ const FwComment = (props: {comment: Comment}) => {
 
     if (isDeleted && !replies.length) return null;
 
+    const id = 'comment-' + props.comment.id;
+    const bodyClassName = 'body' + (fragment?.endsWith(props.comment.id) ? ' is-selected' : '');
+
     return (
-        <li className='comment' role='comment' data-author={props.comment.author.name}>
+        <li id={id} className='comment' role='comment' data-author={props.comment.author.name}>
             <Portrait username={props.comment.author.id} url={props.comment.author.portraitUrl}/>
-            <div className='body'>
+            <div className={bodyClassName}>
                 <span className='author-name'>{props.comment.author.name}</span>
                 <Timestamp timestamp={new Date(props.comment.timestamp)} />
                 <EditIndicator isEdited={isEdited} />
@@ -99,23 +106,26 @@ const FwComment = (props: {comment: Comment}) => {
                         />
                 }
                 <button onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</button>
+                <ShareButton className='share-btn' fragment={id} />
                 <OwnerActions isOwner={isOwner(authorization, props.comment)}
                               isDeleted={isDeleted}
                               onEdit={() => setIsEditing(!isEditing)}
                               onDelete={deleteComment} />
-                {
-                    isReplyOpen ? <CommentForm afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
-                                               inReplyTo={props.comment.id}
-                                               type='reply' />
-                                : null
-                }
             </div>
-            <ul className='replies'>{
-                !replies.length ? null : 
+            <If condition={isReplyOpen}>
+                <CommentForm
+                    afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
+                    inReplyTo={props.comment.id}
+                    type='reply'
+                />
+            </If>
+            <If condition={Boolean(replies?.length)}>
+                <ul className='replies'>{
                     replies
                         .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
                         .map(reply => <FwComment key={reply.id} comment={reply} />)
-            }</ul>
+                }</ul>
+            </If>
         </li>
     );
 }
