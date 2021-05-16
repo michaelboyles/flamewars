@@ -18,7 +18,7 @@ const jumpToComment = () => {
     if (window.location.hash?.startsWith('#comment-')) {
         const id = window.location.hash.substr(1);
         // Small timeout in case DOM hasn't been inserted yet
-        setTimeout(() => document.getElementById(id).scrollIntoView({behavior: 'smooth'}), 50);
+        setTimeout(() => document.getElementById(id)?.scrollIntoView({behavior: 'smooth'}), 50);
     }
 };
 
