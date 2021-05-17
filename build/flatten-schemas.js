@@ -5,7 +5,7 @@ const refParser = require('@apidevtools/json-schema-ref-parser');
 const readdir = util.promisify(fs.readdir);
 
 if (!fs.existsSync(schemaBuildDir)) {
-    fs.mkdirSync(schemaBuildDir);
+    fs.mkdirSync(schemaBuildDir, { recursive: true });
 }
 
 // AWS doesn't like $id attributes so recursively remove them
@@ -29,7 +29,9 @@ async function flattenSchemas() {
                 }
                 removeIds(bundledSchema);
                 fs.writeFile(schemaBuildDir + file, JSON.stringify(bundledSchema), err => {
-                    throw { msg: 'Error writing file for JSON schema', file, err };
+                    if (err) {
+                        throw { msg: 'Error writing file for JSON schema', file, err };
+                    }
                 });
             })
         });

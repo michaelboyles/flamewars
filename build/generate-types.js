@@ -3,7 +3,7 @@ const fs = require('fs');
 const js2ts = require('json-schema-to-typescript');
 
 if (!fs.existsSync(schemaTypeDir)) {
-    fs.mkdirSync(schemaTypeDir);
+    fs.mkdirSync(schemaTypeDir, { recursive: true });
 }
 
 fs.readdir(schemaDir, (_err, files) =>
