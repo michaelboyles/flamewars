@@ -13,7 +13,7 @@ const readFile = util.promisify(fs.readFile);
  */
 async function makeCft() {    
     const files = await readdir(schemaBuildDir);
-    if (!files?.length) {
+    if (!files || files.length < 1) {
         throw `No schemas found in ${schemaBuildDir}. Did you forget to bundle them first?`;
     }
 
