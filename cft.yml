@@ -314,7 +314,7 @@ Resources:
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
                 StatusCode: "200"
-            RequestValidatorId: !Ref ApiGatewayParameterValidator
+            RequestValidatorId: !Ref ApiGatewayBodyAndParameterValidator
             Integration: 
                 CacheNamespace: !Ref ApiGatewayResourceCommentCount
                 ContentHandling: "CONVERT_TO_TEXT"
@@ -389,90 +389,97 @@ Resources:
                 TimeoutInMillis: 29000
 
     ApiGatewayMethodSingleCommentDELETE:
-        Type: "AWS::ApiGateway::Method"
+        Type: AWS::ApiGateway::Method
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
             ResourceId: !Ref ApiGatewayResourceSingleComment
-            HttpMethod: "DELETE"
-            AuthorizationType: "NONE"
+            HttpMethod: DELETE
+            AuthorizationType: NONE
             ApiKeyRequired: false
-            RequestParameters: {}
             MethodResponses: 
               - ResponseModels: 
-                    "application/json": "Empty"
+                    "application/json": Empty
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
                 StatusCode: "200"
+            RequestValidatorId: !Ref ApiGatewayBodyAndParameterValidator
+            RequestModels: 
+                "application/json": !Ref ApiGatewayModelSingleCommentDELETE
             Integration: 
                 CacheNamespace: !Ref ApiGatewayResourceSingleComment
-                ContentHandling: "CONVERT_TO_TEXT"
-                IntegrationHttpMethod: "POST"
+                ContentHandling: CONVERT_TO_TEXT
+                IntegrationHttpMethod: POST
                 IntegrationResponses: 
                   - ResponseParameters: 
                         "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
-                PassthroughBehavior: "WHEN_NO_MATCH"
+                PassthroughBehavior: NEVER
                 TimeoutInMillis: 29000
-                Type: "AWS_PROXY"
+                Type: AWS_PROXY
                 Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaDeleteComment}/invocations"
 
     ApiGatewayMethodSingleCommentPATCH:
-        Type: "AWS::ApiGateway::Method"
+        Type: AWS::ApiGateway::Method
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
             ResourceId: !Ref ApiGatewayResourceSingleComment
-            HttpMethod: "PATCH"
-            AuthorizationType: "NONE"
+            HttpMethod: PATCH
+            AuthorizationType: NONE
             ApiKeyRequired: false
             RequestParameters: {}
             MethodResponses: 
               - ResponseModels: 
-                    "application/json": "Empty"
+                    "application/json": Empty
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
                 StatusCode: "200"
+            RequestValidatorId: !Ref ApiGatewayBodyAndParameterValidator
+            RequestModels: 
+                "application/json": !Ref ApiGatewayModelSingleCommentPATCH
             Integration: 
                 CacheNamespace: !Ref ApiGatewayResourceSingleComment
-                ContentHandling: "CONVERT_TO_TEXT"
-                IntegrationHttpMethod: "POST"
+                ContentHandling: CONVERT_TO_TEXT
+                IntegrationHttpMethod: POST
                 IntegrationResponses: 
                   - ResponseParameters: 
                         "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
-                PassthroughBehavior: "WHEN_NO_MATCH"
+                PassthroughBehavior: NEVER
                 TimeoutInMillis: 29000
-                Type: "AWS_PROXY"
+                Type: AWS_PROXY
                 Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaEditComment}/invocations"
 
     ApiGatewayMethodSingleCommentPOST:
-        Type: "AWS::ApiGateway::Method"
+        Type: AWS::ApiGateway::Method
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
             ResourceId: !Ref ApiGatewayResourceSingleComment
-            HttpMethod: "POST"
-            AuthorizationType: "NONE"
+            HttpMethod: POST
+            AuthorizationType: NONE
             ApiKeyRequired: false
-            RequestParameters: {}
             MethodResponses: 
               - ResponseModels: 
-                    "application/json": "Empty"
+                    "application/json": Empty
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": false
                 StatusCode: "200"
+            RequestValidatorId: !Ref ApiGatewayBodyAndParameterValidator
+            RequestModels: 
+                "application/json": !Ref ApiGatewayModelSingleCommentPOST
             Integration: 
                 CacheNamespace: !Ref ApiGatewayResourceSingleComment
-                ContentHandling: "CONVERT_TO_TEXT"
-                IntegrationHttpMethod: "POST"
+                ContentHandling: CONVERT_TO_TEXT
+                IntegrationHttpMethod: POST
                 IntegrationResponses: 
                   - ResponseParameters: 
                         "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                     ResponseTemplates: {}
                     StatusCode: "200"
-                PassthroughBehavior: "WHEN_NO_MATCH"
+                PassthroughBehavior: NEVER
                 TimeoutInMillis: 29000
-                Type: "AWS_PROXY"
+                Type: AWS_PROXY
                 Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaAddComment}/invocations"
 
     ApiGatewayMethodSingleCommentOPTIONS:
@@ -490,6 +497,7 @@ Resources:
                 ResponseParameters: 
                     "method.response.header.Access-Control-Allow-Origin": true
                     "method.response.header.Access-Control-Allow-Methods": true
+                    "method.response.header.Access-Control-Allow-Headers": true
                 StatusCode: "200"
             Integration:
                 Type: "MOCK"
@@ -498,19 +506,47 @@ Resources:
                   - ResponseParameters: 
                         "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
                         "method.response.header.Access-Control-Allow-Methods": "'POST,PATCH,DELETE,OPTIONS'"
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'"
                     ResponseTemplates: {}
                     StatusCode: "200"
-                PassthroughBehavior: "WHEN_NO_MATCH"
+                PassthroughBehavior: NEVER
                 RequestTemplates: 
                     "application/json": "{\"statusCode\": 200}"
                 TimeoutInMillis: 29000
 
-    ApiGatewayParameterValidator:
+    ApiGatewayBodyAndParameterValidator:
         Type: AWS::ApiGateway::RequestValidator
         Properties: 
             RestApiId: !Ref ApiGatewayRestApi
-            ValidateRequestBody: false
+            ValidateRequestBody: true
             ValidateRequestParameters: true
+
+    ApiGatewayModelSingleCommentDELETE:
+        Type: 'AWS::ApiGateway::Model'
+        Properties:
+            Name: DeleteCommentRequest
+            Description: '%USE_SCHEMA_DESC% delete-comment-request.schema.json'
+            RestApiId: !Ref ApiGatewayRestApi
+            ContentType: application/json
+            Schema: '%USE_SCHEMA% delete-comment-request.schema.json'
+
+    ApiGatewayModelSingleCommentPATCH:
+        Type: 'AWS::ApiGateway::Model'
+        Properties:
+            Name: EditCommentRequest
+            Description: '%USE_SCHEMA_DESC% edit-comment-request.schema.json'
+            RestApiId: !Ref ApiGatewayRestApi
+            ContentType: application/json
+            Schema: '%USE_SCHEMA% edit-comment-request.schema.json'
+
+    ApiGatewayModelSingleCommentPOST:
+        Type: 'AWS::ApiGateway::Model'
+        Properties:
+            Name: AddCommentRequest
+            Description: '%USE_SCHEMA_DESC% add-comment-request.schema.json'
+            RestApiId: !Ref ApiGatewayRestApi
+            ContentType: application/json
+            Schema: '%USE_SCHEMA% add-comment-request.schema.json'
 
     ApiGatewayStage:
         Type: "AWS::ApiGateway::Stage"

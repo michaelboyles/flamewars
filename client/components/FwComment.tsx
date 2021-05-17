@@ -55,7 +55,8 @@ const FwComment = (props: {comment: Comment}) => {
         fetch(`${AWS_GET_URL}/comments/${encodeURIComponent(window.location.toString())}/${props.comment.id}`,
             {
                 method: 'DELETE',
-                body: JSON.stringify({authorization: onlyAuthorization(authorization)})
+                body: JSON.stringify({authorization: onlyAuthorization(authorization)}),
+                headers: {'content-type': 'application/json'}
             })
             .then(response => { if (response.ok) { setDeleted(true); setIsEditing(false); } })
             .catch(e => console.error(e));

@@ -4,14 +4,20 @@
     "title": "Add comment request",
     "description": "A request to add a new comment",
     "type": "object",
-    "allOf": [
-        { "$ref": "edit-comment-request.schema.json" }
-    ],
     "properties": {
+        "comment": {
+            "type": "string",
+            "description": "The body of the comment"
+        },
+        "authorization": {
+            "$ref": "authorization.schema.json",
+            "description": "Authorization which proves the user has the right to add a comment"
+        },
         "inReplyTo": {
             "$ref": "comment.schema.json#/definitions/commentId",
             "description": "The ID of the comment that this comment is in reply to. Can be omitted if the comment is not a reply."
         }
     },
+    "required": ["comment", "authorization"],
     "additionalProperties": false
 }

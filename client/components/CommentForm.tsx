@@ -9,12 +9,12 @@ import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import Markdown from './Markdown';
 import { AuthContext } from '../context/AuthContext';
-import { SignIn } from './SignIn';
+import { onlyAuthorization, SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
 import { If } from './If';
 
-import './CommentForm.scss'
+import './CommentForm.scss';
 // There is an -all but we don't want the preview styles
 import 'react-mde/lib/styles/css/react-mde.css';
 import 'react-mde/lib/styles/css/react-mde-editor.css';
@@ -41,8 +41,12 @@ interface Props {
     commentToEdit?: Comment // Required if type == EDIT
 }
 
-function sendRequest(url: string, method: 'POST' | 'PATCH', request: any, afterSubmit: CommentConsumer, onError: () => void) {
-    fetch(url, { body: JSON.stringify(request), method: method})
+function sendRequest(url: string, method: 'POST' | 'PATCH', request: object, afterSubmit: CommentConsumer, onError: () => void) {
+    fetch(url, {
+            body: JSON.stringify(request),
+            method,
+            headers: {'content-type': 'application/json'}
+        })
         .then(r => {
             if (!r.ok) throw new Error();
             return r.json();
@@ -104,7 +108,7 @@ const CommentForm = (props: Props) => {
 
             const request: EditCommentRequest = {
                 comment: text,
-                authorization
+                authorization: onlyAuthorization(authorization)
             };
             sendRequest(
                 `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
@@ -123,7 +127,7 @@ const CommentForm = (props: Props) => {
             const request: AddCommentRequest = {
                 comment: text,
                 inReplyTo: props.inReplyTo,
-                authorization
+                authorization: onlyAuthorization(authorization)
             };
             sendRequest(
                 `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
