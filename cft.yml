@@ -92,7 +92,7 @@ Resources:
         Properties:
             Description: "Handles GET requests for number of comments for a URL"
             FunctionName: !Sub "${AWS::StackName}-comment-count"
-            Runtime: "nodejs12.x"
+            Runtime: "nodejs14.x"
             MemorySize: 128
             Handler: "get-number-of-comments.handler"
             Code: 
@@ -120,7 +120,7 @@ Resources:
         Properties:
             Description: "Handles POST requests to add a single comment"
             FunctionName: !Sub "${AWS::StackName}-add-comment"
-            Runtime: "nodejs12.x"
+            Runtime: "nodejs14.x"
             MemorySize: 128
             Handler: "add-comment.handler"
             Code: 
@@ -149,7 +149,7 @@ Resources:
         Properties:
             Description: "Handles GET requests to serve all comments for a URL"
             FunctionName: !Sub "${AWS::StackName}-get-comments-for-url"
-            Runtime: "nodejs12.x"
+            Runtime: "nodejs14.x"
             MemorySize: 128
             Handler: "get-comments.handler"
             Code: 
@@ -177,7 +177,7 @@ Resources:
         Properties:
             Description: "Handles DELETE requests to delete a single comment"
             FunctionName: !Sub "${AWS::StackName}-delete-comment"
-            Runtime: "nodejs12.x"
+            Runtime: "nodejs14.x"
             MemorySize: 128
             Handler: "delete-comment.handler"
             Code: 
@@ -206,7 +206,7 @@ Resources:
         Properties:
             Description: "Handles PATCH requests to edit a single comment"
             FunctionName: !Sub "${AWS::StackName}-edit-comment"
-            Runtime: "nodejs12.x"
+            Runtime: "nodejs14.x"
             MemorySize: 128
             Handler: "edit-comment.handler"
             Code: 
