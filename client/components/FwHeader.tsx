@@ -7,7 +7,7 @@ import { If } from './If';
 
 import './FwHeader.scss';
 
-const FwHeader = () => {
+export const FwHeader = () => {
     const { authorization, setAuthorization } = useContext(AuthContext);
     const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
     const signOut = () => { googleSignOut(); setAuthorization(null); }
@@ -23,5 +23,3 @@ const FwHeader = () => {
         </header>
     );
 }
-
-export default FwHeader;

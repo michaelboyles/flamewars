@@ -4,7 +4,7 @@ import { LocalAuthorization, onlyAuthorization } from './SignIn';
 import type { Comment } from '../../common/types/get-all-comments-response';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { formatPastDate, formatFullTime } from '../time';
-import CommentForm from './CommentForm';
+import { CommentForm } from './CommentForm';
 import DefaultAvatar from './DefaultAvatar';
 import Markdown from './Markdown';
 import { ShareButton } from './ShareButton';
@@ -32,7 +32,7 @@ const Portrait = (props: {username: string, url: string}) => {
     return <DefaultAvatar username={props.username} bgcolour='#fff' />;
 };
 
-const FwComment = (props: {comment: Comment}) => {
+export const FwComment = (props: {comment: Comment}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
@@ -117,5 +117,3 @@ const FwComment = (props: {comment: Comment}) => {
         </li>
     );
 };
-
-export default FwComment;

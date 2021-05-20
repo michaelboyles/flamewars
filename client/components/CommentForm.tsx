@@ -82,7 +82,7 @@ const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: b
     )
 }
 
-const CommentForm = (props: Props) => { 
+export const CommentForm = (props: Props) => { 
     const [text, setText] = useState(props?.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -194,5 +194,3 @@ const CommentForm = (props: Props) => {
         </form>
     );
 }
-
-export default CommentForm;

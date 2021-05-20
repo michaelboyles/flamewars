@@ -1,6 +1,6 @@
 import React = require('react');
 
-const GoogleIcon = (props: {color?: string, className?: string}) => {
+export const GoogleIcon = (props: {color?: string, className?: string}) => {
     return (
         <svg className={props.className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533.5 544.3">
             <path d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z" fill={props.color ? props.color : "#4285f4"}/>
@@ -10,5 +10,3 @@ const GoogleIcon = (props: {color?: string, className?: string}) => {
         </svg>
     )
 }
-
-export default GoogleIcon;

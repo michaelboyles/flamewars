@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { AWS_GET_URL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
-import FwComment from './FwComment';
-import CommentForm from './CommentForm';
+import { FwComment } from './FwComment';
+import { CommentForm } from './CommentForm';
 import { LocalAuthorization } from './SignIn';
 import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
-import FwHeader from './FwHeader';
+import { FwHeader } from './FwHeader';
 import { normalizeUrl } from '../../common/util';
 
 import './FwComments.scss';
