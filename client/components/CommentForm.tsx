@@ -1,13 +1,13 @@
 import React = require('react');
 import { useContext, useEffect, useRef, useState } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+import { LoadingSpinner } from './LoadingSpinner';
 import type { Comment, CommentId } from '../../common/types/comment';
 import type { AddCommentRequest } from '../../common/types/add-comment-request';
 import type { EditCommentRequest } from '../../common/types/edit-comment-request';
 import { MAX_COMMENT_LENGTH } from '../../constants';
 import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
-import Markdown from './Markdown';
+import { Markdown } from './Markdown';
 import { AuthContext } from '../context/AuthContext';
 import { onlyAuthorization, SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
@@ -52,7 +52,7 @@ function sendRequest(url: string, method: 'POST' | 'PATCH', request: object, aft
             return r.json();
         })
         .then(json => afterSubmit(json.comment))
-        .catch(() => onError())
+        .catch(onError)
 }
 
 function getPlaceholder(type: CommentType) {

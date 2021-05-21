@@ -33,7 +33,7 @@ const FwComments = () => {
                 setComments((json as GetAllCommentsResponse).comments);
                 jumpToComment();
             })
-            .catch(e => console.log(e));
+            .catch(console.error);
     }, []);
 
     return (

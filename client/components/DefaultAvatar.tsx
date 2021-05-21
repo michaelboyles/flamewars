@@ -2,7 +2,7 @@ import * as React from 'react';
 import identicon = require('svg-identicon');
 import md5 = require('md5');
 
-const DefaultAvatar = (props: {username: string, bgcolour: string}) => {
+export const DefaultAvatar = (props: {username: string, bgcolour: string}) => {
     const avatar = identicon({
         hash: md5(props.username),
         type: 'SQUARE',
@@ -14,5 +14,3 @@ const DefaultAvatar = (props: {username: string, bgcolour: string}) => {
     });
     return <div className='portrait' dangerouslySetInnerHTML={{__html: avatar}}/>
 }
-
-export default DefaultAvatar;
