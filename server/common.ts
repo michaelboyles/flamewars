@@ -1,4 +1,4 @@
-import { ApiGatewayRequest, ApiGatewayResponse } from './aws';
+import { ApiGatewayRequest, ApiGatewayResponse, getContentType } from './aws';
 import { AuthenticationResult, checkAuthentication } from './user-details';
 
 import type { Handler } from 'aws-lambda';
@@ -42,10 +42,15 @@ export function createHandler<RequestBody>(params: {
         let authResult: AuthenticationResult;
 
         if (params.hasJsonBody) {
+            if (getContentType(event) !== 'application/json') {
+                return resultToResponse(
+                    errorResult(400, 'Invalid Content-Type, must be application/json')
+                );
+            }
             try {
                 jsonBody = JSON.parse(event.body);
             } 
-            catch(err) {
+            catch (err) {
                 return resultToResponse(
                     errorResult(400, 'Invalid JSON body')
                 );

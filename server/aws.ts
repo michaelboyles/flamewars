@@ -12,7 +12,8 @@ export interface ApiGatewayRequest {
     requestContext: {
         domainName: string;
         path: string;
-    }
+    };
+    headers: Record<string, string>;
 }
 
 export interface ApiGatewayResponse {
@@ -52,4 +53,13 @@ export function getOverlongFields(fieldMap: Record<string, AttributeValue>, igno
     return Object.entries(fieldMap)
         .map(([field, value]) => (value?.S?.length ?? 0) > MAX_DB_FIELD_LENGTH ? field : null)
         .filter(field => Boolean(field) && !ignoreKeys.includes(field));
+}
+
+export function getContentType(event: ApiGatewayRequest) {
+    for (var key in event.headers){
+        if (key.toLowerCase() === 'content-type') {
+            return event.headers[key];
+        }
+    }
+    return undefined;
 }
