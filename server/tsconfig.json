@@ -6,6 +6,6 @@
         "moduleResolution": "node",
         "target": "ES2019",
         "strict": false,
-        "types": ["webpack-env"]
+        "types": ["jest", "webpack-env"]
     }
 }
