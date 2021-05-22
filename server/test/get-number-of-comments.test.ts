@@ -1,7 +1,7 @@
 import { handler } from '../get-number-of-comments';
-import { Context } from 'aws-lambda';
 import { MAX_URLS_IN_COUNT_REQUEST } from '../../constants';
 
+import type { Context } from 'aws-lambda';
 import type { ApiGatewayRequest } from '../aws';
 
 jest.mock('../aws');

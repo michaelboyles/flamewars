@@ -8,8 +8,6 @@ import type { QueryInput } from 'aws-sdk/clients/dynamodb';
 const DELETED_AUTHOR = 'Anonymous';
 const DELETED_AUTHOR_ID = 'ANONYMOUS';
 
-const dynamo = getDynamoDb();
-
 function convertDataToResponse(data: QueryOutput) : GetAllCommentsResponse {
     return {
         comments: sortToHeirarchy(data.Items, '')
@@ -56,6 +54,7 @@ export const handler = createHandler({
             Select: 'ALL_ATTRIBUTES'
         };
 
+        const dynamo = getDynamoDb();
         return new Promise(resolve => {
             dynamo.query(params, (err, data) => {
                 if (err) {

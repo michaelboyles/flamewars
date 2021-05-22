@@ -10,7 +10,8 @@
     "webpack": "webpack",
     "start": "webpack-dev-server --mode development --open --hot",
     "build": "run-s gen flatten make-cft webpack zip",
-    "test": "jest"
+    "test": "jest",
+    "testcov": "jest --coverage"
   },
   "author": "Michael Boyles",
   "license": "MIT",

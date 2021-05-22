@@ -2,5 +2,6 @@
 .idea/
 target/
 node_modules/
-dist
+dist/
 common/types/
+coverage/
