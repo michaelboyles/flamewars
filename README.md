@@ -30,7 +30,20 @@ visitors, this is likely to be much more cost-effective than a subscription (or 
 
 ### Client setup
 
-TODO
+1. Add a `<div>` to hold the comments
+2. Add a script to set the config (see [config.ts](https://github.com/michaelboyles/flamewars/blob/develop/client/config.ts) for valid config properties)
+3. Include the client JS
+
+```html
+<div id="comments"></div>
+<script type="application/javascript">
+__FLAMEWARS_CONFIG = {
+    awsUrl: 'https://abcdefg.execute-api.eu-west-2.amazonaws.com/default',
+    googleClientId: '123456789012-abcdefghijklmnopqrstuvwxyzabcdefg.apps.googleusercontent.com'
+};
+</script>
+<script type="application/javascript" src="/path/to/flamewars.js"></script>
+```
 
 ### Uninstall
 
