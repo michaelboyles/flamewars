@@ -26,6 +26,10 @@ export interface DynamoString {
     S: string;
 }
 
+export interface DynamoStringSet {
+    SS: string[];
+}
+
 export interface DynamoBoolean {
     BOOL: boolean;
 }
@@ -41,6 +45,8 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     userId: DynamoString;
     deletedAt?: DynamoString;
     editedAt?: DynamoString;
+    upvoters?: DynamoStringSet;
+    downvoters?: DynamoStringSet;
 }
 
 export function getDynamoDb() {

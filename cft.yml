@@ -230,6 +230,35 @@ Resources:
             Principal: "apigateway.amazonaws.com"
             SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/*"
 
+    LambdaVote:
+        Type: "AWS::Lambda::Function"
+        Properties:
+            Description: "Handles PATCH requests to upvote or downvote a comment"
+            FunctionName: !Sub "${AWS::StackName}-vote"
+            Runtime: "nodejs14.x"
+            MemorySize: 128
+            Handler: "vote.handler"
+            Code: 
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: "PassThrough"
+            Environment:
+                Variables:
+                    TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
+                    GOOGLE_CLIENT_ID: !Ref GoogleClientId
+
+    LambdaPermissionVote:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+            Action: "lambda:InvokeFunction"
+            FunctionName: !GetAtt LambdaVote.Arn
+            Principal: "apigateway.amazonaws.com"
+            SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/*"
+
     ApiGatewayRestApi:
         Type: "AWS::ApiGateway::RestApi"
         Properties:
@@ -267,6 +296,13 @@ Resources:
             RestApiId: !Ref ApiGatewayRestApi
             PathPart: "{comment}"
             ParentId: !Ref ApiGatewayResourceCommentsForUrl
+
+    ApiGatewayResourceVotes:
+        Type: "AWS::ApiGateway::Resource"
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            PathPart: "votes"
+            ParentId: !Ref ApiGatewayResourceSingleComment
 
     ApiGatewayMethodCommentCountOPTIONS:
         Type: "AWS::ApiGateway::Method"
@@ -514,6 +550,70 @@ Resources:
                     "application/json": "{\"statusCode\": 200}"
                 TimeoutInMillis: 29000
 
+    ApiGatewayMethodVotesPATCH:
+        Type: AWS::ApiGateway::Method
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            ResourceId: !Ref ApiGatewayResourceVotes
+            HttpMethod: PATCH
+            AuthorizationType: NONE
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - ResponseModels: 
+                    "application/json": Empty
+                ResponseParameters: 
+                    "method.response.header.Access-Control-Allow-Origin": false
+                StatusCode: "200"
+            RequestValidatorId: !Ref ApiGatewayBodyAndParameterValidator
+            RequestModels: 
+                "application/json": !Ref ApiGatewayModelVotesPATCH
+            Integration: 
+                CacheNamespace: !Ref ApiGatewayResourceVotes
+                ContentHandling: CONVERT_TO_TEXT
+                IntegrationHttpMethod: POST
+                IntegrationResponses: 
+                  - ResponseParameters: 
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
+                    ResponseTemplates: {}
+                    StatusCode: "200"
+                PassthroughBehavior: NEVER
+                TimeoutInMillis: 29000
+                Type: AWS_PROXY
+                Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaVote}/invocations"
+
+    ApiGatewayMethodVotesOPTIONS:
+        Type: "AWS::ApiGateway::Method"
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            ResourceId: !Ref ApiGatewayResourceVotes
+            HttpMethod: "OPTIONS"
+            AuthorizationType: "NONE"
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - ResponseModels: 
+                    "application/json": "Empty"
+                ResponseParameters: 
+                    "method.response.header.Access-Control-Allow-Origin": true
+                    "method.response.header.Access-Control-Allow-Methods": true
+                    "method.response.header.Access-Control-Allow-Headers": true
+                StatusCode: "200"
+            Integration:
+                Type: "MOCK"
+                CacheNamespace: !Ref ApiGatewayResourceCommentsForUrl
+                IntegrationResponses: 
+                  - ResponseParameters: 
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,PATCH,DELETE,OPTIONS'"
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'"
+                    ResponseTemplates: {}
+                    StatusCode: "200"
+                PassthroughBehavior: NEVER
+                RequestTemplates: 
+                    "application/json": "{\"statusCode\": 200}"
+                TimeoutInMillis: 29000
+
     ApiGatewayBodyAndParameterValidator:
         Type: AWS::ApiGateway::RequestValidator
         Properties: 
@@ -548,6 +648,15 @@ Resources:
             ContentType: application/json
             Schema: '%USE_SCHEMA% add-comment-request.schema.json'
 
+    ApiGatewayModelVotesPATCH:
+        Type: 'AWS::ApiGateway::Model'
+        Properties:
+            Name: VoteRequest
+            Description: '%USE_SCHEMA_DESC% vote.schema.json'
+            RestApiId: !Ref ApiGatewayRestApi
+            ContentType: application/json
+            Schema: '%USE_SCHEMA% vote.schema.json'
+
     ApiGatewayStage:
         Type: "AWS::ApiGateway::Stage"
         Properties:
@@ -575,7 +684,9 @@ Resources:
             ApiGatewayMethodSingleCommentDELETE,
             ApiGatewayMethodSingleCommentPATCH,
             ApiGatewayMethodSingleCommentPOST,
-            ApiGatewayMethodSingleCommentOPTIONS
+            ApiGatewayMethodSingleCommentOPTIONS,
+            ApiGatewayMethodVotesPATCH,
+            ApiGatewayMethodVotesOPTIONS
         ]
         Properties:
             RestApiId: !Ref ApiGatewayRestApi

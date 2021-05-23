@@ -33,7 +33,11 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
                 text: isDeleted ? '' : item.commentText.S,
                 timestamp: item.timestamp.S,
                 status: isDeleted ? 'deleted' : (isEdited ? 'edited' : 'normal'),
-                replies: children
+                replies: children,
+                votes: {
+                    up: item?.upvoters?.SS?.length ?? 0,
+                    down: item?.downvoters?.SS?.length ?? 0
+                }
             });
         }
     });

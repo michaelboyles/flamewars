@@ -22,7 +22,8 @@
                     "format": "uri"
                 }
             },
-            "required": ["id", "name"]
+            "required": ["id", "name"],
+            "additionalProperties": false
         }
     },
     "properties": {
@@ -48,8 +49,28 @@
             "items": {
                 "$ref": "#"
             }
+        },
+        "votes": {
+            "type": "object",
+            "properties": {
+                "up": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "down": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "myVote": {
+                    "type": "string",
+                    "enum": ["up", "down"],
+                    "description": "The direction the current user has voted on this comment. Absent if none"
+                }
+            },
+            "required": ["up", "down"],
+            "additionalProperties": false
         }
     },
-    "required": ["id", "author", "text", "timestamp", "status", "replies"],
+    "required": ["id", "author", "text", "timestamp", "status", "replies", "votes"],
     "additionalProperties": false
 }

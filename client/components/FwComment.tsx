@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { LocalAuthorization, onlyAuthorization } from './SignIn';
-import type { Comment } from '../../common/types/get-all-comments-response';
+import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { formatPastDate, formatFullTime } from '../time';
 import { CommentForm } from './CommentForm';
@@ -11,12 +10,12 @@ import { ShareButton } from './ShareButton';
 import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { If } from './If';
+import { Votes } from './Votes';
+import { isOwner } from '../util';
+
+import type { Comment } from '../../common/types/get-all-comments-response';
 
 import './FwComment.scss';
-
-function isOwner(authorization: LocalAuthorization, comment: Comment) {
-    return (!!authorization) && comment.author.id.endsWith(authorization.id);
-};
 
 const Timestamp = (props: {timestamp: Date}) => {
     const isoTimestamp = props.timestamp.toISOString();
@@ -93,6 +92,7 @@ export const FwComment = (props: {comment: Comment}) => {
                                      type='edit'
                         />
                 }
+                <Votes comment={props.comment} />
                 <button onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</button>
                 <ShareButton className='share-btn' fragment={id} />
                 <If condition={isOwner(authorization, props.comment) && !isDeleted}>

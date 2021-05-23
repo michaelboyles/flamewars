@@ -4,10 +4,11 @@ module.exports = [
         mode: 'production',
         entry: {
             'add-comment': './server/add-comment.ts',
+            'delete-comment': './server/delete-comment.ts',
+            'edit-comment': './server/edit-comment.ts',
             'get-comments': './server/get-comments.ts',
             'get-number-of-comments': './server/get-number-of-comments.ts',
-            'delete-comment': './server/delete-comment.ts',
-            'edit-comment': './server/edit-comment.ts'
+            'vote': './server/vote.ts'
         },
         output: {
             filename: 'server/[name].js',

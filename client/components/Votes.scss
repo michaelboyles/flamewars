@@ -1,0 +1,27 @@
+@use '../theme.scss' as *;
+
+.flamewars-container .votes {
+    $active-color: green;
+
+    .my-vote button {
+        color: $active-color;
+    }
+
+    button {
+        background: 0;
+        border: 0;
+        outline: 0;
+
+        &:disabled {
+            color: blue;
+        }
+
+        &:not(:disabled) {
+            cursor: pointer;
+
+            &:hover {
+                color: $active-color;
+            }
+        }
+    }
+}

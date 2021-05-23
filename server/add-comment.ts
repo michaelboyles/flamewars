@@ -27,7 +27,10 @@ export const handler = createHandler<AddCommentRequest>({
             parent   : { S: parent },
             timestamp: { S: timestamp },
             author   : { S: authResult.userDetails.name },
-            userId   : { S: authResult.userDetails.userId }
+            userId   : { S: authResult.userDetails.userId },
+            /* TODO - check a set doesn't have to exist in order to add to it, i.e. need to submit blanks
+            upvoters  : { SS: [] },
+            downvoters: { SS: [] } */
         };
         const overlongFields = getOverlongFields(dynamoComment, ['commentText']);
         if (request.comment.length > MAX_COMMENT_LENGTH) {
@@ -55,7 +58,8 @@ export const handler = createHandler<AddCommentRequest>({
                         text: request.comment,
                         timestamp: timestamp,
                         status: 'normal',
-                        replies: []
+                        replies: [],
+                        votes: { up: 0, down: 0 }
                     }
                 };
                 const lastSlash = event.requestContext.path.lastIndexOf('/');
