@@ -34,6 +34,10 @@
         .content {
             @include style.formatted-comment;
         }
+        .votes {
+            display: inline-block;
+            margin-right: 15px;
+        }
         .reply-btn, .edit-btn, .delete-btn, .share-btn {
             position: relative;
             display: inline-block;

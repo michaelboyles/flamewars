@@ -1,8 +1,10 @@
 import { handler } from '../get-comments';
+import { COMMENT_ID_PREFIX, PAGE_ID_PREFIX } from '../aws';
 
+import type { ApiGatewayRequest, DynamoComment } from '../aws';
 import type { Context } from 'aws-lambda';
-import { ApiGatewayRequest, COMMENT_ID_PREFIX, DynamoComment, PAGE_ID_PREFIX } from '../aws';
 import type { QueryOutput } from 'aws-sdk/clients/dynamodb';
+import type { GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 
 jest.mock('../aws');
 const aws = jest.requireMock('../aws');
@@ -41,14 +43,29 @@ const mockQueryResponse = (queryOutput: QueryOutput) => {
 test('Success response', async () => {
     mockQueryResponse({ Items: [defaultComment] });
 
-    const response = await handler(defaultRequest, {} as Context, () => {});    
+    const response = await handler(defaultRequest, {} as Context, () => {});
+
+    const expectedResponseBody: GetAllCommentsResponse = {
+        comments: [{
+            id: 'abc123',
+            author: {id: 'michael1234', name: 'Michael'},
+            text: 'My comment',
+            timestamp: '2021-01-01T00:00:00.000Z',
+            status: 'normal',
+            replies: [],
+            votes: {
+                upvoters: [],
+                downvoters: []
+            }
+        }]
+    };
     expect(response).toStrictEqual({
         statusCode: 200,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH'
         },
-        body: '{"comments":[{"id":"abc123","author":{"id":"michael1234","name":"Michael"},"text":"My comment","timestamp":"2021-01-01T00:00:00.000Z","status":"normal","replies":[]}]}'
+        body: JSON.stringify(expectedResponseBody)
     });
 });
 
@@ -59,14 +76,17 @@ test('Deleted comment is not shown', async () => {
     };
     mockQueryResponse({ Items: [comment] });
 
-    const response = await handler(defaultRequest, {} as Context, () => {});    
+    const response = await handler(defaultRequest, {} as Context, () => {});
+    const expectedResponseBody: GetAllCommentsResponse = {
+        comments: []
+    }; 
     expect(response).toStrictEqual({
         statusCode: 200,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH'
         },
-        body: '{"comments":[]}'
+        body: JSON.stringify(expectedResponseBody)
     });
 });
 
@@ -77,14 +97,28 @@ test('Edited comment has flag', async () => {
     };
     mockQueryResponse({ Items: [comment] });
 
-    const response = await handler(defaultRequest, {} as Context, () => {});    
+    const response = await handler(defaultRequest, {} as Context, () => {});
+    const expectedResponseBody: GetAllCommentsResponse = {
+        comments: [{
+            id: 'abc123',
+            author: {id: 'michael1234', name: 'Michael'},
+            text: 'My comment',
+            timestamp: '2021-01-01T00:00:00.000Z',
+            status: 'edited',
+            replies: [],
+            votes: {
+                upvoters: [],
+                downvoters: []
+            }
+        }]
+    };
     expect(response).toStrictEqual({
         statusCode: 200,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH'
         },
-        body: '{"comments":[{"id":"abc123","author":{"id":"michael1234","name":"Michael"},"text":"My comment","timestamp":"2021-01-01T00:00:00.000Z","status":"edited","replies":[]}]}'
+        body: JSON.stringify(expectedResponseBody)
     });
 });
 
@@ -101,15 +135,39 @@ test('Deleted comment is shown if it has a reply', async () => {
 
     mockQueryResponse({ Items: [deletedComment, replyToDeleted] });
 
-    const response = await handler(defaultRequest, {} as Context, () => {});    
+    const response = await handler(defaultRequest, {} as Context, () => {});
+    const expectedResponseBody: GetAllCommentsResponse = {
+        comments: [{
+            id: 'abc123',
+            author: {id: 'ANONYMOUS', name: 'Anonymous'},
+            text: '',
+            timestamp: '2021-01-01T00:00:00.000Z',
+            status: 'deleted',
+            replies: [{
+                id: 'xyz789',
+                author: {id: 'michael1234', name: 'Michael'},
+                text: 'My comment',
+                timestamp: '2021-01-01T00:00:00.000Z',
+                status: 'normal',
+                replies: [],
+                votes: {
+                    upvoters: [],
+                    downvoters: []
+                }
+            }],
+            votes: {
+                upvoters: [],
+                downvoters: []
+            }
+        }]
+    };
     expect(response).toStrictEqual({
         statusCode: 200,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH'
         },
-        body: '{"comments":[{"id":"abc123","author":{"id":"ANONYMOUS","name":"Anonymous"},"text":"","timestamp":"2021-01-01T00:00:00.000Z","status":"deleted",'
-            + '"replies":[{"id":"xyz789","author":{"id":"michael1234","name":"Michael"},"text":"My comment","timestamp":"2021-01-01T00:00:00.000Z","status":"normal","replies":[]}]}]}'
+        body: JSON.stringify(expectedResponseBody)
     });
 });
 

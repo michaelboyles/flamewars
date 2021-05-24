@@ -1,0 +1,33 @@
+@use '../theme.scss' as *;
+
+.flamewars-container .votes {
+    $button-horizontal-pad: 3px;
+
+    .my-vote button {
+        color: $accent-dark;
+    }
+
+    button {
+        background: 0;
+        border: 0;
+        outline: 0;
+        padding: 0 $button-horizontal-pad;
+        color: $grey;
+
+        &:disabled {
+            color: $grey;
+        }
+
+        &:not(:disabled) {
+            cursor: pointer;
+
+            &:hover {
+                color: $accent-dark;
+            }
+        }
+    }
+
+    span:first-child {
+        margin-left: -$button-horizontal-pad; // Line things up
+    }
+}

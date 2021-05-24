@@ -22,7 +22,8 @@
                     "format": "uri"
                 }
             },
-            "required": ["id", "name"]
+            "required": ["id", "name"],
+            "additionalProperties": false
         }
     },
     "properties": {
@@ -48,8 +49,31 @@
             "items": {
                 "$ref": "#"
             }
+        },
+        "votes": {
+            "type": "object",
+            "properties": {
+                "upvoters": {
+                    "type": "array",
+                    "description": "The IDs of the users who have upvoted this comment",
+                    "items": {
+                        "type": "string",
+                        "uniqueItems": true
+                    }
+                },
+                "downvoters": {
+                    "type": "array",
+                    "description": "The IDs of the users who have downvoted this comment",
+                    "items": {
+                        "type": "string",
+                        "uniqueItems": true
+                    }
+                }
+            },
+            "required": ["upvoters", "downvoters"],
+            "additionalProperties": false
         }
     },
-    "required": ["id", "author", "text", "timestamp", "status", "replies"],
+    "required": ["id", "author", "text", "timestamp", "status", "replies", "votes"],
     "additionalProperties": false
 }

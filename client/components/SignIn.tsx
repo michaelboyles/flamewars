@@ -11,6 +11,7 @@ import './SignIn.scss';
 export interface LocalAuthorization extends Authorization {
     name: string;
     id: string;
+    fullId: string; //TODO clean this up
 }
 
 export function onlyAuthorization(localAuth: LocalAuthorization): Authorization {
@@ -38,7 +39,8 @@ export const SignIn = () => {
                 token: loginResponse.tokenId,
                 tokenProvider: 'Google',
                 name: loginResponse.getBasicProfile().getName(),
-                id: loginResponse.getId()
+                id: loginResponse.getId(),
+                fullId: 'GOOGLE/' + loginResponse.getId()
             });
         }
     };
