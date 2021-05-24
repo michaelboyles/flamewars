@@ -53,21 +53,24 @@
         "votes": {
             "type": "object",
             "properties": {
-                "up": {
-                    "type": "integer",
-                    "minimum": 0
+                "upvoters": {
+                    "type": "array",
+                    "description": "The IDs of the users who have upvoted this comment",
+                    "items": {
+                        "type": "string",
+                        "uniqueItems": true
+                    }
                 },
-                "down": {
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "myVote": {
-                    "type": "string",
-                    "enum": ["up", "down"],
-                    "description": "The direction the current user has voted on this comment. Absent if none"
+                "downvoters": {
+                    "type": "array",
+                    "description": "The IDs of the users who have downvoted this comment",
+                    "items": {
+                        "type": "string",
+                        "uniqueItems": true
+                    }
                 }
             },
-            "required": ["up", "down"],
+            "required": ["upvoters", "downvoters"],
             "additionalProperties": false
         }
     },

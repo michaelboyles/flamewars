@@ -5,7 +5,6 @@ import type { Comment, CommentId } from '../../common/types/comment';
 import type { AddCommentRequest } from '../../common/types/add-comment-request';
 import type { EditCommentRequest } from '../../common/types/edit-comment-request';
 import { MAX_COMMENT_LENGTH } from '../../constants';
-import { normalizeUrl } from '../../common/util';
 import ReactMde from 'react-mde';
 import { Markdown } from './Markdown';
 import { AuthContext } from '../context/AuthContext';
@@ -13,6 +12,7 @@ import { onlyAuthorization, SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
 import { If } from './If';
+import { encodedWindowUrl } from '../util';
 
 import './CommentForm.scss';
 // There is an -all but we don't want the preview styles
@@ -111,7 +111,7 @@ export const CommentForm = (props: Props) => {
                 authorization: onlyAuthorization(authorization)
             };
             sendRequest(
-                `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/${props.commentToEdit.id}`,
+                `${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.commentToEdit.id}`,
                 'PATCH',
                 request,
                 _comment => {
@@ -130,7 +130,7 @@ export const CommentForm = (props: Props) => {
                 authorization: onlyAuthorization(authorization)
             };
             sendRequest(
-                `${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}/new`,
+                `${AWS_GET_URL}/comments/${encodedWindowUrl()}/new`,
                 'POST',
                 request,
                 comment => { setText(''); setIsSubmitting(false); setError(null); props.afterSubmit(comment); },

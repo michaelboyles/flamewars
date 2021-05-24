@@ -33,13 +33,13 @@ export const handler = createHandler({
             },
             UpdateExpression: getUpdateExpression(request),
             ExpressionAttributeValues: expressionAttrs,
-            ConditionExpression: 'attribute_not_exists(deletedAt)' //TODO userId <> :u AND 
+            ConditionExpression: 'userId <> :u AND attribute_not_exists(deletedAt)'
         };
         return new Promise(resolve => {
             getDynamoDb().updateItem(updateComment, (err, _data) => {
                 if (err) {
                     if (err.code === 'ConditionalCheckFailedException') {
-                        resolve(errorResult(403, 'Not authorized to edit'));
+                        resolve(errorResult(403, 'Not authorized to vote on this comment'));
                     }
                     else {
                         resolve(errorResult(500, 'Server error'));

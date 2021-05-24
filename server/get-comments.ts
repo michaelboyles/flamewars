@@ -35,8 +35,8 @@ function sortToHeirarchy(items: ItemList, parentId: string) : Comment[] {
                 status: isDeleted ? 'deleted' : (isEdited ? 'edited' : 'normal'),
                 replies: children,
                 votes: {
-                    up: item?.upvoters?.SS?.length ?? 0,
-                    down: item?.downvoters?.SS?.length ?? 0
+                    upvoters: isDeleted ? [] : (item?.upvoters?.SS ?? []),
+                    downvoters: isDeleted ? [] : (item?.downvoters?.SS ?? [])
                 }
             });
         }

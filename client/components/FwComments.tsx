@@ -8,7 +8,7 @@ import { LocalAuthorization } from './SignIn';
 import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
-import { normalizeUrl } from '../../common/util';
+import { encodedWindowUrl } from '../util';
 
 import './FwComments.scss';
 
@@ -27,7 +27,7 @@ const FwComments = () => {
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
 
     useEffect(() => {
-        fetch(`${AWS_GET_URL}/comments/${encodeURIComponent(normalizeUrl(window.location.toString()))}`)
+        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}`)
             .then(response => response.json())
             .then(json => {
                 setComments((json as GetAllCommentsResponse).comments);

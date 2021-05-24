@@ -59,7 +59,7 @@ export const handler = createHandler<AddCommentRequest>({
                         timestamp: timestamp,
                         status: 'normal',
                         replies: [],
-                        votes: { up: 0, down: 0 }
+                        votes: { upvoters: [], downvoters: [] }
                     }
                 };
                 const lastSlash = event.requestContext.path.lastIndexOf('/');
