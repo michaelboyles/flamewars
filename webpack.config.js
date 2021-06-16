@@ -1,3 +1,5 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = [
     {
         name: 'Server',
@@ -62,6 +64,11 @@ module.exports = [
                     use: ['style-loader', 'css-loader', 'sass-loader']
                 }
             ]
-        }
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: 'client/index.html'
+            })
+        ]
     }
 ]
