@@ -14,8 +14,9 @@ module.exports = [
         },
         output: {
             filename: 'server/[name].js',
-            library: 'main',
-            libraryTarget: 'commonjs2'
+            library: {
+                type: 'commonjs2'
+            }
         },
         target: 'node',
         resolve: {
@@ -35,7 +36,13 @@ module.exports = [
                 }
             ]
         },
-        externals: ['aws-sdk']
+        externals: ['aws-sdk'],
+        /*optimization: {
+            splitChunks: {
+                name: 'vendor',
+                chunks: 'all'
+            }
+        }*/
     },
     {
         name: 'Client',
