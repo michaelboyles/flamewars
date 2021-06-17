@@ -7,8 +7,9 @@
     "flatten": "node build/flatten-schemas.js",
     "make-cft": "node build/make-cft.js",
     "webpack": "webpack",
+    "fix-vendor-path": "node build/fix-vendor-path.js",
     "zip": "node build/zip.js",
-    "build": "run-s gen flatten make-cft webpack zip",
+    "build": "run-s gen flatten make-cft webpack fix-vendor-path zip",
     "start": "webpack serve --mode development --open --hot",
     "test": "jest",
     "testcov": "jest --coverage"

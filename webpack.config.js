@@ -37,12 +37,12 @@ module.exports = [
             ]
         },
         externals: ['aws-sdk'],
-        /*optimization: {
+        optimization: {
             splitChunks: {
                 name: 'vendor',
                 chunks: 'all'
             }
-        }*/
+        }
     },
     {
         name: 'Client',
