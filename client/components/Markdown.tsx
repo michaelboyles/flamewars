@@ -1,6 +1,5 @@
 import React = require('react');
 import ReactMarkdown = require('react-markdown');
-import { NodeType } from 'react-markdown';
 import { ALLOW_IMAGES } from '../config';
 
 function addAutoLinks(comment: string) : string {
@@ -8,8 +7,8 @@ function addAutoLinks(comment: string) : string {
 }
 
 export const Markdown = (props: {text: string}) => {
-    const disallowedTypes: NodeType[] = ALLOW_IMAGES ? [] : ['image'];
+    const disallowedElements = ALLOW_IMAGES ? [] : ['image'];
     return (
-        <ReactMarkdown className='content' disallowedTypes={disallowedTypes}>{addAutoLinks(props.text)}</ReactMarkdown>
+        <ReactMarkdown className='content' disallowedElements={disallowedElements}>{addAutoLinks(props.text)}</ReactMarkdown>
     )
 }
