@@ -31,7 +31,12 @@ const Portrait = (props: {username: string, url: string}) => {
     return <DefaultAvatar username={props.username} bgcolour='#fff' />;
 };
 
-export const FwComment = (props: {comment: Comment}) => {
+interface Parent {
+    comment: Comment;
+    addReply: (comment: Comment) => void;
+}
+
+export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     const [replies, setReplies] = useState(props.comment.replies);
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
@@ -61,6 +66,16 @@ export const FwComment = (props: {comment: Comment}) => {
             .catch(e => console.error(e));
     };
 
+    const afterSubmitNew = (comment: Comment) => {
+        if (props.parent) {
+            props.parent.addReply(comment);
+        }
+        else {
+            setReplies(replies.concat(comment));
+        }
+        setReplyOpen(false);
+    };
+
     const afterSubmitEdit = (comment: Comment) => {
         setIsEditing(false);
         if (comment.text !== props.comment.text) {
@@ -83,6 +98,9 @@ export const FwComment = (props: {comment: Comment}) => {
                 <If condition={isEdited}>
                     <span className='edit-indicator'>Edited</span>
                 </If>
+                <If condition={Boolean(props.comment.inReplyTo?.author)}>
+                    <span className='reply-to'>Replying to <a href={'#' + props.comment.inReplyTo?.id}>{props.comment.inReplyTo?.author}</a></span>
+                </If>
                 {
                     !isEditing ? 
                         <Markdown text={isDeleted ? DELETED_MESSAGE : text} /> :
@@ -104,7 +122,8 @@ export const FwComment = (props: {comment: Comment}) => {
             </div>
             <If condition={isReplyOpen}>
                 <CommentForm
-                    afterSubmit={comment => { setReplies(replies.concat(comment)); setReplyOpen(false); }}
+                    afterSubmit={afterSubmitNew}
+                    threadId={props.parent?.comment?.id ?? props.comment.id}
                     inReplyTo={props.comment.id}
                     type='reply'
                 />
@@ -113,7 +132,16 @@ export const FwComment = (props: {comment: Comment}) => {
                 <ul className='replies'>{
                     replies
                         .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                        .map(reply => <FwComment key={reply.id} comment={reply} />)
+                        .map(reply =>
+                            <FwComment
+                                key={reply.id}
+                                comment={reply}
+                                parent={{
+                                    comment: props.comment,
+                                    addReply: reply => setReplies(replies.concat(reply))
+                                }}
+                            />
+                        )
                 }</ul>
             </If>
         </li>

@@ -25,7 +25,6 @@ const defaultComment: DynamoComment = {
     SK:          {S: COMMENT_ID_PREFIX + 'abc123'},
     pageUrl:     {S: 'example.com/test'},
     commentText: {S: 'My comment'},
-    parent:      {S: ''},
     timestamp:   {S: '2021-01-01T00:00:00.000Z'},
     author:      {S: 'Michael'},
     userId:      {S: 'michael1234'}
@@ -130,7 +129,8 @@ test('Deleted comment is shown if it has a reply', async () => {
     const replyToDeleted: DynamoComment = {
         ...defaultComment,
         SK: {S: COMMENT_ID_PREFIX + 'xyz789'},
-        parent: {S: defaultComment.SK.S }
+        threadId: {S: defaultComment.SK.S},
+        parentId: {S: defaultComment.SK.S}
     };
 
     mockQueryResponse({ Items: [deletedComment, replyToDeleted] });
@@ -153,6 +153,9 @@ test('Deleted comment is shown if it has a reply', async () => {
                 votes: {
                     upvoters: [],
                     downvoters: []
+                },
+                inReplyTo: {
+                    id: 'abc123'
                 }
             }],
             votes: {
@@ -171,3 +174,25 @@ test('Deleted comment is shown if it has a reply', async () => {
     });
 });
 
+test('Reply to non-existent comment is not shown', async () => {
+    const deletedComment: DynamoComment = {
+        ...defaultComment,
+        threadId: {S: 'doesnt-exist'},
+        parentId: {S: 'doesnt-exist'}
+    };
+
+    mockQueryResponse({ Items: [deletedComment] });
+
+    const response = await handler(defaultRequest, {} as Context, () => {});
+    const expectedResponseBody: GetAllCommentsResponse = {
+        comments: []
+    };
+    expect(response).toStrictEqual({
+        statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH'
+        },
+        body: JSON.stringify(expectedResponseBody)
+    });
+});

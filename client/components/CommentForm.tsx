@@ -37,6 +37,7 @@ interface Props {
     afterSubmit: CommentConsumer,
     buttonLabel?: string,
     type: CommentType,
+    threadId?: CommentId,   // Required if type == REPLY
     inReplyTo?: CommentId,  // Required if type == REPLY
     commentToEdit?: Comment // Required if type == EDIT
 }
@@ -124,10 +125,20 @@ export const CommentForm = (props: Props) => {
             )
         }
         else {
+            let replyFields = {};
+            if (props.inReplyTo) {
+                replyFields = {
+                    inReplyTo: {
+                        threadId: props.threadId,
+                        commentId: props.inReplyTo
+                    }
+                }
+            }
+
             const request: AddCommentRequest = {
                 comment: text,
-                inReplyTo: props.inReplyTo,
-                authorization: onlyAuthorization(authorization)
+                authorization: onlyAuthorization(authorization),
+                ...replyFields
             };
             sendRequest(
                 `${AWS_GET_URL}/comments/${encodedWindowUrl()}/new`,

@@ -1,4 +1,4 @@
-import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
+import { COMMENT_ID_PREFIX, DynamoComment, DynamoString, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 import { MAX_COMMENT_LENGTH } from '../constants';
 import { v4 as uuid } from 'uuid';
@@ -16,7 +16,6 @@ export const handler = createHandler<AddCommentRequest>({
     handle: (event, request, authResult) => {
         const commentId = uuid();
         const timestamp = new Date().toISOString();
-        const parent = request.inReplyTo ? (COMMENT_ID_PREFIX + request.inReplyTo) : '';
         const url = normalizeUrl(decodeURIComponent(event.pathParameters.url));
 
         const dynamoComment: DynamoComment = {
@@ -24,10 +23,10 @@ export const handler = createHandler<AddCommentRequest>({
             SK       : { S: COMMENT_ID_PREFIX + commentId },
             pageUrl  : { S: url },
             commentText: { S: request.comment },
-            parent   : { S: parent },
             timestamp: { S: timestamp },
             author   : { S: authResult.userDetails.name },
-            userId   : { S: authResult.userDetails.userId }
+            userId   : { S: authResult.userDetails.userId },
+            ...getReplyFields(request)
         };
         const overlongFields = getOverlongFields(dynamoComment, ['commentText']);
         if (request.comment.length > MAX_COMMENT_LENGTH) {
@@ -73,3 +72,13 @@ export const handler = createHandler<AddCommentRequest>({
             });
     }
 });
+
+function getReplyFields(request: AddCommentRequest): Record<string, DynamoString> {
+    if (request.inReplyTo) {
+        return {
+            threadId: {S: COMMENT_ID_PREFIX + request.inReplyTo.threadId},
+            parentId: {S: COMMENT_ID_PREFIX + request.inReplyTo.commentId}
+        };
+    }
+    return {};
+}

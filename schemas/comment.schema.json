@@ -50,6 +50,22 @@
                 "$ref": "#"
             }
         },
+        "inReplyTo": {
+            "type": "object",
+            "description": "Extra properties if this comment is a reply",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/commentId",
+                    "description": "The ID this comment is in reply to. Omitted if the comment is root-level"
+                },
+                "author": {
+                    "type": "string",
+                    "description": "The name of the author this comment is replying. May be omitted if the comment was deleted, etc."
+                }
+            },
+            "required": ["id"],
+            "additionalItems": false
+        },
         "votes": {
             "type": "object",
             "properties": {

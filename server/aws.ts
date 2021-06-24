@@ -39,10 +39,11 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     SK: DynamoString;
     pageUrl: DynamoString;
     commentText: DynamoString;
-    parent: DynamoString;
     timestamp: DynamoString;
     author: DynamoString;
     userId: DynamoString;
+    threadId?: DynamoString;
+    parentId?: DynamoString;
     deletedAt?: DynamoString;
     editedAt?: DynamoString;
     upvoters?: DynamoStringSet;

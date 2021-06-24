@@ -4,6 +4,11 @@
     "title": "Add comment request",
     "description": "A request to add a new comment",
     "type": "object",
+    "definitions": {
+        "commentId": {
+            "$ref": "comment.schema.json#/definitions/commentId"
+        }
+    },
     "properties": {
         "comment": {
             "type": "string",
@@ -14,8 +19,20 @@
             "description": "Authorization which proves the user has the right to add a comment"
         },
         "inReplyTo": {
-            "$ref": "comment.schema.json#/definitions/commentId",
-            "description": "The ID of the comment that this comment is in reply to. Can be omitted if the comment is not a reply."
+            "type": "object",
+            "description": "Additional properties if this request is a reply",
+            "properties": {
+                "threadId": {
+                    "$ref": "#/definitions/commentId",
+                    "description": "The ID of the comment that started this thread."
+                },
+                "commentId": {
+                    "$ref": "#/definitions/commentId",
+                    "description": "The ID of the comment that this comment is in reply to."
+                }
+            },
+            "required": ["threadId", "commentId"],
+            "additionalProperties": false
         }
     },
     "required": ["comment", "authorization"],

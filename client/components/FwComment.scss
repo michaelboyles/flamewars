@@ -27,9 +27,18 @@
         .author-name {
             font-weight: bold;
         }
-        .timestamp, .edit-indicator { 
+        .timestamp, .edit-indicator, .reply-to { 
             margin-left: 15px;
             color: $grey;
+        }
+        .reply-to a {
+            color: inherit;
+            font-weight: bold;
+            text-decoration: none;
+
+            &:hover {
+                color: $dark-grey;
+            }
         }
         .content {
             @include style.formatted-comment;
