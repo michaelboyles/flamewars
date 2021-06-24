@@ -40,6 +40,7 @@ interface Props {
     threadId?: CommentId,   // Required if type == REPLY
     inReplyTo?: CommentId,  // Required if type == REPLY
     commentToEdit?: Comment // Required if type == EDIT
+    onCancel?: () => void;
 }
 
 function sendRequest(url: string, method: 'POST' | 'PATCH', request: object, afterSubmit: CommentConsumer, onError: () => void) {
@@ -187,17 +188,22 @@ export const CommentForm = (props: Props) => {
                 }}
             />
             <div className='form-footer'>
-                {
-                    authorization ?
-                        (
-                            <SubmitButton
-                                disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
-                                label={props.buttonLabel}
-                                isSubmitting={isSubmitting}
-                            />
-                        )
-                        : <SignIn />
-                }
+                <div className='button-group'>
+                    <If condition={Boolean(props.onCancel)}>
+                        <button className='cancel' onClick={props.onCancel}>Cancel</button>
+                    </If>
+                    {
+                        authorization ?
+                            (
+                                <SubmitButton
+                                    disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
+                                    label={props.buttonLabel}
+                                    isSubmitting={isSubmitting}
+                                />
+                            )
+                            : <SignIn />
+                    }
+                </div>
                 <If condition={Boolean(error)}>
                     <span className='form-error'>{error}</span>
                 </If>

@@ -108,6 +108,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                                      afterSubmit={afterSubmitEdit}
                                      buttonLabel='Save edit'
                                      type='edit'
+                                     onCancel={() => setIsEditing(false)}
                         />
                 }
                 <If condition={!isDeleted}>
@@ -126,6 +127,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                     threadId={props.parent?.comment?.id ?? props.comment.id}
                     inReplyTo={props.comment.id}
                     type='reply'
+                    onCancel={() => setReplyOpen(false)}
                 />
             </If>
             <If condition={Boolean(replies?.length)}>
