@@ -17,12 +17,12 @@ import type { Comment } from '../../common/types/get-all-comments-response';
 
 import './FwComment.scss';
 
-const Timestamp = (props: {timestamp: Date}) => {
-    const isoTimestamp = props.timestamp.toISOString();
+const Timestamp = React.memo((props: {isoTimestamp: string}) => {
+    const date = new Date(props.isoTimestamp);
     return (
-        <time className='timestamp' dateTime={isoTimestamp} title={formatFullTime(props.timestamp)}>{formatPastDate(props.timestamp)}</time>
+        <time className='timestamp' dateTime={props.isoTimestamp} title={formatFullTime(date)}>{formatPastDate(date)}</time>
     )
-};
+});
 
 const Portrait = (props: {username: string, url: string}) => {
     if (props.url) {
@@ -94,7 +94,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             <Portrait username={props.comment.author.id} url={props.comment.author.portraitUrl}/>
             <div className={bodyClassName}>
                 <span className='author-name'>{props.comment.author.name}</span>
-                <Timestamp timestamp={new Date(props.comment.timestamp)} />
+                <Timestamp isoTimestamp={props.comment.timestamp} />
                 <If condition={isEdited}>
                     <span className='edit-indicator'>Edited</span>
                 </If>
