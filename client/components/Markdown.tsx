@@ -1,5 +1,5 @@
-import React = require('react');
-import ReactMarkdown = require('react-markdown');
+import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 import { ALLOW_IMAGES } from '../config';
 
 function addAutoLinks(comment: string) : string {

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import identicon = require('svg-identicon');
-import md5 = require('md5');
+import * as identicon from 'svg-identicon';
+import * as md5 from 'md5';
 
 export const DefaultAvatar = (props: {username: string, bgcolour: string}) => {
     const avatar = identicon({

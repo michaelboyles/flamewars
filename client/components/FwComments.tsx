@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AWS_GET_URL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
-import { FwComment } from './FwComment';
 import { CommentForm } from './CommentForm';
 import { LocalAuthorization } from './SignIn';
 import { AuthContext } from '../context/AuthContext';
@@ -21,6 +20,10 @@ const jumpToComment = () => {
         setTimeout(() => document.getElementById(id)?.scrollIntoView({behavior: 'smooth'}), 50);
     }
 };
+
+const FwComment = React.lazy(
+    () => import('./FwComment').then(module => ({ default: module.FwComment }))
+);
 
 const FwComments = () => {
     const [comments, setComments] = useState([] as Comment[]);
@@ -45,7 +48,7 @@ const FwComments = () => {
                     <ul className='comments'>
                         { comments
                             .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                            .map(comment => <FwComment key={comment.id} comment={comment} />) }
+                            .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
                     </ul>
                 </AuthContext.Provider>
             </UrlFragmentContextProvider>

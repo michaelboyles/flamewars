@@ -1,4 +1,4 @@
-import React = require('react');
+import * as React from 'react';
 import { useContext } from 'react';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import type { Authorization } from '../../common/types/add-comment-request';

@@ -1,4 +1,4 @@
-import React = require('react');
+import * as React from 'react';
 
 export const GoogleIcon = (props: {color?: string, className?: string}) => {
     return (
