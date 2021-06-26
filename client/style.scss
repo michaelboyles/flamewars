@@ -34,12 +34,14 @@
     }
     pre code {
         border-color: $accent-dark;
+        overflow-x: auto;
     }
     blockquote {
         margin-left: 0;
         margin-right: 0;
         border-color: $grey;
         font-style: italic;
+        white-space: normal;
 
         > *:first-child {
             margin-top: 0;
