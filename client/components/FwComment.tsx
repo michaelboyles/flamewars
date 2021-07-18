@@ -13,7 +13,7 @@ import { If } from './If';
 import { Votes } from './Votes';
 import { encodedWindowUrl, isOwner } from '../util';
 
-import type { Comment } from '../../common/types/get-all-comments-response';
+import type { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 
 import './FwComment.scss';
 
@@ -37,7 +37,9 @@ interface Parent {
 }
 
 export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
-    const [replies, setReplies] = useState(props.comment.replies);
+    const [replies, setReplies] = useState<Record<string, Comment>>({});
+    const [nextUrl, setNextUrl] = useState(props.comment.replies.uri);
+
     const [isReplyOpen, setReplyOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
     const [isEditing, setIsEditing] = useState(false);
@@ -52,6 +54,10 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             setIsEditing(false);
         }
     }, [authorization, isEditing]);
+
+    const addReply = (reply: Comment) => {
+        setReplies({...replies, [reply.id]: reply})
+    };
 
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
@@ -71,7 +77,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             props.parent.addReply(comment);
         }
         else {
-            setReplies(replies.concat(comment));
+            addReply(comment);
         }
         setReplyOpen(false);
     };
@@ -84,7 +90,29 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
         }
     };
 
-    if (isDeleted && !replies.length) return null;
+    const loadMoreReplies = async () => {
+        if (!nextUrl) return;
+        const resp = await fetch(nextUrl);
+        if (resp.ok) {
+            const json = await resp.json() as GetAllCommentsResponse;
+            setReplies({
+                ...replies,
+                ...json.comments.reduce((result, comment) => { return {...result, [comment.id]: comment}; }, {})
+            });
+            if (json.continuationToken) {
+                setNextUrl(`${props.comment.replies.uri}?continuationToken=${json.continuationToken}`);
+            }
+            else {
+                setNextUrl(undefined);
+            }
+        }
+        else {
+            console.error('Failed to load replies');
+        }
+    }
+
+    const numReplies = props.comment?.replies?.count ?? 0;
+    if (isDeleted && numReplies === 0) return null;
 
     const id = 'comment-' + props.comment.id;
     const bodyClassName = 'body' + (fragment?.endsWith(props.comment.id) ? ' is-selected' : '');
@@ -130,9 +158,9 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                     onCancel={() => setReplyOpen(false)}
                 />
             </If>
-            <If condition={Boolean(replies?.length)}>
+            <If condition={Object.keys(replies).length > 0}>
                 <ul className='replies'>{
-                    replies
+                    Object.values(replies)
                         .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
                         .map(reply =>
                             <FwComment
@@ -140,11 +168,21 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                                 comment={reply}
                                 parent={{
                                     comment: props.comment,
-                                    addReply: reply => setReplies(replies.concat(reply))
+                                    addReply
                                 }}
                             />
                         )
                 }</ul>
+            </If>
+            <If condition={numReplies > 0 && !!nextUrl}>
+                <button onClick={loadMoreReplies}>
+                    <If condition={Object.keys(replies).length === 0}>
+                        View {numReplies} replies
+                    </If>
+                    <If condition={Object.keys(replies).length > 0}>
+                        Show more replies
+                    </If>
+                </button>
             </If>
         </li>
     );

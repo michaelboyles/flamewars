@@ -1,5 +1,5 @@
-import { COMMENT_ID_PREFIX, DynamoComment, DynamoString, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } from './aws';
-import { PutItemInput } from 'aws-sdk/clients/dynamodb';
+import { COMMENT_ID_PREFIX, DynamoComment, DynamoString, getDynamoDb, getOverlongFields, getRequestUrl, PAGE_ID_PREFIX } from './aws';
+import { PutItemInput, UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { MAX_COMMENT_LENGTH } from '../constants';
 import { v4 as uuid } from 'uuid';
 import { createHandler, errorResult } from './common';
@@ -14,8 +14,9 @@ export const handler = createHandler<AddCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
     handle: (event, request, authResult) => {
-        const commentId = uuid();
-        const timestamp = new Date().toISOString();
+        const now = new Date();
+        const timestamp = now.toISOString();
+        const commentId = generateCommentId(now);
         const url = normalizeUrl(decodeURIComponent(event.pathParameters.url));
 
         const dynamoComment: DynamoComment = {
@@ -26,6 +27,7 @@ export const handler = createHandler<AddCommentRequest>({
             timestamp: { S: timestamp },
             author   : { S: authResult.userDetails.name },
             userId   : { S: authResult.userDetails.userId },
+            numReplies: { N: '0' },
             ...getReplyFields(request)
         };
         const overlongFields = getOverlongFields(dynamoComment, ['commentText']);
@@ -41,9 +43,27 @@ export const handler = createHandler<AddCommentRequest>({
             Item: dynamoComment
         };
 
-        return dynamo.putItem(params)
-            .promise()
+        const promises = [dynamo.putItem(params).promise()];
+        if (request.inReplyTo) {
+            const input: UpdateItemInput = {
+                TableName: process.env.TABLE_NAME,
+                Key: {
+                    PK: { S: PAGE_ID_PREFIX + url },
+                    SK: { S: COMMENT_ID_PREFIX + request.inReplyTo.threadId }
+                },
+                UpdateExpression: 'ADD numReplies :inc',
+                ExpressionAttributeValues: {':inc': {N: '1'}},
+            };
+
+            promises.push(dynamo.updateItem(input).promise());
+        }
+        
+        return Promise.all(promises)
             .then(() => {
+                const requestUrl = getRequestUrl(event);
+                const lastSlash = requestUrl.lastIndexOf('/'); // remove client's generated ID
+                const location = requestUrl.substr(0, lastSlash + 1) + commentId;
+
                 const body: AddCommentResponse = {
                     comment: {
                         id: commentId,
@@ -54,16 +74,13 @@ export const handler = createHandler<AddCommentRequest>({
                         text: request.comment,
                         timestamp: timestamp,
                         status: 'normal',
-                        replies: [],
+                        replies: {
+                            uri: location + '/replies',
+                            count: 0
+                        },
                         votes: { upvoters: [], downvoters: [] }
                     }
                 };
-                const lastSlash = event.requestContext.path.lastIndexOf('/');
-                const location = 'https://'
-                    + event.requestContext.domainName
-                    + event.requestContext.path.substr(0, lastSlash + 1) // remove client's generated ID
-                    + commentId;
-
                 return {
                     statusCode: 201,
                     body,
@@ -72,6 +89,15 @@ export const handler = createHandler<AddCommentRequest>({
             });
     }
 });
+
+function generateCommentId(time: Date) {
+    // Use timestamp in millis so that comments are sortable by ID. It's needed by Dynamo to ensure ordering
+    // when querying. UUID is used as a tie-breaker in case two comments land on the same millisecond. Just
+    // take the first part so it's easier to work with.
+    const id = uuid();
+    const shortId = id.substr(0, id.indexOf('-'));
+    return time.getTime() + '-' + shortId;
+}
 
 function getReplyFields(request: AddCommentRequest): Record<string, DynamoString> {
     if (request.inReplyTo) {

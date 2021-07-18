@@ -45,10 +45,20 @@
             "enum": ["normal", "edited", "deleted"]
         },
         "replies": {
-            "type": "array",
-            "items": {
-                "$ref": "#"
-            }
+            "type": "object",
+            "properties": {
+                "uri": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URI to access the replies. Omitted if count is zero"
+                },
+                "count": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            },
+            "required": ["count"],
+            "additionalProperties": false
         },
         "inReplyTo": {
             "type": "object",

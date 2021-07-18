@@ -9,6 +9,10 @@
             "items": {
                 "$ref": "comment.schema.json" 
             }
+        },
+        "continuationToken": {
+            "type": "string",
+            "description": "A token to get the next page of items, absent if no more pages remain"
         }
     },
     "required": ["comments"],

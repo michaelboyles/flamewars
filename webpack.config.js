@@ -9,6 +9,7 @@ module.exports = [
             'delete-comment': './server/delete-comment.ts',
             'edit-comment': './server/edit-comment.ts',
             'get-comments': './server/get-comments.ts',
+            'get-replies': './server/get-replies.ts',
             'get-number-of-comments': './server/get-number-of-comments.ts',
             'vote': './server/vote.ts'
         },

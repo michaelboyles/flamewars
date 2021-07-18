@@ -1,4 +1,4 @@
-import { AttributeValue, PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb';
+import { AttributeValue, ItemList, PutItemInputAttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb';
 import { config, DynamoDB } from 'aws-sdk';
 import { MAX_DB_FIELD_LENGTH } from '../constants';
 
@@ -34,6 +34,10 @@ export interface DynamoBoolean {
     BOOL: boolean;
 }
 
+export interface DynamoNumber {
+    N: string;
+}
+
 export interface DynamoComment extends PutItemInputAttributeMap {
     PK: DynamoString;
     SK: DynamoString;
@@ -48,6 +52,7 @@ export interface DynamoComment extends PutItemInputAttributeMap {
     editedAt?: DynamoString;
     upvoters?: DynamoStringSet;
     downvoters?: DynamoStringSet;
+    numReplies: DynamoNumber;
 }
 
 export function getDynamoDb() {
@@ -69,4 +74,32 @@ export function getContentType(event: ApiGatewayRequest) {
         }
     }
     return undefined;
+}
+
+export function removeCommentIdPrefix(id: string) {
+    return id.substr(COMMENT_ID_PREFIX.length);
+}
+
+export function continuationTokenToStr(key: DynamoDB.Key): string | undefined {
+    if (key) {
+        const keyStr = JSON.stringify(key);
+        return Buffer.from(keyStr).toString('base64');
+    }
+    return undefined;
+}
+
+export function parseContinuationToken(event: ApiGatewayRequest) {
+    if (event?.queryStringParameters?.continuationToken) {
+        const buffer = Buffer.from(event.queryStringParameters.continuationToken, 'base64');
+        const key = JSON.parse(buffer.toString('ascii'));
+        // If it doesn't have these fields, it's a bad request
+        if (key?.PK?.S && key?.SK?.S) {
+            return key;
+        }
+    }
+    return undefined;
+}
+
+export function getRequestUrl(event: ApiGatewayRequest) {
+    return `https://${event.requestContext.domainName}${event.requestContext.path}`;
 }

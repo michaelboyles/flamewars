@@ -10,6 +10,7 @@ Parameters:
         Description: The name of the S3 bucket containing the server's zipped code bundle
         Type: String
         MinLength: 1
+        Default: michaels-default
     ServerCodeFilename:
         Description: The filename of the server's zipped code bundle within the given S3 bucket
         Type: String
@@ -19,6 +20,7 @@ Parameters:
         Description: The Google client ID to use for verifying user sign-in
         Type: String
         AllowedPattern: ^.+\.apps\.googleusercontent\.com$
+        Default: 164705233134-movagpgcoeepgc24qksgil15k2qpde8e.apps.googleusercontent.com
 Resources:
     IAMRole:
         Type: "AWS::IAM::Role"
@@ -259,6 +261,34 @@ Resources:
             Principal: "apigateway.amazonaws.com"
             SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/*"
 
+    LambdaGetReplies:
+        Type: AWS::Lambda::Function
+        Properties:
+            Description: Handles GET requests to serve all replies for a comment
+            FunctionName: !Sub "${AWS::StackName}-get-replies"
+            Runtime: nodejs14.x
+            MemorySize: 128
+            Handler: get-replies.handler
+            Code: 
+                S3Bucket: !Ref ServerCodeBucket
+                S3Key: !Ref ServerCodeFilename
+            Role: !GetAtt IAMRole.Arn
+            Timeout: 3
+            TracingConfig: 
+                Mode: PassThrough
+            Environment:
+                Variables:
+                    TABLE_NAME: !Sub "${AWS::StackName}-comments"
+                    CORS_ALLOW_ORIGIN: !Ref CorsAllowOrigin
+
+    LambdaPermissionGetReplies:
+        Type: AWS::Lambda::Permission
+        Properties:
+            Action: lambda:InvokeFunction
+            FunctionName: !GetAtt LambdaGetReplies.Arn
+            Principal: apigateway.amazonaws.com
+            SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/*"
+
     ApiGatewayRestApi:
         Type: "AWS::ApiGateway::RestApi"
         Properties:
@@ -302,6 +332,13 @@ Resources:
         Properties:
             RestApiId: !Ref ApiGatewayRestApi
             PathPart: "votes"
+            ParentId: !Ref ApiGatewayResourceSingleComment
+
+    ApiGatewayResourceReplies:
+        Type: "AWS::ApiGateway::Resource"
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            PathPart: "replies"
             ParentId: !Ref ApiGatewayResourceSingleComment
 
     ApiGatewayMethodCommentCountOPTIONS:
@@ -601,7 +638,7 @@ Resources:
                 StatusCode: "200"
             Integration:
                 Type: "MOCK"
-                CacheNamespace: !Ref ApiGatewayResourceCommentsForUrl
+                CacheNamespace: !Ref ApiGatewayResourceVotes
                 IntegrationResponses: 
                   - ResponseParameters: 
                         "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
@@ -609,6 +646,67 @@ Resources:
                         "method.response.header.Access-Control-Allow-Headers": "'Content-Type'"
                     ResponseTemplates: {}
                     StatusCode: "200"
+                PassthroughBehavior: NEVER
+                RequestTemplates: 
+                    "application/json": "{\"statusCode\": 200}"
+                TimeoutInMillis: 29000
+
+    ApiGatewayMethodRepliesGET:
+        Type: AWS::ApiGateway::Method
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            ResourceId: !Ref ApiGatewayResourceReplies
+            HttpMethod: GET
+            AuthorizationType: NONE
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - ResponseModels: 
+                    "application/json": Empty
+                ResponseParameters: 
+                    "method.response.header.Access-Control-Allow-Origin": false
+                StatusCode: 200
+            Integration: 
+                CacheNamespace: !Ref ApiGatewayResourceReplies
+                ContentHandling: CONVERT_TO_TEXT
+                IntegrationHttpMethod: POST
+                IntegrationResponses: 
+                  - ResponseParameters: 
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
+                    ResponseTemplates: {}
+                    StatusCode: 200
+                PassthroughBehavior: WHEN_NO_MATCH
+                TimeoutInMillis: 29000
+                Type: AWS_PROXY
+                Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaGetReplies}/invocations"
+
+    ApiGatewayMethodRepliesOPTIONS:
+        Type: "AWS::ApiGateway::Method"
+        Properties:
+            RestApiId: !Ref ApiGatewayRestApi
+            ResourceId: !Ref ApiGatewayResourceReplies
+            HttpMethod: OPTIONS
+            AuthorizationType: NONE
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - ResponseModels: 
+                    "application/json": Empty
+                ResponseParameters: 
+                    "method.response.header.Access-Control-Allow-Origin": true
+                    "method.response.header.Access-Control-Allow-Methods": true
+                    "method.response.header.Access-Control-Allow-Headers": true
+                StatusCode: 200
+            Integration:
+                Type: "MOCK"
+                CacheNamespace: !Ref ApiGatewayResourceReplies
+                IntegrationResponses: 
+                  - ResponseParameters: 
+                        "method.response.header.Access-Control-Allow-Origin": !Sub "'${CorsAllowOrigin}'"
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,PATCH,DELETE,OPTIONS'"
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'"
+                    ResponseTemplates: {}
+                    StatusCode: 200
                 PassthroughBehavior: NEVER
                 RequestTemplates: 
                     "application/json": "{\"statusCode\": 200}"
@@ -686,7 +784,9 @@ Resources:
             ApiGatewayMethodSingleCommentPOST,
             ApiGatewayMethodSingleCommentOPTIONS,
             ApiGatewayMethodVotesPATCH,
-            ApiGatewayMethodVotesOPTIONS
+            ApiGatewayMethodVotesOPTIONS,
+            ApiGatewayMethodRepliesGET,
+            ApiGatewayMethodRepliesOPTIONS
         ]
         Properties:
             RestApiId: !Ref ApiGatewayRestApi

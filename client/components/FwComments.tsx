@@ -8,6 +8,7 @@ import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
+import { If } from './If';
 
 import './FwComments.scss';
 
@@ -28,16 +29,23 @@ const FwComment = React.lazy(
 const FwComments = () => {
     const [comments, setComments] = useState([] as Comment[]);
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
+    const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
-    useEffect(() => {
-        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}`)
+    const loadComments = () => {
+        const queryStr = continuationToken ? `?continuationToken=${continuationToken}` : '';
+        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}${queryStr}`)
             .then(response => response.json())
             .then(json => {
-                setComments((json as GetAllCommentsResponse).comments);
+                const response = json as GetAllCommentsResponse;
+                setComments(comments.concat(response.comments));
+                setContinuationToken(response.continuationToken);
+                // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
                 jumpToComment();
             })
             .catch(console.error);
-    }, []);
+    }
+
+    useEffect(() => loadComments(), []);
 
     return (
         <section className='flamewars-container'>
@@ -50,6 +58,9 @@ const FwComments = () => {
                             .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
                             .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
                     </ul>
+                    <If condition={!!continuationToken}>
+                        <button onClick={loadComments}>Load more</button>
+                    </If>
                 </AuthContext.Provider>
             </UrlFragmentContextProvider>
         </section>
