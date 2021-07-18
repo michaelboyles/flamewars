@@ -1,13 +1,13 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/michaelboyles/flamewars/Node.js%20build) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/michaelboyles/flamewars?sort=semver) ![License](https://img.shields.io/github/license/michaelboyles/flamewars)
 
-Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) comment engine. You host it yourself in AWS. It is
-designed for websites which run without their own server, for example a statically generated blog or website (Hugo, Jekyll) served
-on [GitHub Pages](https://pages.github.com/). You can install it in just a few minutes.
+Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) comment engine. You host it yourself in AWS. It's
+designed for websites which run without their own server, like a statically generated website (Hugo, Jekyll) served on
+[GitHub Pages](https://pages.github.com/). You can install it in just a few minutes.
 
 Comments support [markdown](https://en.wikipedia.org/wiki/Markdown), including lists, code blocks and images.
 
 A serverless architecture allows you to pay only for what you use. For a small or medium-sized blog with a relatively low number of
-visitors, this is likely to be much more cost-effective than a subscription (or even completely free).
+visitors, that's likely to be much more cost-effective than a subscription and can even be free.
 
 ## Installation
 
@@ -70,10 +70,10 @@ to ensure you don't run into any nasty surprises.
 
 ## Alternatives
  
-Here are some alternative projects which may work for you. For various reasons, they didn't work for me.
+Here are some alternative projects which may work for you. For various reasons, I decided not to use them.
 
  - [Disqus](https://disqus.com/): ad-supported or fixed monthly subscription
  - [Commento](https://commento.io/): subscription, or requires a server running 24/7
- - [Utterances](https://github.com/utterance/utterances): commenters require GitHub
- - [Lambda Comments](https://github.com/jimpick/lambda-comments) - Not maintained, difficult installation
- - [ISSO](https://posativ.org/isso/docs/install/) - requires a server
+ - [Utterances](https://github.com/utterance/utterances): commenters require GitHub, and must authorize the app
+ - [Lambda Comments](https://github.com/jimpick/lambda-comments): not maintained, lacks features, difficult installation
+ - [ISSO](https://posativ.org/isso/docs/install/): requires a server
