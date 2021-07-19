@@ -23,11 +23,25 @@ export const handler = createHandler<DeleteCommentRequest>({
                 ':ts': { S: new Date().toISOString() },
                 ':u': { S: authResult.userDetails.userId }
             },
+            ReturnValues: 'ALL_OLD', 
             ConditionExpression: 'userId = :u AND attribute_not_exists(deletedAt)'
         };
 
         try {
-            await dynamo.updateItem(deleteComment).promise();
+            const result = await dynamo.updateItem(deleteComment).promise();
+            // If it's a reply, update the parent to reflect the new reply count
+            if (result.Attributes?.threadId?.S) {
+                const decrementParentReplyCount: UpdateItemInput = {
+                    TableName: process.env.TABLE_NAME,
+                    Key: {
+                        PK: { S: PAGE_ID_PREFIX + url },
+                        SK: { S: result.Attributes.threadId.S }
+                    },
+                    UpdateExpression: 'ADD numReplies :minusOne',
+                    ExpressionAttributeValues: {':minusOne': {N: '-1'}}
+                };
+                await dynamo.updateItem(decrementParentReplyCount).promise();
+            }
             return successResult({success: true});
         }
         catch (err) {
