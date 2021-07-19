@@ -10,7 +10,7 @@ const dynamo = getDynamoDb();
 export const handler = createHandler<EditCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: (event, request, authResult) => {
+    handle: async (event, request, authResult) => {
         const url = decodeURIComponent(event.pathParameters.url);
         const commentId = event.pathParameters.comment;
     
@@ -37,20 +37,18 @@ export const handler = createHandler<EditCommentRequest>({
             ExpressionAttributeValues: expressionAttrs,
             ConditionExpression: 'userId = :u AND attribute_not_exists(deletedAt) AND commentText <> :c'
         };
-        return new Promise(resolve => {
-            dynamo.updateItem(updateComment, (err, _data) => {
-                if (err) {
-                    if (err.code === 'ConditionalCheckFailedException') {
-                        return errorResult(403, 'Not authorized to edit');
-                    }
-                    else {
-                        return errorResult(500, 'Server error');
-                    }
-                }
-                else {
-                    resolve(successResult({success: true}));
-                }
-            })
-        });
+
+        try {
+            await dynamo.updateItem(updateComment).promise();
+            return successResult({success: true})
+        }
+        catch (err) {
+            if (err.code === 'ConditionalCheckFailedException') {
+                return errorResult(403, 'Not authorized to edit');
+            }
+            else {
+                return errorResult(500, 'Server error');
+            }
+        }
     }
 });
