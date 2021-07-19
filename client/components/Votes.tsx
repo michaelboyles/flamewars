@@ -64,24 +64,23 @@ export const Votes = (props: {comment: Comment}) => {
         });
     };
 
-    const onUpClick = () => {
-        if (myVote === 'up') removeVote(); else vote('up');
-    };
-    const onDownClick = () => {
-        if (myVote === 'down') removeVote(); else vote('down');
-    };
+    const onUpClick = () => (myVote === 'up') ? removeVote() : vote('up');
+    const onDownClick = () => (myVote === 'down') ? removeVote() : vote('down');
 
+    const upvoteLabel = (myVote === 'up') ? 'Remove like' : 'Like'; 
+    const downvoteLabel = (myVote === 'down') ? 'Remove dislike' : 'Dislike';
+    
     const ownerOrNotSignedIn = !authorization || isOwner(authorization, props.comment);
     return (
         <div className='votes'>
             <span className={'upvotes' + (myVote === 'up' ? myVoteClass : '')}>
-                <button onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label='Like' title='Like'>
+                <button onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
                     ⇧
                 </button>
                 {votes.upvoters.length}
             </span>
             <span className={'downvotes' + (myVote === 'down' ? myVoteClass : '')}>
-                <button onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label='Dislike' title='Dislike'>
+                <button onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label={downvoteLabel} title={downvoteLabel}>
                     ⇩
                 </button>
                 {votes.downvoters.length}
