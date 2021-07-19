@@ -112,7 +112,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     }
 
     const numReplies = props.comment?.replies?.count ?? 0;
-    if (isDeleted && numReplies === 0) return null;
+    if (isDeleted && numReplies === 0 && Object.keys(replies).length === 0) return null;
 
     const id = 'comment-' + props.comment.id;
     const bodyClassName = 'body' + (fragment?.endsWith(props.comment.id) ? ' is-selected' : '');
