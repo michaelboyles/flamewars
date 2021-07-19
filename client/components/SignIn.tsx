@@ -4,7 +4,7 @@ import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 're
 import type { Authorization } from '../../common/types/add-comment-request';
 import { GOOGLE_CLIENT_ID } from '../config'
 import { AuthContext } from '../context/AuthContext';
-import { GoogleIcon } from './GoogleIcon';
+import { GoogleIcon } from './svg/GoogleIcon';
 
 import './SignIn.scss';
 

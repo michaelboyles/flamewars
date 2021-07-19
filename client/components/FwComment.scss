@@ -2,6 +2,8 @@
 @use '../style.scss';
 
 .flamewars-container .comment {
+    $reply-indent: 65px;
+
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -124,8 +126,35 @@
     }
     .replies {
         list-style-type: none;
-        width: calc(100% - 65px);
-        margin: 0 0 0 65px;
+        width: calc(100% - #{$reply-indent});
+        margin: 0 0 0 $reply-indent;
         padding: 0;
+    }
+    button.view-replies {
+        color: $accent;
+        font-size: 14px;
+        margin-left: $reply-indent;
+        padding: 1px 4px;
+        background: none;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        user-select: none;
+
+        .down-arrow {
+            fill: $accent;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-right: 10px;
+        }
+
+        &:hover {
+            color: $accent-dark;
+
+            .down-arrow {
+                fill: $accent-dark;
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { If } from './If';
 import { Votes } from './Votes';
 import { encodedWindowUrl, isOwner } from '../util';
+import { DownArrow } from './svg/DownArrow';
 
 import type { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 
@@ -175,9 +176,10 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 }</ul>
             </If>
             <If condition={numReplies > 0 && !!nextUrl}>
-                <button onClick={loadMoreReplies}>
+                <button className='view-replies' onClick={loadMoreReplies}>
+                    <DownArrow />
                     <If condition={Object.keys(replies).length === 0}>
-                        View {numReplies} replies
+                        {`View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}`}
                     </If>
                     <If condition={Object.keys(replies).length > 0}>
                         Show more replies
