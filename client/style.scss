@@ -56,3 +56,19 @@
         border-top: 1px solid $grey;
     }
 }
+
+@mixin button {
+    background-color: $accent;
+    color: white;
+    font-size: 14px;
+    padding: 7px 15px;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        background-color: $accent-dark;
+    }
+}

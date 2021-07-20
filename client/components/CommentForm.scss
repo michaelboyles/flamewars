@@ -140,20 +140,8 @@
             display: flex;
 
             .cancel, button[type="submit"] {
-                background-color: $accent;
-                color: white;
-                font-size: 14px;
-                padding: 7px 15px;
-                border-radius: 4px;
-                outline: none;
-                border: none;
-                cursor: pointer;
-                user-select: none;
+                @include style.button;
                 margin-left: 15px;
-        
-                &:hover {
-                    background-color: $accent-dark;
-                }
         
                 .loading-spinner {
                     margin-left: 10px;

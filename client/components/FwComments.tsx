@@ -11,6 +11,7 @@ import { encodedWindowUrl } from '../util';
 import { If } from './If';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import { LoadButton } from './LoadButton';
 
 import './FwComments.scss';
 
@@ -35,24 +36,24 @@ const FwComments = () => {
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
     const [nextUrl, setNextUrl] = useState(baseUrl);
 
-    const loadComments = () => {
-        if (!nextUrl) return;
-        fetch(nextUrl)
-            .then(response => response.json())
-            .then(json => {
-                const response = json as GetAllCommentsResponse;
-                setComments(comments.concat(response.comments));
-                if (response.continuationToken) {
-                    setNextUrl(`${baseUrl}?continuationToken=${response.continuationToken}`)
-                }
-                else {
-                    setNextUrl(undefined);
-                }
-                // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
-                jumpToComment();
-            })
-            .catch(console.error);
-    }
+    const loadComments = async () => {
+        if (!nextUrl) return Promise.resolve();
+        try {
+            const response = await fetch(nextUrl);
+            const json = await response.json() as GetAllCommentsResponse;
+            setComments(comments.concat(json.comments));
+            if (json.continuationToken) {
+                setNextUrl(`${baseUrl}?continuationToken=${json.continuationToken}`);
+            }
+            else {
+                setNextUrl(undefined);
+            }
+            // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
+            jumpToComment();
+        } catch (message) {
+            return console.error(message);
+        }
+    };
 
     const triggerRef = useRef();
     const entry = useIntersectionObserver(triggerRef);
@@ -79,7 +80,9 @@ const FwComments = () => {
                     </ul>
                     <div ref={triggerRef} className='infinite-scroll-trigger'>
                         <If condition={!!nextUrl}>
-                            {USE_INFINITE_SCROLL ? <LoadingSpinner /> : <button onClick={loadComments}>Load more</button>}
+                            {USE_INFINITE_SCROLL ?
+                                <LoadingSpinner /> :
+                                <LoadButton className='load-more-comments' load={loadComments} />}
                         </If>
                     </div>
                 </AuthContext.Provider>

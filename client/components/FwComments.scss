@@ -1,4 +1,5 @@
 @use '../theme.scss' as *;
+@use '../style.scss';
 
 .flamewars-container {
     .comments {
@@ -19,5 +20,11 @@
             --color: #{$almost-black};
             padding: 1em 0;
         }
+    }
+
+    button.load-more-comments {
+        @include style.button;
+        margin: 1em 0;
+        width: 100%;
     }
 }

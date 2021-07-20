@@ -13,6 +13,7 @@ import { If } from './If';
 import { Votes } from './Votes';
 import { encodedWindowUrl, isOwner } from '../util';
 import { DownArrow } from './svg/DownArrow';
+import { LoadButton } from './LoadButton';
 
 import type { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 
@@ -176,15 +177,22 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 }</ul>
             </If>
             <If condition={numReplies > 0 && !!nextUrl}>
-                <button className='view-replies' onClick={loadMoreReplies}>
-                    <DownArrow />
-                    <If condition={Object.keys(replies).length === 0}>
-                        {`View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}`}
-                    </If>
-                    <If condition={Object.keys(replies).length > 0}>
-                        Show more replies
-                    </If>
-                </button>
+                <LoadButton
+                    className='view-replies'
+                    load={loadMoreReplies}
+                    normalLabel={
+                        <>
+                            <DownArrow />
+                            {Object.keys(replies).length === 0 ?
+                                `View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}` : 'Show more replies'}
+                        </>
+                    }
+                    loadingLabel={
+                        <>
+                            <DownArrow /> Loading...
+                        </>
+                    }
+                />
             </If>
         </li>
     );
