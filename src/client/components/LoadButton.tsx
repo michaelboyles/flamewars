@@ -4,6 +4,7 @@ import { ReactNode, useState, ButtonHTMLAttributes } from 'react';
 interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onclick'> {
     normalLabel?: ReactNode;
     loadingLabel?: ReactNode;
+    visible?: boolean;
     load: () => Promise<any>;
 }
 
@@ -13,8 +14,11 @@ export const LoadButton = (props: Props) => {
         normalLabel = 'Load more',
         loadingLabel = 'Loading...',
         load,
+        visible = true,
         ...buttonProps
     } = props;
+
+    if (!visible) return null;
 
     const onClick = async () => {
         setIsLoading(true);

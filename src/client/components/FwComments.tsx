@@ -79,11 +79,10 @@ const FwComments = () => {
                             .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
                     </ul>
                     <div ref={triggerRef} className='infinite-scroll-trigger'>
-                        <If condition={!!nextUrl}>
-                            {USE_INFINITE_SCROLL ?
-                                <LoadingSpinner /> :
-                                <LoadButton className='load-more-comments' load={loadComments} />}
+                        <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
+                            <LoadingSpinner />
                         </If>
+                        <LoadButton className='load-more-comments' load={loadComments} visible={!!nextUrl && !USE_INFINITE_SCROLL} />
                     </div>
                 </AuthContext.Provider>
             </UrlFragmentContextProvider>

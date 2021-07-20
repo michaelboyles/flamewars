@@ -175,24 +175,19 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                         )
                 }</ul>
             </If>
-            <If condition={numReplies > 0 && !!nextUrl}>
-                <LoadButton
-                    className='view-replies'
-                    load={loadMoreReplies}
-                    normalLabel={
-                        <>
-                            <DownArrow />
-                            {Object.keys(replies).length === 0 ?
-                                `View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}` : 'Show more replies'}
-                        </>
-                    }
-                    loadingLabel={
-                        <>
-                            <DownArrow /> Loading...
-                        </>
-                    }
-                />
-            </If>
+            <LoadButton
+                className='view-replies'
+                load={loadMoreReplies}
+                normalLabel={
+                    <>
+                        <DownArrow />
+                        {Object.keys(replies).length === 0 ?
+                            `View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}` : 'Show more replies'}
+                    </>
+                }
+                loadingLabel={<><DownArrow /> Loading...</>}
+                visible={numReplies > 0 && !!nextUrl}
+            />
         </li>
     );
 };
