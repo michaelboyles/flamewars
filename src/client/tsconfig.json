@@ -3,6 +3,9 @@
         "jsx": "react",
         "module": "esnext",
         "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true
     }
 }

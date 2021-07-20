@@ -1,4 +1,4 @@
-import { AttributeValue, ItemList, PutItemInputAttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb';
+import { AttributeValue, PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb';
 import { config, DynamoDB } from 'aws-sdk';
 import { MAX_DB_FIELD_LENGTH } from '../constants';
 

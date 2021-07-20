@@ -7,7 +7,7 @@ function useIntersectionObserver(elementRef: RefObject<Element>): IntersectionOb
     const node = elementRef?.current;
     const hasIOSupport = !!window.IntersectionObserver;
 
-    if (!hasIOSupport || !node) return;
+    if (!hasIOSupport || !node) return undefined;
 
     const observer = new IntersectionObserver(entries => setEntry(entries[0]));
     observer.observe(node);

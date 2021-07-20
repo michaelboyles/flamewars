@@ -85,7 +85,7 @@ const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: b
 }
 
 export const CommentForm = (props: Props) => { 
-    const [text, setText] = useState(props?.commentToEdit?.text ?? '');
+    const [text, setText] = useState(props.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
@@ -101,7 +101,7 @@ export const CommentForm = (props: Props) => {
 
         setIsSubmitting(true);
         if (props.type === 'edit') {
-            if (text === props.commentToEdit.text) {
+            if (text === props.commentToEdit?.text) {
                 setIsSubmitting(false);
                 setError(null);
                 props.afterSubmit(props.commentToEdit);
@@ -113,7 +113,7 @@ export const CommentForm = (props: Props) => {
                 authorization: onlyAuthorization(authorization)
             };
             sendRequest(
-                `${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.commentToEdit.id}`,
+                `${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.commentToEdit?.id}`,
                 'PATCH',
                 request,
                 _comment => {
@@ -164,7 +164,7 @@ export const CommentForm = (props: Props) => {
     }, [setError, text.length]);
 
     const formRef = useRef<HTMLFormElement>();
-    const size = useElementSize(formRef.current);
+    const size = useElementSize(formRef!.current);
     const isLarge = size.width > 500;
 
     return (

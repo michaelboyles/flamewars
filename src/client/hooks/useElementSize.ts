@@ -15,6 +15,7 @@ export function useElementSize(element: HTMLElement) {
             observer.observe(element);
             return () => observer.unobserve(element);
         }
+        return () => {};
     }, [element]);
 
     return size;
