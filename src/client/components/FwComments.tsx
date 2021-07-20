@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { AWS_GET_URL, USE_INFINITE_SCROLL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';

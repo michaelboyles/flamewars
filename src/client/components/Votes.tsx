@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useContext, useState } from 'react';
 import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL } from '../config';

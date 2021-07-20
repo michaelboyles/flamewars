@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useContext } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { GOOGLE_CLIENT_ID } from '../config';

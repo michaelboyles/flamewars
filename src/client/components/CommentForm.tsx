@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 import type { Comment, CommentId } from '../../common/types/comment';
