@@ -4,7 +4,6 @@ export function useElementSize(element: HTMLElement) {
     const [size, setSize] = useState({width: 0, height: 0});
 
     useLayoutEffect(() => {
-        // @ts-ignore
         const observer = new ResizeObserver(() => {
             setSize({
                 width: element.getBoundingClientRect().width,

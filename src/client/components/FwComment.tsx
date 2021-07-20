@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
 import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
-import { formatPastDate, formatFullTime } from '../time';
 import { CommentForm } from './CommentForm';
 import { DefaultAvatar } from './DefaultAvatar';
 import { Markdown } from './Markdown';
@@ -11,7 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { If } from './If';
 import { Votes } from './Votes';
-import { encodedWindowUrl, isOwner } from '../util';
+import { encodedWindowUrl, formatFullTime, formatPastDate, isOwner } from '../util';
 import { DownArrow } from './svg/DownArrow';
 import { LoadButton } from './LoadButton';
 
