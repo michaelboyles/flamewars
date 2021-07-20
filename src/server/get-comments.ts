@@ -1,14 +1,13 @@
 import { ApiGatewayRequest, DynamoComment, getDynamoDb, getRequestUrl, PAGE_ID_PREFIX, parseContinuationToken, removeCommentIdPrefix } from './aws';
 import { createHandler, errorResult, successResult } from './common';
 import { limitQuery } from './dynamo';
+import { PAGE_SIZE } from '../constants';
 
 import type { GetAllCommentsResponse, Comment } from '../common/types/get-all-comments-response';
 import type { ItemList, QueryInput } from 'aws-sdk/clients/dynamodb';
 
 const DELETED_AUTHOR = 'Anonymous';
 const DELETED_AUTHOR_ID = 'ANONYMOUS';
-
-const PAGE_SIZE = 20;
 
 export const handler = createHandler({
     hasJsonBody: false,
