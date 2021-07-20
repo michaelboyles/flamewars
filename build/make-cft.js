@@ -27,7 +27,7 @@ async function makeCft() {
         };
     }
 
-    let cftTemplate = await readFile('cft.yml', 'utf8');
+    let cftTemplate = await readFile('src/cft.yml', 'utf8');
     Object.entries(fileNameToData)
         .forEach(([fileName, data]) => {
             cftTemplate = cftTemplate.replace('%USE_SCHEMA% ' + fileName, data.content);

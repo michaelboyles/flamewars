@@ -5,13 +5,13 @@ module.exports = [
         name: 'Server',
         mode: 'production',
         entry: {
-            'add-comment': './server/add-comment.ts',
-            'delete-comment': './server/delete-comment.ts',
-            'edit-comment': './server/edit-comment.ts',
-            'get-comments': './server/get-comments.ts',
-            'get-replies': './server/get-replies.ts',
-            'get-number-of-comments': './server/get-number-of-comments.ts',
-            'vote': './server/vote.ts'
+            'add-comment': './src/server/add-comment.ts',
+            'delete-comment': './src/server/delete-comment.ts',
+            'edit-comment': './src/server/edit-comment.ts',
+            'get-comments': './src/server/get-comments.ts',
+            'get-replies': './src/server/get-replies.ts',
+            'get-number-of-comments': './src/server/get-number-of-comments.ts',
+            'vote': './src/server/vote.ts'
         },
         output: {
             filename: 'server/[name].js',
@@ -48,7 +48,7 @@ module.exports = [
     {
         name: 'Client',
         mode: 'production',
-        entry: './client/index.tsx',
+        entry: './src/client/index.tsx',
         output: {
             filename: 'client/index.js'
         },
@@ -63,7 +63,7 @@ module.exports = [
                     use: [{
                         loader: 'ts-loader',
                         options: {
-                            configFile: "client/tsconfig.json"
+                            configFile: 'src/client/tsconfig.json'
                         }
                     }]
                 },
@@ -75,7 +75,7 @@ module.exports = [
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: 'client/index.html'
+                template: 'src/client/index.html'
             })
         ]
     }
