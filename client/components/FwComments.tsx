@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Suspense, useEffect, useState } from 'react';
-import { AWS_GET_URL } from '../config';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { AWS_GET_URL, USE_INFINITE_SCROLL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
 import { CommentForm } from './CommentForm';
 import { LocalAuthorization } from './SignIn';
@@ -9,6 +9,8 @@ import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
 import { If } from './If';
+import { LoadingSpinner } from './LoadingSpinner';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 import './FwComments.scss';
 
@@ -27,25 +29,42 @@ const FwComment = React.lazy(
 );
 
 const FwComments = () => {
+    const baseUrl = `${AWS_GET_URL}/comments/${encodedWindowUrl()}`;
+
     const [comments, setComments] = useState([] as Comment[]);
     const [authorization, setAuthorization] = useState(null as LocalAuthorization);
-    const [continuationToken, setContinuationToken] = useState<string>(undefined);
+    const [nextUrl, setNextUrl] = useState(baseUrl);
 
     const loadComments = () => {
-        const queryStr = continuationToken ? `?continuationToken=${continuationToken}` : '';
-        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}${queryStr}`)
+        if (!nextUrl) return;
+        fetch(nextUrl)
             .then(response => response.json())
             .then(json => {
                 const response = json as GetAllCommentsResponse;
                 setComments(comments.concat(response.comments));
-                setContinuationToken(response.continuationToken);
+                if (response.continuationToken) {
+                    setNextUrl(`${baseUrl}?continuationToken=${response.continuationToken}`)
+                }
+                else {
+                    setNextUrl(undefined);
+                }
                 // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
                 jumpToComment();
             })
             .catch(console.error);
     }
 
-    useEffect(() => loadComments(), []);
+    const triggerRef = useRef();
+    const entry = useIntersectionObserver(triggerRef);
+    const isTriggerVisible = !!entry?.isIntersecting;
+
+    useEffect(() => {
+        if (isTriggerVisible && USE_INFINITE_SCROLL) loadComments();
+    }, [isTriggerVisible]);
+
+    useEffect(() => {
+        if (!USE_INFINITE_SCROLL) loadComments();
+    }, []);
 
     return (
         <section className='flamewars-container'>
@@ -58,9 +77,11 @@ const FwComments = () => {
                             .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
                             .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
                     </ul>
-                    <If condition={!!continuationToken}>
-                        <button onClick={loadComments}>Load more</button>
-                    </If>
+                    <div ref={triggerRef} className='infinite-scroll-trigger'>
+                        <If condition={!!nextUrl}>
+                            {USE_INFINITE_SCROLL ? <LoadingSpinner /> : <button onClick={loadComments}>Load more</button>}
+                        </If>
+                    </div>
                 </AuthContext.Provider>
             </UrlFragmentContextProvider>
         </section>

@@ -1,6 +1,23 @@
-.flamewars-container .comments {
-    list-style-type: none;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+@use '../theme.scss' as *;
+
+.flamewars-container {
+    .comments {
+        list-style-type: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .infinite-scroll-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .loading-spinner {
+            --size: 20px;
+            --line-weight: 0.15;
+            --color: #{$almost-black};
+            padding: 1em 0;
+        }
+    }
 }
