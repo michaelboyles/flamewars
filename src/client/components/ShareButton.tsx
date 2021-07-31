@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { If } from './If';
+import { If } from 'jsx-conditionals';
 
 interface Props {
     className?: string;

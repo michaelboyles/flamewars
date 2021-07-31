@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
-import { If } from './If';
+import { If } from 'jsx-conditionals';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { LoadButton } from './LoadButton';

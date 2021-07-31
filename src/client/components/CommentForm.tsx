@@ -11,7 +11,7 @@ import { AuthContext } from '../context/AuthContext';
 import { onlyAuthorization, SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
-import { If } from './If';
+import { If } from 'jsx-conditionals';
 import { encodedWindowUrl } from '../util';
 
 import './CommentForm.scss';

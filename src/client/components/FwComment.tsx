@@ -8,7 +8,7 @@ import { Markdown } from './Markdown';
 import { ShareButton } from './ShareButton';
 import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
-import { If } from './If';
+import { If } from 'jsx-conditionals';
 import { Votes } from './Votes';
 import { encodedWindowUrl, formatFullTime, formatPastDate, isOwner } from '../util';
 import { DownArrow } from './svg/DownArrow';
@@ -128,7 +128,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                     <span className='edit-indicator'>Edited</span>
                 </If>
                 <If condition={Boolean(props.comment.inReplyTo?.author)}>
-                    <span className='reply-to'>Replying to <a href={'#' + props.comment.inReplyTo?.id}>{props.comment.inReplyTo?.author}</a></span>
+                    <span className='reply-to'>Replying to <a href={'#' + props.comment.inReplyTo.id}>{props.comment.inReplyTo.author}</a></span>
                 </If>
                 {
                     !isEditing ? 

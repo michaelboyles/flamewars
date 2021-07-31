@@ -6,6 +6,9 @@
         "allowSyntheticDefaultImports": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        "plugins": [
+            { "transform": "./node_modules/jsx-conditionals/transform.js" },
+        ]
     }
 }
