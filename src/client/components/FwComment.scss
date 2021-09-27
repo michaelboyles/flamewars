@@ -130,7 +130,7 @@
         margin: 0 0 0 $reply-indent;
         padding: 0;
     }
-    button.view-replies {
+    button.view-replies, button.hide-replies {
         color: $accent;
         font-size: 14px;
         margin-left: $reply-indent;
@@ -141,7 +141,7 @@
         cursor: pointer;
         user-select: none;
 
-        .down-arrow {
+        .arrow {
             fill: $accent;
             display: inline-block;
             width: 10px;
@@ -152,7 +152,7 @@
         &:hover {
             color: $accent-dark;
 
-            .down-arrow {
+            .arrow {
                 fill: $accent-dark;
             }
         }

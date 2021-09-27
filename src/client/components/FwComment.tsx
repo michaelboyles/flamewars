@@ -12,6 +12,7 @@ import { If } from 'jsx-conditionals';
 import { Votes } from './Votes';
 import { encodedWindowUrl, formatFullTime, formatPastDate, isOwner } from '../util';
 import { DownArrow } from './svg/DownArrow';
+import { UpArrow } from './svg/UpArrow';
 import { LoadButton } from './LoadButton';
 
 import type { Comment, GetAllCommentsResponse } from '../../common/types/get-all-comments-response';
@@ -41,7 +42,8 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     const [replies, setReplies] = useState<Record<string, Comment>>({});
     const [nextUrl, setNextUrl] = useState(props.comment.replies.uri);
 
-    const [isReplyOpen, setReplyOpen] = useState(false);
+    const [isReplyFormOpen, setReplyFormOpen] = useState(false);
+    const [isRepliesSectionOpen, setRepliesSectionOpen] = useState(false);
     const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
     const [isEditing, setIsEditing] = useState(false);
     const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
@@ -80,7 +82,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
         else {
             addReply(comment);
         }
-        setReplyOpen(false);
+        setReplyFormOpen(false);
     };
 
     const afterSubmitEdit = (comment: Comment) => {
@@ -92,6 +94,11 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     };
 
     const loadMoreReplies = async () => {
+        if (!isRepliesSectionOpen && Object.keys(replies).length > 0) {
+            setRepliesSectionOpen(true);
+            return;
+        }
+
         if (!nextUrl) return;
         const resp = await fetch(nextUrl);
         if (resp.ok) {
@@ -100,6 +107,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 ...replies,
                 ...json.comments.reduce((result, comment) => { return {...result, [comment.id]: comment}; }, {})
             });
+            setRepliesSectionOpen(true);
             if (json.continuationToken) {
                 setNextUrl(`${props.comment.replies.uri}?continuationToken=${json.continuationToken}`);
             }
@@ -143,23 +151,26 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 <If condition={!isDeleted}>
                     <Votes comment={props.comment} />
                 </If>
-                <button onClick={() => setReplyOpen(!isReplyOpen)} className={'reply-btn ' + (isReplyOpen ? 'open' : 'closed')}>Reply</button>
+                <button onClick={() => setReplyFormOpen(!isReplyFormOpen)} className={'reply-btn ' + (isReplyFormOpen ? 'open' : 'closed')}>Reply</button>
                 <ShareButton className='share-btn' fragment={id} />
                 <If condition={isOwner(authorization, props.comment) && !isDeleted}>
                     <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
                     <button className='delete-btn' onClick={deleteComment}>Delete</button>
                 </If>
             </div>
-            <If condition={isReplyOpen}>
+            <If condition={isReplyFormOpen}>
                 <CommentForm
                     afterSubmit={afterSubmitNew}
                     threadId={props.parent?.comment?.id ?? props.comment.id}
                     inReplyTo={props.comment.id}
                     type='reply'
-                    onCancel={() => setReplyOpen(false)}
+                    onCancel={() => setReplyFormOpen(false)}
                 />
             </If>
-            <If condition={Object.keys(replies).length > 0}>
+            <If condition={isRepliesSectionOpen}>
+                <button className='hide-replies' onClick={() => setRepliesSectionOpen(false)}>
+                    <UpArrow />Hide {repliesToStr(numReplies)}
+                </button>
                 <ul className='replies'>{
                     Object.values(replies)
                         .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
@@ -181,13 +192,16 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 normalLabel={
                     <>
                         <DownArrow />
-                        {Object.keys(replies).length === 0 ?
-                            `View ${numReplies === 1 ? 'reply' : `${numReplies} replies`}` : 'Show more replies'}
+                        { isRepliesSectionOpen ? 'Show more replies': `View ${repliesToStr(numReplies)}` }
                     </>
                 }
-                loadingLabel={<><DownArrow /> Loading...</>}
-                visible={numReplies > 0 && !!nextUrl}
+                loadingLabel={<><DownArrow />Loading...</>}
+                visible={numReplies > 0 && (!isRepliesSectionOpen || !!nextUrl)}
             />
         </li>
     );
 };
+
+function repliesToStr(numReplies: number) {
+    return numReplies === 1 ? 'reply' : (numReplies + ' replies');
+}
