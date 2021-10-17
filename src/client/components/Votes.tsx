@@ -73,6 +73,7 @@ export const Votes = (props: {comment: Comment}) => {
     const ownerOrNotSignedIn = !authorization || isOwner(authorization, props.comment);
     return (
         <div className='votes'>
+            {/*TODO replace arrows - svg?*/}
             <span className={'upvotes' + (myVote === 'up' ? myVoteClass : '')}>
                 <button onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
                     ⇧
