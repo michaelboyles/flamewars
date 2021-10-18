@@ -10,7 +10,6 @@ Parameters:
         Description: The name of the S3 bucket containing the server's zipped code bundle
         Type: String
         MinLength: 1
-        Default: michaels-default
     ServerCodeFilename:
         Description: The filename of the server's zipped code bundle within the given S3 bucket
         Type: String
@@ -20,7 +19,6 @@ Parameters:
         Description: The Google client ID to use for verifying user sign-in
         Type: String
         AllowedPattern: ^.+\.apps\.googleusercontent\.com$
-        Default: 164705233134-movagpgcoeepgc24qksgil15k2qpde8e.apps.googleusercontent.com
 Resources:
     IAMRole:
         Type: AWS::IAM::Role
