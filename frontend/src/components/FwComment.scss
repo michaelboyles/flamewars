@@ -19,7 +19,7 @@
     .body {
         flex-basis: calc(100% - 60px);
         max-width: calc(100% - 60px);
-        padding: 5px 7px;
+        padding: 6px 7px;
         box-sizing: border-box;
 
         &.is-selected {
@@ -135,7 +135,7 @@
     button.view-replies, button.hide-replies {
         color: $accent;
         font-size: 0.9em;
-        margin-left: $reply-indent;
+        margin: 5px 0 7px $reply-indent;
         padding: 1px 4px;
         background: none;
         outline: none;
