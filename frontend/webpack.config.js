@@ -5,7 +5,7 @@ module.exports = {
     mode: 'production',
     entry: './src/index.tsx',
     output: {
-        filename: 'index.js'
+        filename: 'flamewars.js'
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
