@@ -48,6 +48,7 @@
         .votes {
             display: inline-block;
             margin-right: 15px;
+            font-size: 1em;
         }
         .reply-btn, .edit-btn, .delete-btn, .share-btn {
             position: relative;
@@ -57,6 +58,7 @@
             background: 0;
             border: 0;
             padding: 0;
+            font-size: 0.8em;
 
             &:not(.delete-btn) {
                 color: $grey;
@@ -132,7 +134,7 @@
     }
     button.view-replies, button.hide-replies {
         color: $accent;
-        font-size: 14px;
+        font-size: 0.9em;
         margin-left: $reply-indent;
         padding: 1px 4px;
         background: none;

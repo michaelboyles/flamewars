@@ -1,7 +1,7 @@
 @use '../theme.scss' as *;
 
 .flamewars-container .votes {
-    $button-horizontal-pad: 3px;
+    $button-horizontal-pad: 0.2em;
 
     .my-vote button {
         color: $accent-dark;
@@ -13,6 +13,7 @@
         outline: 0;
         padding: 0 $button-horizontal-pad;
         color: $grey;
+        font-size: 1em;
 
         &:disabled {
             color: $grey;

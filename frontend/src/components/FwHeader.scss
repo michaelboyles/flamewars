@@ -11,6 +11,10 @@
         font-size: 1em;
     }
 
+    .powered-by {
+        white-space: nowrap;
+    }
+
     .sign-out {
         color: $grey;
         cursor: pointer;
