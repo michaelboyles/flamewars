@@ -3,5 +3,5 @@
 target/
 node_modules/
 dist/
-src/common/types/
+common/types/
 coverage/

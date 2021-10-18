@@ -1,0 +1,43 @@
+{
+  "name": "flamewars-backend",
+  "version": "1.0.0",
+  "description": "Backend for Flamewars, a serverless comment engine",
+  "scripts": {
+    "gen": "node build/generate-types.js",
+    "flatten": "node build/flatten-schemas.js",
+    "make-cft": "node build/make-cft.js",
+    "webpack": "webpack",
+    "zip": "node build/zip.js",
+    "build": "run-s gen flatten make-cft webpack zip",
+    "test": "jest",
+    "testcov": "jest --coverage"
+  },
+  "author": "Michael Boyles",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "2.907.0",
+    "build": "0.1.4",
+    "google-auth-library": "7.0.4",
+    "md5": "2.3.0",
+    "run": "1.4.0",
+    "uuid": "8.3.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "1.0.1",
+    "@types/aws-lambda": "8.10.77",
+    "@types/jest": "26.0.23",
+    "@types/node": "14.14.41",
+    "@types/uuid": "8.3.0",
+    "@types/webpack-env": "1.16.0",
+    "archiver": "5.3.0",
+    "jest": "27.0.4",
+    "json-schema-ref-parser": "9.0.9",
+    "json-schema-to-typescript": "10.1.4",
+    "npm-run-all": "4.1.5",
+    "ts-jest": "27.0.3",
+    "ts-loader": "9.2.3",
+    "typescript": "4.3.3",
+    "webpack": "5.39.0",
+    "webpack-cli": "4.7.2"
+  }
+}

@@ -21,5 +21,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
+      working-directory: backend
     - run: npm run build
+      working-directory: backend
     - run: npm run test
+      working-directory: backend
+    - run: npm ci
+      working-directory: frontend
+    - run: npm run build
+      working-directory: frontend
+    - run: npm run test
+      working-directory: frontend
