@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FwComments from './components/FwComments';
-import applyCountToCommentLinks from './comment-count';
+import { applyCountToCommentLinks } from './comment-count';
 import { HTML_CONTAINER_ID } from './config';
 
 import './style.scss';

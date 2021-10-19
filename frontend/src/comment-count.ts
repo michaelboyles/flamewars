@@ -3,19 +3,7 @@ import { normalizeUrl } from '../../common/util'
 import { MAX_URLS_IN_COUNT_REQUEST } from '../../common/constants';
 import { AWS_GET_URL, HTML_CONTAINER_ID } from './config';
 
-function getFlamewarsLinks(): HTMLAnchorElement[] {
-    const allLinks = document.getElementsByTagName('a');
-    const flameWarsLinks: HTMLAnchorElement[] = [];
-    for (let i = 0; i < allLinks.length; i++) {
-        const item = allLinks.item(i);
-        if (item.href.endsWith(HTML_CONTAINER_ID)) {
-            flameWarsLinks.push(item);
-        }
-    }
-    return flameWarsLinks;
-}
-
-function applyCountToCommentLinks() {
+export function applyCountToCommentLinks() {
     const links = getFlamewarsLinks();
 
     const chunkSize = MAX_URLS_IN_COUNT_REQUEST;
@@ -28,11 +16,28 @@ function applyCountToCommentLinks() {
                 json.counts.forEach(urlAndCount => {
                     if (urlAndCount.count) {
                         const matchingLink = links.find(link => normalizeUrl(link.href) === urlAndCount.url);
-                        if (matchingLink) matchingLink.text = urlAndCount.count + ' Comments';
+                        if (matchingLink) {
+                            if (urlAndCount.count == 1) {
+                                matchingLink.text = '1 Comment';
+                            }
+                            else {
+                                matchingLink.text = urlAndCount.count + ' Comments';
+                            }
+                        }
                     }
                 })
             );
     }
 }
 
-export default applyCountToCommentLinks;
+function getFlamewarsLinks(): HTMLAnchorElement[] {
+    const allLinks = document.getElementsByTagName('a');
+    const flameWarsLinks: HTMLAnchorElement[] = [];
+    for (let i = 0; i < allLinks.length; i++) {
+        const item = allLinks.item(i);
+        if (item.href.endsWith(HTML_CONTAINER_ID)) {
+            flameWarsLinks.push(item);
+        }
+    }
+    return flameWarsLinks;
+}
