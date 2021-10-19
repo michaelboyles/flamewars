@@ -48,6 +48,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
     const [text, setText] = useState(props.comment.text);
+    const [numReplies, setNumReplies] = useState(props.comment?.replies?.count ?? 0);
     const { authorization } = useContext(AuthContext);
     const { fragment } = useContext(UrlFragmentContext);
 
@@ -82,6 +83,10 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
         else {
             addReply(comment);
         }
+        if (!isRepliesSectionOpen) {
+            setRepliesSectionOpen(true);
+        }
+        setNumReplies(numReplies + 1);
         setReplyFormOpen(false);
     };
 
@@ -120,7 +125,6 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
         }
     }
 
-    const numReplies = props.comment?.replies?.count ?? 0;
     if (isDeleted && numReplies === 0 && Object.keys(replies).length === 0) return null;
 
     const id = 'comment-' + props.comment.id;
