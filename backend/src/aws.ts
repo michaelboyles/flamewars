@@ -1,5 +1,5 @@
 import { AttributeValue, PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb';
-import { config, DynamoDB } from 'aws-sdk';
+import { DynamoDB } from 'aws-sdk';
 import { MAX_DB_FIELD_LENGTH } from '../../common/constants';
 
 export const PAGE_ID_PREFIX: string = 'PAGE#';
@@ -56,7 +56,6 @@ export interface DynamoComment extends PutItemInputAttributeMap {
 }
 
 export function getDynamoDb() {
-    config.update({region: 'eu-west-2'});
     return new DynamoDB({apiVersion: '2012-08-10'});
 }
 
