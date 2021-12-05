@@ -11,8 +11,7 @@ import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { If } from 'jsx-conditionals';
 import { Votes } from './Votes';
 import { encodedWindowUrl, formatFullTime, formatPastDate, isOwner } from '../util';
-import { DownArrow } from './svg/DownArrow';
-import { UpArrow } from './svg/UpArrow';
+import { GoTriangleDown, GoTriangleUp } from 'react-icons/go'
 import { LoadButton } from './LoadButton';
 
 import type { Comment, GetAllCommentsResponse } from '../../../common/types/get-all-comments-response';
@@ -152,15 +151,17 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                                      onCancel={() => setIsEditing(false)}
                         />
                 }
-                <If condition={!isDeleted}>
-                    <Votes comment={props.comment} />
-                </If>
-                <button onClick={() => setReplyFormOpen(!isReplyFormOpen)} className={'reply-btn ' + (isReplyFormOpen ? 'open' : 'closed')}>Reply</button>
-                <ShareButton className='share-btn' fragment={id} />
-                <If condition={isOwner(authorization, props.comment) && !isDeleted}>
-                    <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
-                    <button className='delete-btn' onClick={deleteComment}>Delete</button>
-                </If>
+                <div className='post-actions'>
+                    <If condition={!isDeleted}>
+                        <Votes comment={props.comment} />
+                    </If>
+                    <button onClick={() => setReplyFormOpen(!isReplyFormOpen)} className={'reply-btn ' + (isReplyFormOpen ? 'open' : 'closed')}>Reply</button>
+                    <ShareButton className='share-btn' fragment={id} />
+                    <If condition={isOwner(authorization, props.comment) && !isDeleted}>
+                        <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
+                        <button className='delete-btn' onClick={deleteComment}>Delete</button>
+                    </If>
+                </div>
             </div>
             <If condition={isReplyFormOpen}>
                 <CommentForm
@@ -173,7 +174,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             </If>
             <If condition={isRepliesSectionOpen}>
                 <button className='hide-replies' onClick={() => setRepliesSectionOpen(false)}>
-                    <UpArrow />Hide {repliesToStr(numReplies)}
+                    <GoTriangleUp />Hide {repliesToStr(numReplies)}
                 </button>
                 <ul className='replies'>{
                     Object.values(replies)
@@ -195,11 +196,11 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 load={loadMoreReplies}
                 normalLabel={
                     <>
-                        <DownArrow />
+                        <GoTriangleDown />
                         { isRepliesSectionOpen ? 'Show more replies': `View ${repliesToStr(numReplies)}` }
                     </>
                 }
-                loadingLabel={<><DownArrow />Loading...</>}
+                loadingLabel={<><GoTriangleDown />Loading...</>}
                 visible={numReplies > 0 && (!isRepliesSectionOpen || !!nextUrl)}
             />
         </li>

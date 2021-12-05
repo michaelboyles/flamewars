@@ -4,6 +4,7 @@ import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL } from '../config';
 import { AuthContext } from '../context/AuthContext';
 import { encodedWindowUrl, isOwner } from '../util';
+import { HiOutlineThumbDown, HiOutlineThumbUp } from 'react-icons/hi'
 
 import type { VoteRequest } from '../../../common/types/vote';
 import type { Comment } from '../../../common/types/get-all-comments-response';
@@ -73,16 +74,15 @@ export const Votes = (props: {comment: Comment}) => {
     const ownerOrNotSignedIn = !authorization || isOwner(authorization, props.comment);
     return (
         <div className='votes'>
-            {/*TODO replace arrows - svg?*/}
             <span className={'upvotes' + (myVote === 'up' ? myVoteClass : '')}>
                 <button onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
-                    ⇧
+                    <HiOutlineThumbUp />
                 </button>
                 {votes.upvoters.length}
             </span>
             <span className={'downvotes' + (myVote === 'down' ? myVoteClass : '')}>
                 <button onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label={downvoteLabel} title={downvoteLabel}>
-                    ⇩
+                    <HiOutlineThumbDown />
                 </button>
                 {votes.downvoters.length}
             </span>

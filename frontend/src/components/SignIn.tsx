@@ -4,7 +4,7 @@ import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 're
 import type { Authorization } from '../../../common/types/add-comment-request';
 import { GOOGLE_CLIENT_ID } from '../config'
 import { AuthContext } from '../context/AuthContext';
-import { GoogleIcon } from './svg/GoogleIcon';
+import { FcGoogle } from 'react-icons/fc';
 
 import './SignIn.scss';
 
@@ -55,7 +55,7 @@ export const SignIn = () => {
                     isSignedIn={trueOnce()}
                     render={renderProps => (
                         <li>
-                            <button className='sign-in-button' onClick={renderProps.onClick}><GoogleIcon className='icon' />Google</button>
+                            <button className='sign-in-button' onClick={renderProps.onClick}><FcGoogle className='icon' />Google</button>
                         </li>
                     )}
                 />

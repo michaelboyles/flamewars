@@ -45,78 +45,81 @@
         .content {
             @include style.formatted-comment;
         }
-        .votes {
-            display: inline-block;
-            margin-right: 15px;
-            font-size: 1em;
-        }
-        .reply-btn, .edit-btn, .delete-btn, .share-btn {
-            position: relative;
-            display: inline-block;
-            margin: 0 15px 0 0;
-            cursor: pointer;
-            background: 0;
-            border: 0;
-            padding: 0;
-            font-size: 0.8em;
+        .post-actions {
+            display: flex;
+            gap: 8px 15px;
+            align-items: center;
+            flex-wrap: wrap;
 
-            &:not(.delete-btn) {
-                color: $grey;
-
-                &:hover {
-                    color: $dark-grey;
+            .votes {
+                font-size: 1em;
+            }
+            .reply-btn, .edit-btn, .delete-btn, .share-btn {
+                position: relative;
+                cursor: pointer;
+                background: 0;
+                border: 0;
+                padding: 0;
+                font-size: 0.8em;
+    
+                &:not(.delete-btn) {
+                    color: $grey;
+    
+                    &:hover {
+                        color: $dark-grey;
+                    }
                 }
             }
-        }
-        .delete-btn {
-            visibility: hidden;
-            color: #c02d2e;
-
-            &:hover {
-                color: #a91f20;
+            .delete-btn {
+                visibility: hidden;
+                color: #c02d2e;
+    
+                &:hover {
+                    color: #a91f20;
+                }
             }
-        }
-        .share-btn .copied {
-            $bg-color: white;
-            $border-color: $grey;
-
-            position: absolute;
-            padding: 5px 10px;
-            background: $bg-color;
-            border: 2px solid $border-color;
-            color: $grey;
-            font-weight: 500;
-            border-radius: 4px;
-            white-space: nowrap;
-            left: -25px;
-            top: 25px;
-            cursor: auto;
-
-            &::after {
-                $size: 7px;
-                content:'';
+            .share-btn .copied {
+                $bg-color: white;
+                $border-color: $grey;
+    
                 position: absolute;
-                bottom: 100%;
-                left: 50%;
-                margin-left: -$size;
-                width: 0;
-                height: 0;
-                border-bottom: solid $size $bg-color;
-                border-left: solid $size transparent;
-                border-right: solid $size transparent;
-            }
-            &::before {
-                $size: 9px;
-                content:'';
-                position: absolute;
-                bottom: 100%;
-                left: 50%;
-                margin-left: -$size;
-                width: 0;
-                height: 0;
-                border-bottom: solid $size $border-color;
-                border-left: solid $size transparent;
-                border-right: solid $size transparent;
+                padding: 5px 10px;
+                background: $bg-color;
+                border: 2px solid $border-color;
+                color: $grey;
+                font-weight: 500;
+                border-radius: 4px;
+                white-space: nowrap;
+                left: -25px;
+                top: 25px;
+                cursor: auto;
+    
+                &::after {
+                    $size: 7px;
+                    content:'';
+                    position: absolute;
+                    bottom: 100%;
+                    left: 50%;
+                    margin-left: -$size;
+                    width: 0;
+                    height: 0;
+                    border-bottom: solid $size $bg-color;
+                    border-left: solid $size transparent;
+                    border-right: solid $size transparent;
+                }
+                &::before {
+                    $size: 9px;
+                    content:'';
+                    position: absolute;
+                    bottom: 100%;
+                    left: 50%;
+                    margin-left: -$size;
+                    width: 0;
+                    height: 0;
+                    border-bottom: solid $size $border-color;
+                    border-left: solid $size transparent;
+                    border-right: solid $size transparent;
+                }
             }
         }
 
@@ -133,6 +136,10 @@
         padding: 0;
     }
     button.view-replies, button.hide-replies {
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+
         color: $accent;
         font-size: 0.9em;
         margin: 5px 0 7px $reply-indent;
@@ -143,20 +150,8 @@
         cursor: pointer;
         user-select: none;
 
-        .arrow {
-            fill: $accent;
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            margin-right: 10px;
-        }
-
         &:hover {
             color: $accent-dark;
-
-            .arrow {
-                fill: $accent-dark;
-            }
         }
     }
 }

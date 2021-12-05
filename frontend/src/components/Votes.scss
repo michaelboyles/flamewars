@@ -3,32 +3,39 @@
 .flamewars-container .votes {
     $button-horizontal-pad: 0.2em;
 
-    .my-vote button {
-        color: $accent-dark;
+    .my-vote button svg {
+        stroke: $accent-dark;
     }
 
-    button {
-        background: 0;
-        border: 0;
-        outline: 0;
-        padding: 0 $button-horizontal-pad;
-        color: $grey;
-        font-size: 1em;
+    span {
+        display: inline-flex;
 
-        &:disabled {
-            color: $grey;
+        &:first-child {
+            margin-left: -$button-horizontal-pad; // Line things up
         }
 
-        &:not(:disabled) {
-            cursor: pointer;
-
-            &:hover {
-                color: $accent-dark;
+        button {
+            background: 0;
+            border: 0;
+            outline: 0;
+            padding: 0 $button-horizontal-pad;
+            font-size: 1em;
+    
+            svg {
+                stroke: $grey;
             }
-        }
-    }
-
-    span:first-child {
-        margin-left: -$button-horizontal-pad; // Line things up
+    
+            &:disabled svg {
+                stroke: $grey;
+            }
+    
+            &:not(:disabled) {
+                cursor: pointer;
+    
+                &:hover svg {
+                    stroke: $accent-dark;
+                }
+            }
+        }    
     }
 }
