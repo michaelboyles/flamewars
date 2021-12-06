@@ -3,8 +3,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { AWS_GET_URL, USE_INFINITE_SCROLL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../../common/types/get-all-comments-response';
 import { CommentForm } from './CommentForm';
-import { LocalAuthorization } from './SignIn';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, User } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
@@ -12,6 +11,8 @@ import { If } from 'jsx-conditionals';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { LoadButton } from './LoadButton';
+
+import type { Authorization } from '../../../common/types/add-comment-request';
 
 import './FwComments.scss';
 
@@ -32,8 +33,9 @@ const FwComment = React.lazy(
 const FwComments = () => {
     const baseUrl = `${AWS_GET_URL}/comments/${encodedWindowUrl()}`;
 
-    const [comments, setComments] = useState([] as Comment[]);
-    const [authorization, setAuthorization] = useState(null as LocalAuthorization);
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [authorization, setAuthorization] = useState<Authorization>();
+    const [user, setUser] = useState<User>();
     const [nextUrl, setNextUrl] = useState(baseUrl);
 
     const loadComments = async () => {
@@ -70,7 +72,7 @@ const FwComments = () => {
     return (
         <section className='flamewars-container'>
             <UrlFragmentContextProvider>
-                <AuthContext.Provider value={{authorization, setAuthorization}}>
+                <AuthContext.Provider value={{authorization, setAuthorization, user, setUser}}>
                     <FwHeader />
                     <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
                     <ul className='comments'>

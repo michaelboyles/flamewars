@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { CommentForm } from './CommentForm';
 import { DefaultAvatar } from './DefaultAvatar';
@@ -10,7 +9,7 @@ import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { If } from 'jsx-conditionals';
 import { Votes } from './Votes';
-import { encodedWindowUrl, formatFullTime, formatPastDate, isOwner } from '../util';
+import { encodedWindowUrl, formatFullTime, formatPastDate } from '../util';
 import { GoTriangleDown, GoTriangleUp } from 'react-icons/go'
 import { LoadButton } from './LoadButton';
 
@@ -48,7 +47,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
     const [text, setText] = useState(props.comment.text);
     const [numReplies, setNumReplies] = useState(props.comment?.replies?.count ?? 0);
-    const { authorization } = useContext(AuthContext);
+    const { authorization, user } = useContext(AuthContext);
     const { fragment } = useContext(UrlFragmentContext);
 
     useEffect(() => {
@@ -68,7 +67,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
         fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.comment.id}`,
             {
                 method: 'DELETE',
-                body: JSON.stringify({authorization: onlyAuthorization(authorization)}),
+                body: JSON.stringify({authorization}),
                 headers: {'content-type': 'application/json'}
             })
             .then(response => { if (response.ok) { setDeleted(true); setIsEditing(false); } })
@@ -128,6 +127,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
 
     const id = 'comment-' + props.comment.id;
     const bodyClassName = 'body' + (fragment?.endsWith(props.comment.id) ? ' is-selected' : '');
+    const isOwner = user?.id === props.comment.author.id;
 
     return (
         <li id={id} className='comment' role='comment' data-author={props.comment.author.name}>
@@ -157,7 +157,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                     </If>
                     <button onClick={() => setReplyFormOpen(!isReplyFormOpen)} className={'reply-btn ' + (isReplyFormOpen ? 'open' : 'closed')}>Reply</button>
                     <ShareButton className='share-btn' fragment={id} />
-                    <If condition={isOwner(authorization, props.comment) && !isDeleted}>
+                    <If condition={isOwner && !isDeleted}>
                         <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
                         <button className='delete-btn' onClick={deleteComment}>Delete</button>
                     </If>

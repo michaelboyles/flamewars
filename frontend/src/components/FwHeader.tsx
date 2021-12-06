@@ -8,7 +8,7 @@ import { If } from 'jsx-conditionals';
 import './FwHeader.scss';
 
 export const FwHeader = () => {
-    const { authorization, setAuthorization } = useContext(AuthContext);
+    const { user, setAuthorization } = useContext(AuthContext);
     const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
     const signOut = () => { googleSignOut(); setAuthorization(null); }
 
@@ -17,8 +17,8 @@ export const FwHeader = () => {
             <div>
                 <h2>Comments</h2><a className='powered-by' href='https://github.com/michaelboyles/flamewars'>Powered by Flamewars</a>
             </div>
-            <If condition={Boolean(authorization)}>
-                <span className='user'>Signed in as {authorization.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> 
+            <If condition={Boolean(user?.name)}>
+                <span className='user'>Signed in as {user.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> 
             </If>
         </header>
     );

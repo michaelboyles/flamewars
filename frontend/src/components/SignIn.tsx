@@ -1,25 +1,11 @@
 import React from 'react';
 import { useContext } from 'react';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import type { Authorization } from '../../../common/types/add-comment-request';
 import { GOOGLE_CLIENT_ID } from '../config'
 import { AuthContext } from '../context/AuthContext';
 import { FcGoogle } from 'react-icons/fc';
 
 import './SignIn.scss';
-
-export interface LocalAuthorization extends Authorization {
-    name: string;
-    id: string;
-    fullId: string; //TODO clean this up
-}
-
-export function onlyAuthorization(localAuth: LocalAuthorization): Authorization {
-    return {
-        token: localAuth.token,
-        tokenProvider: localAuth.tokenProvider
-    }
-}
 
 // This looks a bit silly. In order to show the user as logged in on page-load, we need to set GoogleLogin's
 // isSignedInto prop to true. But doing so causes a bug which requires the user to click logout twice to show
@@ -30,17 +16,18 @@ function trueOnce() {
 }
 
 export const SignIn = () => {
-    const { setAuthorization } = useContext(AuthContext);
+    const { setAuthorization, setUser } = useContext(AuthContext);
 
     const onSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
         if (!response.code) { // i.e. is GoogleLoginResponse
             const loginResponse = response as GoogleLoginResponse;
             setAuthorization({
                 token: loginResponse.tokenId,
-                tokenProvider: 'Google',
-                name: loginResponse.getBasicProfile().getName(),
-                id: loginResponse.getId(),
-                fullId: 'GOOGLE/' + loginResponse.getId()
+                tokenProvider: 'Google'
+            });
+            setUser({
+                id: 'GOOGLE/' + loginResponse.getId(),
+                name: loginResponse.getBasicProfile().getName()
             });
         }
     };

@@ -1,9 +1,8 @@
 import React from 'react';
 import { useContext, useState } from 'react';
-import { onlyAuthorization } from './SignIn';
 import { AWS_GET_URL } from '../config';
 import { AuthContext } from '../context/AuthContext';
-import { encodedWindowUrl, isOwner } from '../util';
+import { encodedWindowUrl } from '../util';
 import { HiOutlineThumbDown, HiOutlineThumbUp } from 'react-icons/hi'
 
 import type { VoteRequest } from '../../../common/types/vote';
@@ -22,16 +21,16 @@ const doFetch = (voteBody: VoteRequest, commentId: string) => {
 };
 
 export const Votes = (props: {comment: Comment}) => {
-    const { authorization } = useContext(AuthContext);
+    const { authorization, user } = useContext(AuthContext);
     const [votes, setVotes] = useState(props.comment.votes);
 
     let myVote = undefined;
-    if (votes.upvoters.includes(authorization?.fullId)) myVote = 'up';
-    if (votes.downvoters.includes(authorization?.fullId)) myVote = 'down';
+    if (votes.upvoters.includes(user?.id)) myVote = 'up';
+    if (votes.downvoters.includes(user?.id)) myVote = 'down';
 
     const vote = (voteType: 'up' | 'down') => {
         const voteBody: VoteRequest = {
-            authorization: onlyAuthorization(authorization),
+            authorization,
             voteType
         };
         doFetch(voteBody, props.comment.id);
@@ -39,12 +38,12 @@ export const Votes = (props: {comment: Comment}) => {
         let newUpvoters = votes.upvoters;
         let newDownvoters = votes.downvoters;
         if (voteType === 'up') {
-            newUpvoters = newUpvoters.concat(authorization?.fullId);
-            newDownvoters = newDownvoters.filter(id => id !== authorization?.fullId);
+            newUpvoters = newUpvoters.concat(user?.id);
+            newDownvoters = newDownvoters.filter(id => id !== user?.id);
         }
         if (voteType === 'down') {
-            newDownvoters = newDownvoters.concat(authorization?.fullId);
-            newUpvoters = newUpvoters.filter(id => id !== authorization?.fullId);
+            newDownvoters = newDownvoters.concat(user?.id);
+            newUpvoters = newUpvoters.filter(id => id !== user?.id);
         }
         setVotes({
             upvoters: newUpvoters,
@@ -54,14 +53,14 @@ export const Votes = (props: {comment: Comment}) => {
 
     const removeVote = () => {
         const voteBody: VoteRequest = {
-            authorization: onlyAuthorization(authorization),
+            authorization,
             voteType: 'none'
         };
         doFetch(voteBody, props.comment.id);
 
         setVotes({
-            upvoters: votes.upvoters.filter(id => id !== authorization?.fullId),
-            downvoters: votes.downvoters.filter(id => id !== authorization?.fullId)
+            upvoters: votes.upvoters.filter(id => id !== user?.id),
+            downvoters: votes.downvoters.filter(id => id !== user?.id)
         });
     };
 
@@ -71,7 +70,7 @@ export const Votes = (props: {comment: Comment}) => {
     const upvoteLabel = (myVote === 'up') ? 'Remove like' : 'Like'; 
     const downvoteLabel = (myVote === 'down') ? 'Remove dislike' : 'Dislike';
     
-    const ownerOrNotSignedIn = !authorization || isOwner(authorization, props.comment);
+    const ownerOrNotSignedIn = !authorization || props.comment.author.id === user?.id;
     return (
         <div className='votes'>
             <span className={'upvotes' + (myVote === 'up' ? myVoteClass : '')}>

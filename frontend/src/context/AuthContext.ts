@@ -1,9 +1,16 @@
 import { createContext } from "react";
-import { LocalAuthorization } from "../components/SignIn";
+import { Authorization } from "../../../common/types/add-comment-request";
 
-interface IAuthContext {
-    authorization?: LocalAuthorization;
-    setAuthorization?: (la: LocalAuthorization) => void;
+export interface User {
+    id: string;
+    name: string;
+}
+
+export interface IAuthContext {
+    authorization?: Authorization;
+    setAuthorization?: (auth: Authorization) => void;
+    user?: User;
+    setUser?: (user: User) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({});

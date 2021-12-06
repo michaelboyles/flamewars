@@ -8,7 +8,7 @@ import { MAX_COMMENT_LENGTH } from '../../../common/constants';
 import ReactMde from 'react-mde';
 import { Markdown } from './Markdown';
 import { AuthContext } from '../context/AuthContext';
-import { onlyAuthorization, SignIn } from './SignIn';
+import { SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
 import { If } from 'jsx-conditionals';
@@ -110,7 +110,7 @@ export const CommentForm = (props: Props) => {
 
             const request: EditCommentRequest = {
                 comment: text,
-                authorization: onlyAuthorization(authorization)
+                authorization
             };
             sendRequest(
                 `${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.commentToEdit?.id}`,
@@ -138,7 +138,7 @@ export const CommentForm = (props: Props) => {
 
             const request: AddCommentRequest = {
                 comment: text,
-                authorization: onlyAuthorization(authorization),
+                authorization,
                 ...replyFields
             };
             sendRequest(
