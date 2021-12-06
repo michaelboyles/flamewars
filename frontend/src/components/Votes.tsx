@@ -73,18 +73,13 @@ export const Votes = (props: {comment: Comment}) => {
     const ownerOrNotSignedIn = !authorization || props.comment.author.id === user?.id;
     return (
         <div className='votes'>
-            <span className={'upvotes' + (myVote === 'up' ? myVoteClass : '')}>
-                <button onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
-                    <HiOutlineThumbUp />
-                </button>
-                {votes.upvoters.length}
-            </span>
-            <span className={'downvotes' + (myVote === 'down' ? myVoteClass : '')}>
-                <button onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label={downvoteLabel} title={downvoteLabel}>
-                    <HiOutlineThumbDown />
-                </button>
-                {votes.downvoters.length}
-            </span>
+            <button className={myVote === 'up' ? myVoteClass : ''} onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
+                <HiOutlineThumbUp />
+            </button>
+            {votes.upvoters.length - votes.downvoters.length}
+            <button className={myVote === 'down' ? myVoteClass : ''} onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label={downvoteLabel} title={downvoteLabel}>
+                <HiOutlineThumbDown />
+            </button>
         </div>
     );
 };
