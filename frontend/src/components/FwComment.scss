@@ -2,7 +2,7 @@
 @use '../style.scss';
 
 .flamewars-container .comment {
-    $reply-indent: 65px;
+    --reply-indent: 65px;
 
     width: 100%;
     display: flex;
@@ -131,8 +131,8 @@
     }
     .replies {
         list-style-type: none;
-        width: calc(100% - #{$reply-indent});
-        margin: 0 0 0 $reply-indent;
+        width: calc(100% - var(--reply-indent));
+        margin: 0 0 0 var(--reply-indent);
         padding: 0;
     }
     button.view-replies, button.hide-replies {
@@ -142,7 +142,7 @@
 
         color: $accent;
         font-size: 0.9em;
-        margin: 5px 0 7px $reply-indent;
+        margin: 5px 0 7px var(--reply-indent);
         padding: 1px 4px;
         background: none;
         outline: none;
@@ -153,5 +153,11 @@
         &:hover {
             color: $accent-dark;
         }
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .flamewars-container .comment {
+        --reply-indent: 20px;
     }
 }

@@ -4,6 +4,7 @@
     display: flex;
     justify-content: space-between;
     margin: 1em 0 0.7em 0;
+    gap: 15px 10px;
 
     h2 {
         display: inline-block;
@@ -23,5 +24,12 @@
         &:hover {
             color: $dark-grey;
         }
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .flamewars-container .flamewars-header {
+        flex-direction: column;
+        margin-bottom: 1em;
     }
 }
