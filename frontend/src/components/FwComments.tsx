@@ -7,7 +7,7 @@ import { AuthContext, User } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
-import { If } from 'jsx-conditionals';
+import { Else, If } from 'jsx-conditionals';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { LoadButton } from './LoadButton';
@@ -37,9 +37,10 @@ const FwComments = () => {
     const [authorization, setAuthorization] = useState<Authorization>();
     const [user, setUser] = useState<User>();
     const [nextUrl, setNextUrl] = useState(baseUrl);
+    const [failedToLoad, setFailedToLoad] = useState(false);
 
     const loadComments = async () => {
-        if (!nextUrl) return Promise.resolve();
+        if (!nextUrl) return;
         try {
             const response = await fetch(nextUrl);
             const json = await response.json() as GetAllCommentsResponse;
@@ -53,7 +54,9 @@ const FwComments = () => {
             // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
             jumpToComment();
         } catch (message) {
-            return console.error(message);
+            setNextUrl(undefined);
+            setFailedToLoad(true);
+            console.error(message);
         }
     };
 
@@ -81,9 +84,15 @@ const FwComments = () => {
                             .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
                     </ul>
                     <div ref={triggerRef} className='infinite-scroll-trigger'>
-                        <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
-                            <LoadingSpinner />
-                        </If>
+                        <If condition={failedToLoad}>Failed to load comments</If>
+                        <Else>
+                            <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
+                                <LoadingSpinner />
+                            </If>
+                            <Else>
+                                <If condition={baseUrl !== nextUrl && comments.length === 0}>Be the first to comment</If>
+                            </Else>
+                        </Else>
                         <LoadButton className='load-more-comments' load={loadComments} visible={!!nextUrl && !USE_INFINITE_SCROLL} />
                     </div>
                 </AuthContext.Provider>

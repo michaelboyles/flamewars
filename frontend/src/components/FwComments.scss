@@ -13,12 +13,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 50px;
 
         .loading-spinner {
             --size: 20px;
             --line-weight: 0.15;
             --color: #{$almost-black};
-            padding: 1em 0;
         }
     }
 
