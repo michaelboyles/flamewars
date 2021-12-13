@@ -76,7 +76,7 @@ export const Votes = (props: {comment: Comment}) => {
             <button className={myVote === 'up' ? myVoteClass : ''} onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
                 <HiOutlineThumbUp />
             </button>
-            {votes.upvoters.length - votes.downvoters.length}
+            <span className='score'>{votes.upvoters.length - votes.downvoters.length}</span>
             <button className={myVote === 'down' ? myVoteClass : ''} onClick={onDownClick} disabled={ownerOrNotSignedIn} aria-label={downvoteLabel} title={downvoteLabel}>
                 <HiOutlineThumbDown />
             </button>
