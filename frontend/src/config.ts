@@ -5,6 +5,7 @@ export type Config = {
     googleClientId?: string;
     htmlContainerId?: string;
     useInfiniteScroll?: boolean;
+    displayGitHubLink?: boolean;
 };
 
 declare var __FLAMEWARS_CONFIG: Config;
@@ -25,3 +26,4 @@ export const DELETED_MESSAGE = __FLAMEWARS_CONFIG.deletedMessage ?? 'Comment was
 export const GOOGLE_CLIENT_ID = __FLAMEWARS_CONFIG.googleClientId ?? metaGoogleId;
 export const HTML_CONTAINER_ID = __FLAMEWARS_CONFIG.htmlContainerId ?? 'comments';
 export const USE_INFINITE_SCROLL = !!window.IntersectionObserver && (__FLAMEWARS_CONFIG.useInfiniteScroll ?? true);
+export const DISPLAY_GITHUB_LINK = __FLAMEWARS_CONFIG.displayGitHubLink ?? true;
