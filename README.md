@@ -1,4 +1,4 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/michaelboyles/flamewars/Node.js%20build) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/michaelboyles/flamewars?sort=semver) ![License](https://img.shields.io/github/license/michaelboyles/flamewars)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/michaelboyles/flamewars/node.js.yml?branch=develop)](https://github.com/michaelboyles/flamewars/actions) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/michaelboyles/flamewars?sort=semver) [![License](https://img.shields.io/github/license/michaelboyles/flamewars)](https://github.com/michaelboyles/flamewars/blob/develop/LICENSE)
 
 Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) comment engine. You self-host an instance in AWS. It's
 designed for websites which run without their own server, like a statically generated website (Hugo, Jekyll) served on
