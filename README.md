@@ -4,7 +4,7 @@ Flamewars is a [serverless](https://en.wikipedia.org/wiki/Serverless_computing) 
 designed for websites which run without their own server, like a statically generated website (Hugo, Jekyll) served on
 [GitHub Pages](https://pages.github.com/). You can install it in just a few minutes.
 
-<p align="center">👉 &nbsp;<a href="https://boyl.es/">Try it out on my blog<a> 👈</p>
+<p align="center">👉&nbsp;<a href="https://boyl.es/">Try it out on my blog<a> 👈</p>
 
 Comments support [markdown](https://en.wikipedia.org/wiki/Markdown), including lists, code blocks and images.
 
