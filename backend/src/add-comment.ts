@@ -13,7 +13,7 @@ const dynamo = getDynamoDb();
 export const handler = createHandler<AddCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: (event, request, authResult) => {
+    handle: async (event, request, authResult) => {
         const now = new Date();
         const timestamp = now.toISOString();
         const commentId = generateCommentId(now);
@@ -43,6 +43,7 @@ export const handler = createHandler<AddCommentRequest>({
             Item: dynamoComment
         };
 
+        // noinspection ES6MissingAwait
         const promises = [dynamo.putItem(params)];
         if (request.inReplyTo) {
             const input: UpdateItemInput = {
@@ -57,36 +58,34 @@ export const handler = createHandler<AddCommentRequest>({
 
             promises.push(dynamo.updateItem(input));
         }
-        
-        return Promise.all(promises)
-            .then(() => {
-                const requestUrl = getRequestUrl(event);
-                const lastSlash = requestUrl.lastIndexOf('/'); // remove client's generated ID
-                const location = requestUrl.substr(0, lastSlash + 1) + commentId;
+        await Promise.all(promises);
 
-                const body: AddCommentResponse = {
-                    comment: {
-                        id: commentId,
-                        author: {
-                            id: authResult.userDetails.userId,
-                            name: authResult.userDetails.name
-                        },
-                        text: request.comment,
-                        timestamp: timestamp,
-                        status: 'normal',
-                        replies: {
-                            uri: location + '/replies',
-                            count: 0
-                        },
-                        votes: { upvoters: [], downvoters: [] }
-                    }
-                };
-                return {
-                    statusCode: 201,
-                    body,
-                    extraHeaders: {location}
-                };
-            });
+        const requestUrl = getRequestUrl(event);
+        const lastSlash = requestUrl.lastIndexOf('/'); // remove client's generated ID
+        const location = requestUrl.substring(0, lastSlash + 1) + commentId;
+
+        const body: AddCommentResponse = {
+            comment: {
+                id: commentId,
+                author: {
+                    id: authResult.userDetails.userId,
+                    name: authResult.userDetails.name
+                },
+                text: request.comment,
+                timestamp: timestamp,
+                status: 'normal',
+                replies: {
+                    uri: location + '/replies',
+                    count: 0
+                },
+                votes: { upvoters: [], downvoters: [] }
+            }
+        };
+        return {
+            statusCode: 201,
+            body,
+            extraHeaders: { location }
+        };
     }
 });
 
@@ -95,7 +94,7 @@ function generateCommentId(time: Date) {
     // when querying. UUID is used as a tie-breaker in case two comments land on the same millisecond. Just
     // take the first part so it's easier to work with.
     const id = uuid();
-    const shortId = id.substr(0, id.indexOf('-'));
+    const shortId = id.substring(0, id.indexOf('-'));
     return time.getTime() + '-' + shortId;
 }
 

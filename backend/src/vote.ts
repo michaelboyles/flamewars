@@ -4,17 +4,6 @@ import { createHandler, errorResult, successResult } from './common';
 import type { VoteRequest } from '../../common/types/vote';
 import type { UpdateItemInput } from '@aws-sdk/client-dynamodb';
 
-const getUpdateExpression = (request: VoteRequest) => {
-    switch (request.voteType) {
-        case 'up':
-            return 'ADD upvoters :u DELETE downvoters :u';
-        case 'down':
-            return 'DELETE upvoters :u ADD downvoters :u';
-        case 'none':
-            return 'DELETE upvoters :u, downvoters :u';
-    }
-}
-
 export const handler = createHandler({
     hasJsonBody: true,
     requiresAuth: true,
@@ -52,3 +41,14 @@ export const handler = createHandler({
         });
     }
 });
+
+function getUpdateExpression(request: VoteRequest) {
+    switch (request.voteType) {
+        case 'up':
+            return 'ADD upvoters :u DELETE downvoters :u';
+        case 'down':
+            return 'DELETE upvoters :u ADD downvoters :u';
+        case 'none':
+            return 'DELETE upvoters :u, downvoters :u';
+    }
+}

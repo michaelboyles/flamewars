@@ -6,37 +6,37 @@ import type { AttributeMap, DynamoKey } from "./dynamo";
 export const PAGE_ID_PREFIX: string = 'PAGE#';
 export const COMMENT_ID_PREFIX: string = '#COMMENT#';
 
-export interface ApiGatewayRequest {
-    body: string;
-    queryStringParameters: Record<string, string>;
-    pathParameters: Record<string, string>;
+export type ApiGatewayRequest = {
+    body: string
+    queryStringParameters: Record<string, string>
+    pathParameters: Record<string, string>
     requestContext: {
-        domainName: string;
-        path: string;
+        domainName: string
+        path: string
     };
-    headers: Record<string, string>;
+    headers: Record<string, string>
 }
 
-export interface ApiGatewayResponse {
-    statusCode: number;
-    headers?: object,
-    body: string;
+export type ApiGatewayResponse = {
+    statusCode: number
+    body: string
+    headers?: object
 }
 
-export interface DynamoString {
-    S: string;
+export type DynamoString = {
+    S: string
 }
 
-export interface DynamoStringSet {
-    SS: string[];
+export type DynamoStringSet = {
+    SS: string[]
 }
 
-export interface DynamoBoolean {
-    BOOL: boolean;
+export type DynamoBoolean = {
+    BOOL: boolean
 }
 
-export interface DynamoNumber {
-    N: string;
+export type DynamoNumber = {
+    N: string
 }
 
 export interface DynamoComment extends AttributeMap {

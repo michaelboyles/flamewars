@@ -2,16 +2,28 @@ import { OAuth2Client } from 'google-auth-library';
 import { Authorization } from '../../common/types/authorization';
 
 export type UserDetails = {
-    userId: string;
-    name: string;
+    userId: string
+    name: string
 }
 
 export type AuthenticationResult = {
-    isValid: boolean;
-    userDetails?: UserDetails;
+    isValid: boolean
+    userDetails?: UserDetails
 }
 
-const getGoogleDetails = async (token: string): Promise<AuthenticationResult> => {
+export function checkAuthentication(authorization: Authorization): Promise<AuthenticationResult> {
+    if (!authorization?.token || !authorization?.tokenProvider) {
+        return Promise.resolve({isValid: false});
+    }
+    switch (authorization.tokenProvider) {
+        case 'Google':
+            return getGoogleDetails(authorization.token);
+        default: 
+            throw new Error('Unsupported token provider ' + authorization.tokenProvider);
+    }
+}
+
+async function getGoogleDetails(token: string): Promise<AuthenticationResult> {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const client = new OAuth2Client(clientId);
 
@@ -33,17 +45,5 @@ const getGoogleDetails = async (token: string): Promise<AuthenticationResult> =>
         return {
             isValid: false,
         }
-    }
-}
-
-export function checkAuthentication(authorization: Authorization): Promise<AuthenticationResult> {
-    if (!authorization?.token || !authorization?.tokenProvider) {
-        return Promise.resolve({isValid: false});
-    }
-    switch (authorization.tokenProvider) {
-        case 'Google':
-            return getGoogleDetails(authorization.token);
-        default: 
-            throw new Error('Unsupported token provider ' + authorization.tokenProvider);
     }
 }

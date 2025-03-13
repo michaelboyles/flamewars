@@ -1,9 +1,9 @@
 import type { AttributeValue, DynamoDB, QueryCommandInput } from "@aws-sdk/client-dynamodb";
 import { continuationTokenToStr } from "./aws";
 
-export interface LimitResult {
-    items: ItemList;
-    continuationToken?: string;
+export type LimitResult = {
+    items: ItemList
+    continuationToken?: string
 }
 
 export type AttributeMap = Record<string, AttributeValue>;
