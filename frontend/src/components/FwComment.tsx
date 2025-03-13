@@ -6,7 +6,7 @@ import { Markdown } from './Markdown';
 import { ShareButton } from './ShareButton';
 import { AuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
-import { If } from 'jsx-conditionals';
+import { Else, If } from 'jsx-conditionals';
 import { Votes } from './Votes';
 import { encodedWindowUrl, formatFullTime, formatPastDate } from '../util';
 import { GoTriangleDown, GoTriangleUp } from 'react-icons/go'
@@ -16,13 +16,12 @@ import type { Comment, GetAllCommentsResponse } from '../../../common/types/get-
 
 import './FwComment.scss';
 
-const Timestamp = memo((props: {isoTimestamp: string}) => {
+const Timestamp = memo((props: { isoTimestamp: string }) => {
     const date = new Date(props.isoTimestamp);
     return (
         <time className='timestamp' dateTime={props.isoTimestamp} title={formatFullTime(date)}>{formatPastDate(date)}</time>
     )
 });
-
 
 type PortraitProps = {
     username: string
@@ -147,16 +146,18 @@ export function FwComment({ comment, parent }: Props) {
                 <If condition={Boolean(comment.inReplyTo?.author)}>
                     <span className='reply-to'>Replying to <a href={'#' + comment.inReplyTo.id}>{comment.inReplyTo.author}</a></span>
                 </If>
-                {
-                    !isEditing ? 
-                        <Markdown text={isDeleted ? DELETED_MESSAGE : text} /> :
-                        <CommentForm commentToEdit={{...comment, text: text}} // In case the user already edited this comment once
-                                     afterSubmit={afterSubmitEdit}
-                                     buttonLabel='Save edit'
-                                     type='edit'
-                                     onCancel={() => setIsEditing(false)}
-                        />
-                }
+                <If condition={isEditing}>
+                    <CommentForm
+                        commentToEdit={{...comment, text: text}} // In case the user already edited this comment once
+                        afterSubmit={afterSubmitEdit}
+                        buttonLabel='Save edit'
+                        type='edit'
+                        onCancel={() => setIsEditing(false)}
+                    />
+                </If>
+                <Else>
+                    <Markdown text={isDeleted ? DELETED_MESSAGE : text} />
+                </Else>
                 <div className='post-actions'>
                     <If condition={!isDeleted}>
                         <Votes comment={comment} />

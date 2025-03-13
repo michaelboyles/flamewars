@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 type IUrlFragmentContext = {
-    fragment?: string;
+    fragment?: string
 }
 
 export const UrlFragmentContext = createContext<IUrlFragmentContext>({});

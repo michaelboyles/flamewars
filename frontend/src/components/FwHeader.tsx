@@ -8,7 +8,7 @@ import './FwHeader.scss';
 
 export function FwHeader() {
     const { user, setAuthorization } = useContext(AuthContext);
-    const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
+    const { signOut: googleSignOut } = useGoogleLogout({ clientId: GOOGLE_CLIENT_ID });
     const signOut = () => { googleSignOut(); setAuthorization(null); }
 
     return (
@@ -19,7 +19,7 @@ export function FwHeader() {
                     <a className='powered-by' href='https://github.com/michaelboyles/flamewars'>Powered by Flamewars</a>
                 </If>
             </div>
-            <If condition={Boolean(user?.name)}>
+            <If condition={user?.name}>
                 <span className='user'>Signed in as {user.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> 
             </If>
         </header>

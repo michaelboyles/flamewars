@@ -10,7 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
-import { If } from 'jsx-conditionals';
+import { Else, If } from 'jsx-conditionals';
 import { encodedWindowUrl } from '../util';
 
 import './CommentForm.scss';
@@ -193,22 +193,21 @@ export function CommentForm(props: Props) {
             />
             <div className='form-footer'>
                 <div className='button-group'>
-                    <If condition={Boolean(props.onCancel)}>
+                    <If condition={props.onCancel}>
                         <button className='cancel' onClick={props.onCancel}>Cancel</button>
                     </If>
-                    {
-                        authorization ?
-                            (
-                                <SubmitButton
-                                    disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
-                                    label={props.buttonLabel}
-                                    isSubmitting={isSubmitting}
-                                />
-                            )
-                            : <SignIn />
-                    }
+                    <If condition={authorization}>
+                        <SubmitButton
+                            disabled={isSubmitting || text.length > MAX_COMMENT_LENGTH}
+                            label={props.buttonLabel}
+                            isSubmitting={isSubmitting}
+                        />
+                    </If>
+                    <Else>
+                        <SignIn />
+                    </Else>
                 </div>
-                <If condition={Boolean(error)}>
+                <If condition={error}>
                     <span className='form-error'>{error}</span>
                 </If>
             </div>

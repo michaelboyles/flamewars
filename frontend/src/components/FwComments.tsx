@@ -6,7 +6,7 @@ import { AuthContext, User } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
-import { Else, If } from 'jsx-conditionals';
+import { Else, ElseIf, If } from 'jsx-conditionals';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { LoadButton } from './LoadButton';
@@ -52,7 +52,8 @@ function FwComments() {
             }
             // TODO somewhat broken by pagination. If the comment is not on-screen, what should we do?
             jumpToComment();
-        } catch (message) {
+        }
+        catch (message) {
             setNextUrl(undefined);
             setFailedToLoad(true);
             console.error(message);
@@ -78,9 +79,11 @@ function FwComments() {
                     <FwHeader />
                     <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
                     <ul className='comments'>
-                        { comments
+                    {
+                        comments
                             .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                            .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>) }
+                            .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>)
+                    }
                     </ul>
                     <div ref={triggerRef} className='infinite-scroll-trigger'>
                         <If condition={failedToLoad}>Failed to load comments</If>
@@ -88,16 +91,16 @@ function FwComments() {
                             <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
                                 <LoadingSpinner />
                             </If>
-                            <Else>
-                                <If condition={baseUrl !== nextUrl && comments.length === 0}>Be the first to comment</If>
-                            </Else>
+                            <ElseIf condition={baseUrl !== nextUrl && comments.length === 0}>
+                                Be the first to comment
+                            </ElseIf>
                         </Else>
                         <LoadButton className='load-more-comments' load={loadComments} visible={!!nextUrl && !USE_INFINITE_SCROLL} />
                     </div>
                 </AuthContext.Provider>
             </UrlFragmentContextProvider>
         </section>
-    );
+    )
 }
 
 export default FwComments;

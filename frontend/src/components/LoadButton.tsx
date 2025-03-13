@@ -19,17 +19,17 @@ export function LoadButton(props: Props) {
 
     if (!visible) return null;
 
-    const onClick = async () => {
+    async function loadComments() {
         setIsLoading(true);
         try {
             await load();
         }
         catch (err) {}
         setIsLoading(false);
-    };
+    }
 
     return (
-        <button onClick={onClick} {...buttonProps}>
+        <button onClick={() => loadComments()} {...buttonProps}>
             {isLoading ? loadingLabel : normalLabel}
         </button>
     )
