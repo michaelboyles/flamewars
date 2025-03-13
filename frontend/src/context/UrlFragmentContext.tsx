@@ -1,12 +1,12 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
-interface IUrlFragmentContext {
+type IUrlFragmentContext = {
     fragment?: string;
 }
 
 export const UrlFragmentContext = createContext<IUrlFragmentContext>({});
 
-export const UrlFragmentContextProvider = (props: {children: ReactNode}) => {
+export function UrlFragmentContextProvider(props: { children: ReactNode }) {
     const [fragment, setFragment] = useState(window.location.hash);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export const UrlFragmentContextProvider = (props: {children: ReactNode}) => {
 
     return (
         <UrlFragmentContext.Provider value={{ fragment }}>
-            {props.children}
+            { props.children }
         </UrlFragmentContext.Provider>
     );
 }

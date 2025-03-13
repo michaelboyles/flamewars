@@ -17,19 +17,19 @@ import './FwComments.scss';
 
 // Since comments are loaded dynamically after the page loads, normal URL fragments (e.g. #comment-123) won't work.
 // We need to do the jump manually after the comments are loaded.
-const jumpToComment = () => {
+function jumpToComment() {
     if (window.location.hash?.startsWith('#comment-')) {
         const id = window.location.hash.substr(1);
         // Small timeout in case DOM hasn't been inserted yet
         setTimeout(() => document.getElementById(id)?.scrollIntoView({behavior: 'smooth'}), 50);
     }
-};
+}
 
 const FwComment = lazy(
     () => import('./FwComment').then(module => ({ default: module.FwComment }))
 );
 
-const FwComments = () => {
+function FwComments() {
     const baseUrl = `${AWS_GET_URL}/comments/${encodedWindowUrl()}`;
 
     const [comments, setComments] = useState<Comment[]>([]);

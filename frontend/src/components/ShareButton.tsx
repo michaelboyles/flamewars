@@ -1,29 +1,26 @@
 import { useState } from 'react';
 import { If } from 'jsx-conditionals';
 
-interface Props {
-    className?: string;
-    fragment: string;
+type Props = {
+    fragment: string
+    className?: string
 }
-
-export const ShareButton = (props: Props) => {
+export function ShareButton({ className, fragment }: Props) {
     const [isShowingCopied, setShowingCopied] = useState(false);
 
-    const onClick = () => { 
-        window.location.href = '#' + props.fragment;
-        navigator.clipboard.writeText(window.location.href)
-            .then(() => {
-                setShowingCopied(true);
-                setTimeout(() => setShowingCopied(false), 1000);
-            });
-    };
+    async function share() {
+        window.location.href = '#' + fragment;
+        await navigator.clipboard.writeText(window.location.href);
+        setShowingCopied(true);
+        setTimeout(() => setShowingCopied(false), 1_000);
+    }
 
     return (
-        <button onClick={onClick} className={props.className}>
+        <button onClick={() => share()} className={className}>
             Share
             <If condition={isShowingCopied}>
                 <div className='copied'>Link copied</div>
             </If>
         </button>
     )
-};
+}

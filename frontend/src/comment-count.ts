@@ -7,7 +7,7 @@ export function applyCountToCommentLinks() {
     const links = getFlamewarsLinks();
 
     const chunkSize = MAX_URLS_IN_COUNT_REQUEST;
-    for (var i = 0; i < links.length; i += chunkSize) {
+    for (let i = 0; i < links.length; i += chunkSize) {
         const chunk = links.slice(i, i + chunkSize);
         const queryString = '?urls=' + chunk.map(link => normalizeUrl(link.href)).join(',');
         fetch(`${AWS_GET_URL}/comment-count${queryString}`)

@@ -14,10 +14,10 @@ function trueOnce() {
     return (!called) ? (called = true) : false;
 }
 
-export const SignIn = () => {
+export function SignIn() {
     const { setAuthorization, setUser } = useContext(AuthContext);
 
-    const onSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+    function onSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
         if (!response.code) { // i.e. is GoogleLoginResponse
             const loginResponse = response as GoogleLoginResponse;
             setAuthorization({
@@ -29,7 +29,7 @@ export const SignIn = () => {
                 name: loginResponse.getBasicProfile().getName()
             });
         }
-    };
+    }
 
     return (
         <div className='sign-in'>
@@ -47,5 +47,5 @@ export const SignIn = () => {
                 />
             </ul>
         </div>
-    );
+    )
 }

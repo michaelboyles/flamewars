@@ -32,7 +32,7 @@ const TOOLBAR_COMMANDS = [[
 type CommentConsumer = (comment: Comment) => void;
 type CommentType = 'add' | 'edit' | 'reply';
 
-interface Props {
+type Props = {
     afterSubmit: CommentConsumer,
     buttonLabel?: string,
     type: CommentType,
@@ -68,7 +68,12 @@ function getPlaceholder(type: CommentType) {
     }
 }
 
-const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: boolean}) => {
+type SubmitButtonProps = {
+    label?: string
+    isSubmitting: boolean
+    disabled: boolean
+}
+function SubmitButton(props: SubmitButtonProps) {
     let label = props.label || 'Post';
     if (props.isSubmitting) {
         label = 'Submitting\u2026';
@@ -83,7 +88,7 @@ const SubmitButton = (props: {label?: string, isSubmitting: boolean, disabled: b
     )
 }
 
-export const CommentForm = (props: Props) => { 
+export function CommentForm(props: Props) {
     const [text, setText] = useState(props.commentToEdit?.text ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -208,5 +213,5 @@ export const CommentForm = (props: Props) => {
                 </If>
             </div>
         </form>
-    );
+    )
 }

@@ -1,13 +1,13 @@
 import { ReactNode, useState, ButtonHTMLAttributes } from 'react';
 
-interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onclick'> {
+type Props = {
     normalLabel?: ReactNode;
     loadingLabel?: ReactNode;
     visible?: boolean;
     load: () => Promise<any>;
-}
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onclick'>
 
-export const LoadButton = (props: Props) => {
+export function LoadButton(props: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const {
         normalLabel = 'Load more',
@@ -32,5 +32,5 @@ export const LoadButton = (props: Props) => {
         <button onClick={onClick} {...buttonProps}>
             {isLoading ? loadingLabel : normalLabel}
         </button>
-    );
+    )
 }

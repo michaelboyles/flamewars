@@ -11,28 +11,23 @@ import './Votes.scss';
 
 const myVoteClass = ' my-vote';
 
-const doFetch = (voteBody: VoteRequest, commentId: string) => {
-    fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${commentId}/votes`, {
-        method: 'PATCH',
-        body: JSON.stringify(voteBody),
-        headers: {'content-type': 'application/json'}
-    });
-};
-
-export const Votes = (props: {comment: Comment}) => {
+export type Props = {
+    comment: Comment
+}
+export function Votes({ comment }: Props) {
     const { authorization, user } = useContext(AuthContext);
-    const [votes, setVotes] = useState(props.comment.votes);
+    const [votes, setVotes] = useState(comment.votes);
 
     let myVote = undefined;
     if (votes.upvoters.includes(user?.id)) myVote = 'up';
     if (votes.downvoters.includes(user?.id)) myVote = 'down';
 
-    const vote = (voteType: 'up' | 'down') => {
+    function vote(voteType: 'up' | 'down') {
         const voteBody: VoteRequest = {
             authorization,
             voteType
         };
-        doFetch(voteBody, props.comment.id);
+        doFetch(voteBody, comment.id);
 
         let newUpvoters = votes.upvoters;
         let newDownvoters = votes.downvoters;
@@ -48,28 +43,32 @@ export const Votes = (props: {comment: Comment}) => {
             upvoters: newUpvoters,
             downvoters: newDownvoters
         });
-    };
+    }
 
-    const removeVote = () => {
+    function removeVote() {
         const voteBody: VoteRequest = {
             authorization,
             voteType: 'none'
         };
-        doFetch(voteBody, props.comment.id);
+        doFetch(voteBody, comment.id);
 
         setVotes({
             upvoters: votes.upvoters.filter(id => id !== user?.id),
             downvoters: votes.downvoters.filter(id => id !== user?.id)
         });
-    };
+    }
 
-    const onUpClick = () => (myVote === 'up') ? removeVote() : vote('up');
-    const onDownClick = () => (myVote === 'down') ? removeVote() : vote('down');
+    function onUpClick() {
+        (myVote === 'up') ? removeVote() : vote('up');
+    }
+    function onDownClick() {
+        (myVote === 'down') ? removeVote() : vote('down');
+    }
 
     const upvoteLabel = (myVote === 'up') ? 'Remove like' : 'Like'; 
     const downvoteLabel = (myVote === 'down') ? 'Remove dislike' : 'Dislike';
     
-    const ownerOrNotSignedIn = !authorization || props.comment.author.id === user?.id;
+    const ownerOrNotSignedIn = !authorization || comment.author.id === user?.id;
     return (
         <div className='votes'>
             <button className={myVote === 'up' ? myVoteClass : ''} onClick={onUpClick} disabled={ownerOrNotSignedIn} aria-label={upvoteLabel} title={upvoteLabel}>
@@ -81,4 +80,12 @@ export const Votes = (props: {comment: Comment}) => {
             </button>
         </div>
     );
-};
+}
+
+function doFetch(voteBody: VoteRequest, commentId: string) {
+    return fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${commentId}/votes`, {
+        method: 'PATCH',
+        body: JSON.stringify(voteBody),
+        headers: {'content-type': 'application/json'}
+    });
+}

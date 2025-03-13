@@ -23,29 +23,36 @@ const Timestamp = memo((props: {isoTimestamp: string}) => {
     )
 });
 
-const Portrait = (props: {username: string, url: string}) => {
-    if (props.url) {
-        return <img className='portrait' src={props.url} />;
-    } 
-    return <DefaultAvatar username={props.username} bgcolour='#fff' />;
-};
 
-interface Parent {
-    comment: Comment;
-    addReply: (comment: Comment) => void;
+type PortraitProps = {
+    username: string
+    url: string
+}
+function Portrait({ username, url }: PortraitProps) {
+    if (url) {
+        return <img className='portrait' src={url} />;
+    } 
+    return <DefaultAvatar username={username} bgcolour='#fff' />;
 }
 
-export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
+type Props = {
+    comment: Comment
+    parent?: {
+        comment: Comment
+        addReply: (comment: Comment) => void
+    }
+}
+export function FwComment({ comment, parent }: Props) {
     const [replies, setReplies] = useState<Record<string, Comment>>({});
-    const [nextUrl, setNextUrl] = useState(props.comment.replies.uri);
+    const [nextUrl, setNextUrl] = useState(comment.replies.uri);
 
     const [isReplyFormOpen, setReplyFormOpen] = useState(false);
     const [isRepliesSectionOpen, setRepliesSectionOpen] = useState(false);
-    const [isDeleted, setDeleted] = useState(props.comment.status === 'deleted');
+    const [isDeleted, setDeleted] = useState(comment.status === 'deleted');
     const [isEditing, setIsEditing] = useState(false);
-    const [isEdited, setIsEdited] = useState(props.comment.status === 'edited');
-    const [text, setText] = useState(props.comment.text);
-    const [numReplies, setNumReplies] = useState(props.comment?.replies?.count ?? 0);
+    const [isEdited, setIsEdited] = useState(comment.status === 'edited');
+    const [text, setText] = useState(comment.text);
+    const [numReplies, setNumReplies] = useState(comment.replies?.count ?? 0);
     const { authorization, user } = useContext(AuthContext);
     const { fragment } = useContext(UrlFragmentContext);
 
@@ -63,7 +70,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     const deleteComment = () => {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
         if (!shouldDelete) return;
-        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${props.comment.id}`,
+        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${comment.id}`,
             {
                 method: 'DELETE',
                 body: JSON.stringify({authorization}),
@@ -74,8 +81,8 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
     };
 
     const afterSubmitNew = (comment: Comment) => {
-        if (props.parent) {
-            props.parent.addReply(comment);
+        if (parent) {
+            parent.addReply(comment);
         }
         else {
             addReply(comment);
@@ -89,7 +96,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
 
     const afterSubmitEdit = (comment: Comment) => {
         setIsEditing(false);
-        if (comment.text !== props.comment.text) {
+        if (comment.text !== comment.text) {
             setText(comment.text);
             setIsEdited(true);
         }
@@ -111,7 +118,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             });
             setRepliesSectionOpen(true);
             if (json.continuationToken) {
-                setNextUrl(`${props.comment.replies.uri}?continuationToken=${json.continuationToken}`);
+                setNextUrl(`${comment.replies.uri}?continuationToken=${json.continuationToken}`);
             }
             else {
                 setNextUrl(undefined);
@@ -124,26 +131,26 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
 
     if (isDeleted && numReplies === 0 && Object.keys(replies).length === 0) return null;
 
-    const id = 'comment-' + props.comment.id;
-    const bodyClassName = 'body' + (fragment?.endsWith(props.comment.id) ? ' is-selected' : '');
-    const isOwner = user?.id === props.comment.author.id;
+    const id = 'comment-' + comment.id;
+    const bodyClassName = 'body' + (fragment?.endsWith(comment.id) ? ' is-selected' : '');
+    const isOwner = user?.id === comment.author.id;
 
     return (
-        <li id={id} className='comment' role='comment' data-author={props.comment.author.name}>
-            <Portrait username={props.comment.author.id} url={props.comment.author.portraitUrl}/>
+        <li id={id} className='comment' role='comment' data-author={comment.author.name}>
+            <Portrait username={comment.author.id} url={comment.author.portraitUrl}/>
             <div className={bodyClassName}>
-                <span className='author-name'>{props.comment.author.name}</span>
-                <Timestamp isoTimestamp={props.comment.timestamp} />
+                <span className='author-name'>{comment.author.name}</span>
+                <Timestamp isoTimestamp={comment.timestamp} />
                 <If condition={isEdited}>
                     <span className='edit-indicator'>Edited</span>
                 </If>
-                <If condition={Boolean(props.comment.inReplyTo?.author)}>
-                    <span className='reply-to'>Replying to <a href={'#' + props.comment.inReplyTo.id}>{props.comment.inReplyTo.author}</a></span>
+                <If condition={Boolean(comment.inReplyTo?.author)}>
+                    <span className='reply-to'>Replying to <a href={'#' + comment.inReplyTo.id}>{comment.inReplyTo.author}</a></span>
                 </If>
                 {
                     !isEditing ? 
                         <Markdown text={isDeleted ? DELETED_MESSAGE : text} /> :
-                        <CommentForm commentToEdit={{...props.comment, text: text}} // In case the user already editted this comment once
+                        <CommentForm commentToEdit={{...comment, text: text}} // In case the user already edited this comment once
                                      afterSubmit={afterSubmitEdit}
                                      buttonLabel='Save edit'
                                      type='edit'
@@ -152,7 +159,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 }
                 <div className='post-actions'>
                     <If condition={!isDeleted}>
-                        <Votes comment={props.comment} />
+                        <Votes comment={comment} />
                     </If>
                     <button onClick={() => setReplyFormOpen(!isReplyFormOpen)} className={'reply-btn ' + (isReplyFormOpen ? 'open' : 'closed')}>Reply</button>
                     <ShareButton className='share-btn' fragment={id} />
@@ -165,8 +172,8 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
             <If condition={isReplyFormOpen}>
                 <CommentForm
                     afterSubmit={afterSubmitNew}
-                    threadId={props.parent?.comment?.id ?? props.comment.id}
-                    inReplyTo={props.comment.id}
+                    threadId={parent?.comment?.id ?? comment.id}
+                    inReplyTo={comment.id}
                     type='reply'
                     onCancel={() => setReplyFormOpen(false)}
                 />
@@ -183,7 +190,7 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                                 key={reply.id}
                                 comment={reply}
                                 parent={{
-                                    comment: props.comment,
+                                    comment,
                                     addReply
                                 }}
                             />
@@ -203,8 +210,8 @@ export const FwComment = (props: {comment: Comment, parent?: Parent}) => {
                 visible={numReplies > 0 && (!isRepliesSectionOpen || !!nextUrl)}
             />
         </li>
-    );
-};
+    )
+}
 
 function repliesToStr(numReplies: number) {
     return numReplies === 1 ? 'reply' : (numReplies + ' replies');

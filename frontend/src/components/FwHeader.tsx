@@ -6,7 +6,7 @@ import { If } from 'jsx-conditionals';
 
 import './FwHeader.scss';
 
-export const FwHeader = () => {
+export function FwHeader() {
     const { user, setAuthorization } = useContext(AuthContext);
     const { signOut: googleSignOut } = useGoogleLogout({clientId: GOOGLE_CLIENT_ID});
     const signOut = () => { googleSignOut(); setAuthorization(null); }
@@ -23,5 +23,5 @@ export const FwHeader = () => {
                 <span className='user'>Signed in as {user.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> 
             </If>
         </header>
-    );
+    )
 }

@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from 'react'
 
-function useIntersectionObserver(elementRef: RefObject<Element>): IntersectionObserverEntry | undefined {
+export function useIntersectionObserver(elementRef: RefObject<Element>): IntersectionObserverEntry | undefined {
   const [entry, setEntry] = useState<IntersectionObserverEntry>();
 
   useEffect(() => {
@@ -17,5 +17,3 @@ function useIntersectionObserver(elementRef: RefObject<Element>): IntersectionOb
 
   return entry;
 }
-
-export { useIntersectionObserver }
