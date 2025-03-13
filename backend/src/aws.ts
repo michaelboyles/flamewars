@@ -40,20 +40,27 @@ export type DynamoNumber = {
 }
 
 export interface DynamoComment extends AttributeMap {
-    PK: DynamoString;
-    SK: DynamoString;
-    pageUrl: DynamoString;
-    commentText: DynamoString;
-    timestamp: DynamoString;
-    author: DynamoString;
-    userId: DynamoString;
-    threadId?: DynamoString;
-    parentId?: DynamoString;
-    deletedAt?: DynamoString;
-    editedAt?: DynamoString;
-    upvoters?: DynamoStringSet;
-    downvoters?: DynamoStringSet;
-    numReplies: DynamoNumber;
+    PK: DynamoString
+    SK: DynamoString
+    pageUrl: DynamoString
+    commentText: DynamoString
+    timestamp: DynamoString
+    author: DynamoString
+    userId: DynamoString
+    numReplies: DynamoNumber
+
+    // @ts-ignore
+    threadId?: DynamoString
+    // @ts-ignore
+    parentId?: DynamoString
+    // @ts-ignore
+    deletedAt?: DynamoString
+    // @ts-ignore
+    editedAt?: DynamoString
+    // @ts-ignore
+    upvoters?: DynamoStringSet
+    // @ts-ignore
+    downvoters?: DynamoStringSet
 }
 
 export function getDynamoDb() {
@@ -64,7 +71,8 @@ export function getDynamoDb() {
 export function getOverlongFields(fieldMap: Record<string, AttributeValue>, ignoreKeys: string[]): string[] {
     return Object.entries(fieldMap)
         .map(([field, value]) => (value?.S?.length ?? 0) > MAX_DB_FIELD_LENGTH ? field : null)
-        .filter(field => Boolean(field) && !ignoreKeys.includes(field));
+        .filter(field => field != null)
+        .filter(field => !ignoreKeys.includes(field))
 }
 
 export function getContentType(event: ApiGatewayRequest) {
@@ -80,7 +88,7 @@ export function removeCommentIdPrefix(id: string) {
     return id.substring(COMMENT_ID_PREFIX.length);
 }
 
-export function continuationTokenToStr(key: DynamoKey): string | undefined {
+export function continuationTokenToStr(key: DynamoKey | undefined): string | undefined {
     if (key) {
         const keyStr = JSON.stringify(key);
         return Buffer.from(keyStr).toString('base64');

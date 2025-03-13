@@ -1,5 +1,5 @@
 import { ApiGatewayRequest, ApiGatewayResponse, getContentType } from './aws';
-import { AuthenticationResult, checkAuthentication } from './user-details';
+import { checkAuthentication, UserDetails } from './user-details';
 
 import type { Handler } from 'aws-lambda';
 import type { ErrorResponse } from '../../common/types/error';
@@ -32,37 +32,48 @@ function resultToResponse(result: HandlerResult): ApiGatewayResponse {
     };
 }
 
-export function createHandler<RequestBody>(params: {
-    hasJsonBody: boolean,
-    requiresAuth: boolean,
-    handle: (event: ApiGatewayRequest, jsonBody: RequestBody, authResult: AuthenticationResult) => (HandlerResult | Promise<HandlerResult>)
-}): Handler<ApiGatewayRequest, ApiGatewayResponse> {
+type Params<RequestBody> = {
+    hasJsonBody: false
+    requiresAuth: false
+    handle: (event: ApiGatewayRequest) => (HandlerResult | Promise<HandlerResult>)
+} | {
+    hasJsonBody: true
+    requiresAuth: false
+    handle: (event: ApiGatewayRequest, jsonBody: RequestBody) => (HandlerResult | Promise<HandlerResult>)
+} | {
+    hasJsonBody: true
+    requiresAuth: true
+    handle: (event: ApiGatewayRequest, jsonBody: RequestBody, userDetails: UserDetails) => (HandlerResult | Promise<HandlerResult>)
+}
+
+export function createHandler<RequestBody>(params: Params<RequestBody>): Handler<ApiGatewayRequest, ApiGatewayResponse> {
     return async (event, _ctx) => {
-        let jsonBody: RequestBody;
-        let authResult: AuthenticationResult;
-
-        if (params.hasJsonBody) {
-            if (getContentType(event) !== 'application/json') {
-                return resultToResponse(
-                    errorResult(400, 'Invalid Content-Type, must be application/json')
-                );
-            }
-            try {
-                jsonBody = JSON.parse(event.body);
-            } 
-            catch (err) {
-                return resultToResponse(
-                    errorResult(400, 'Invalid JSON body')
-                );
-            }
-
-            if (params.requiresAuth) {
-                authResult = await checkAuthentication((jsonBody as any)?.authorization);
-                if (!authResult.isValid) {
-                    return resultToResponse(errorResult(403, 'Invalid authentication token'));
-                }
-            }
+        if (!params.hasJsonBody) {
+            return resultToResponse(await params.handle(event));
         }
-        return resultToResponse(await params.handle(event, jsonBody, authResult));
+
+        if (getContentType(event) !== 'application/json') {
+            return resultToResponse(
+                errorResult(400, 'Invalid Content-Type, must be application/json')
+            );
+        }
+        let jsonBody: RequestBody;
+        try {
+            jsonBody = JSON.parse(event.body);
+        }
+        catch (err) {
+            return resultToResponse(
+                errorResult(400, 'Invalid JSON body')
+            );
+        }
+
+        if (params.requiresAuth) {
+            const authResult = await checkAuthentication((jsonBody as any)?.authorization);
+            if (!authResult.isValid) {
+                return resultToResponse(errorResult(403, 'Invalid authentication token'));
+            }
+            return resultToResponse(await params.handle(event, jsonBody, authResult.userDetails));
+        }
+        return resultToResponse(await params.handle(event, jsonBody));
     };
 }

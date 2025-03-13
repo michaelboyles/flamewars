@@ -1,6 +1,6 @@
 import { ApiGatewayRequest, DynamoComment, getDynamoDb, getRequestUrl, PAGE_ID_PREFIX, parseContinuationToken, removeCommentIdPrefix } from './aws';
 import { createHandler, errorResult, successResult } from './common';
-import { AttributeMap, limitQuery } from './dynamo';
+import { limitQuery } from './dynamo';
 import { PAGE_SIZE } from '../../common/constants';
 
 import type { GetAllCommentsResponse, Comment } from '../../common/types/get-all-comments-response';
@@ -30,18 +30,18 @@ export const handler = createHandler({
         try {
             const queryResult = await limitQuery(getDynamoDb(), params, PAGE_SIZE, parseContinuationToken(event));
             const response: GetAllCommentsResponse = {
-                comments: convertItems(event, queryResult.items),
+                comments: convertItems(event, queryResult.items as DynamoComment[]),
                 continuationToken: queryResult.continuationToken
             }
             return successResult(response);
         }
         catch (err) {
-            return errorResult(500, err.message);
+            return errorResult(500, "Server error");
         }
     }
 });
 
-function convertItems(request: ApiGatewayRequest, items: AttributeMap[]): Comment[] {
+function convertItems(request: ApiGatewayRequest, items: DynamoComment[]): Comment[] {
     return items.sort((a, b) => a.timestamp.S.localeCompare(b.timestamp.S)).map((item: DynamoComment) => {
         const isDeleted = !!(item.deletedAt?.S);
         const isEdited = !!(item.editedAt?.S);

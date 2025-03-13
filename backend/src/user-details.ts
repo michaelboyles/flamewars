@@ -7,8 +7,10 @@ export type UserDetails = {
 }
 
 export type AuthenticationResult = {
-    isValid: boolean
-    userDetails?: UserDetails
+    isValid: true
+    userDetails: UserDetails
+} | {
+    isValid: false
 }
 
 export function checkAuthentication(authorization: Authorization): Promise<AuthenticationResult> {
@@ -33,6 +35,9 @@ async function getGoogleDetails(token: string): Promise<AuthenticationResult> {
             audience: clientId
         });
         const payload = loginTicket.getPayload();
+        if (!payload) {
+            return { isValid: false }
+        }
         return {
             isValid: true,
             userDetails: {
@@ -42,8 +47,6 @@ async function getGoogleDetails(token: string): Promise<AuthenticationResult> {
         }
     }
     catch (error) {
-        return {
-            isValid: false,
-        }
+        return { isValid: false }
     }
 }

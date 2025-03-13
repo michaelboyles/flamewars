@@ -25,21 +25,23 @@ export async function limitQuery(dynamo: DynamoDB, queryInput: QueryCommandInput
             ExclusiveStartKey: nextKey
         });
         nextKey = queryResult.LastEvaluatedKey;
-        queryResult.Items.forEach(attrMap => items.push(attrMap));
+        queryResult.Items?.forEach(attrMap => items.push(attrMap));
     } while (items.length < limit && nextKey);
 
     // May have overshot and have more items than the limit so correct for that
     if (items.length > limit) {
         const lastItem = items[limit - 1];
-        return {
-            items: items.slice(0, limit),
-            continuationToken: continuationTokenToStr({
-                PK: {S: lastItem.PK.S},
-                SK: {S: lastItem.SK.S}
-            })
-        };
+        const pk = lastItem.PK.S;
+        const sk = lastItem.SK.S;
+        if (pk && sk) {
+            return {
+                items: items.slice(0, limit),
+                continuationToken: continuationTokenToStr({
+                    PK: {S: pk}, SK: {S: sk}
+                })
+            };
+        }
     }
-
     return {
         items,
         continuationToken: continuationTokenToStr(nextKey)

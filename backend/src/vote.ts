@@ -7,11 +7,11 @@ import type { UpdateItemInput } from '@aws-sdk/client-dynamodb';
 export const handler = createHandler({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: (event, request: VoteRequest, authResult) => {
+    handle: (event, request: VoteRequest, userDetails) => {
         const url = decodeURIComponent(event.pathParameters.url);
         const commentId = event.pathParameters.comment;
         const expressionAttrs = {
-            ':u': { SS: [authResult.userDetails.userId] }
+            ':u': { SS: [userDetails.userId] }
         };
 
         const updateComment: UpdateItemInput = {

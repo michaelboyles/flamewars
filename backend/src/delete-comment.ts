@@ -8,7 +8,7 @@ const dynamo = getDynamoDb();
 export const handler = createHandler<DeleteCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: async (event, _request, authResult) => {
+    handle: async (event, _request, userDetails) => {
         const url = decodeURIComponent(event.pathParameters.url);
         const commentId = event.pathParameters.comment;
         const deleteComment: UpdateItemInput = {
@@ -20,7 +20,7 @@ export const handler = createHandler<DeleteCommentRequest>({
             UpdateExpression: 'SET deletedAt = :ts',
             ExpressionAttributeValues: {
                 ':ts': { S: new Date().toISOString() },
-                ':u': { S: authResult.userDetails.userId }
+                ':u': { S: userDetails.userId }
             },
             ReturnValues: 'ALL_OLD', 
             ConditionExpression: 'userId = :u AND attribute_not_exists(deletedAt)'
@@ -44,7 +44,7 @@ export const handler = createHandler<DeleteCommentRequest>({
             return successResult({success: true});
         }
         catch (err) {
-            if (err.code === 'ConditionalCheckFailedException') {
+            if (err && typeof err === "object" && "code" in err && err.code === 'ConditionalCheckFailedException') {
                 return errorResult(403, 'Not authorized to delete');
             }
             else {

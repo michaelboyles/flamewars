@@ -44,7 +44,7 @@ function queryForUrl(url: string, dynamo: DynamoDB): Promise<CommentCount> {
                 resolve({url: url, count: 0});
             }
             else {
-                resolve({url: url, count: data.Count});
+                resolve({url: url, count: data?.Count ?? 0});
             }
         })
     });

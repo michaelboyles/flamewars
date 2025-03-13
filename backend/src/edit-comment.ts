@@ -9,14 +9,14 @@ const dynamo = getDynamoDb();
 export const handler = createHandler<EditCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: async (event, request, authResult) => {
+    handle: async (event, request, userDetails) => {
         const url = decodeURIComponent(event.pathParameters.url);
         const commentId = event.pathParameters.comment;
     
         const expressionAttrs = {
             ':ts': { S: new Date().toISOString() },
             ':c': { S: request.comment },
-            ':u': { S: authResult.userDetails.userId }
+            ':u': { S: userDetails.userId }
         };
         const overlongFields = getOverlongFields(expressionAttrs, [':c']);
         if (request.comment.length > MAX_COMMENT_LENGTH) {
@@ -42,7 +42,7 @@ export const handler = createHandler<EditCommentRequest>({
             return successResult({success: true})
         }
         catch (err) {
-            if (err.code === 'ConditionalCheckFailedException') {
+            if (err && typeof err === "object" && "code" in err && err.code === 'ConditionalCheckFailedException') {
                 return errorResult(403, 'Not authorized to edit');
             }
             else {

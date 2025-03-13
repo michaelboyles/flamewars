@@ -13,7 +13,7 @@ const dynamo = getDynamoDb();
 export const handler = createHandler<AddCommentRequest>({
     hasJsonBody: true,
     requiresAuth: true,
-    handle: async (event, request, authResult) => {
+    handle: async (event, request, userDetails) => {
         const now = new Date();
         const timestamp = now.toISOString();
         const commentId = generateCommentId(now);
@@ -25,8 +25,8 @@ export const handler = createHandler<AddCommentRequest>({
             pageUrl  : { S: url },
             commentText: { S: request.comment },
             timestamp: { S: timestamp },
-            author   : { S: authResult.userDetails.name },
-            userId   : { S: authResult.userDetails.userId },
+            author   : { S: userDetails.name },
+            userId   : { S: userDetails.userId },
             numReplies: { N: '0' },
             ...getReplyFields(request)
         };
@@ -68,8 +68,8 @@ export const handler = createHandler<AddCommentRequest>({
             comment: {
                 id: commentId,
                 author: {
-                    id: authResult.userDetails.userId,
-                    name: authResult.userDetails.name
+                    id: userDetails.userId,
+                    name: userDetails.name
                 },
                 text: request.comment,
                 timestamp: timestamp,

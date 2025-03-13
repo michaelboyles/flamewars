@@ -1,7 +1,6 @@
 import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX, parseContinuationToken, removeCommentIdPrefix } from './aws';
 import { createHandler, errorResult, successResult } from './common';
 import { limitQuery } from './dynamo';
-import type { ItemList } from './dynamo';
 import { PAGE_SIZE } from '../../common/constants';
 
 import type { GetAllCommentsResponse, Comment } from '../../common/types/get-all-comments-response';
@@ -30,17 +29,18 @@ export const handler = createHandler({
         try {
             const queryResult = await limitQuery(getDynamoDb(), params, PAGE_SIZE, parseContinuationToken(event));
             const response: GetAllCommentsResponse = {
-                comments: convertItems(queryResult.items),
+                comments: convertItems(queryResult.items as DynamoComment[]),
                 continuationToken: queryResult.continuationToken
             };
             return successResult(response);
-        } catch (err) {
-            return errorResult(500, err.message);
+        }
+        catch (err) {
+            return errorResult(500, "Server error");
         }
     }
 });
 
-function convertItems(items: ItemList): Comment[] {
+function convertItems(items: DynamoComment[]): Comment[] {
     return items.sort((a, b) => a.timestamp.S.localeCompare(b.timestamp.S)).map((item: DynamoComment) => {
         const isDeleted = !!(item.deletedAt?.S);
         const isEdited = !!(item.editedAt?.S);
