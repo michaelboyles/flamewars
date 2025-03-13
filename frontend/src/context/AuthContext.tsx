@@ -61,7 +61,7 @@ export function tokenToState(token: JsonWebToken): User & Auth {
     return {
         id: "GOOGLE/" + token.sub,
         name: token.given_name,
-        token: token.jti,
+        token: token.raw,
         tokenProvider: "Google"
     }
 }
@@ -105,10 +105,15 @@ function decodeJsonWebToken(token: string): JsonWebToken {
             .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
             .join('')
     );
-    return JSON.parse(jsonPayload);
+    return {
+        raw: token,
+        ...JSON.parse(jsonPayload)
+    };
 }
 
 type JsonWebToken = {
+    raw: string
+
     // JWT ID. Case-sensitive unique identifier of the token even among different issuers
     jti: string
     // An identifier for the user, unique among all Google accounts and never reused. A Google account can have multiple
