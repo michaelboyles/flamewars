@@ -31,7 +31,7 @@ const getGoogleDetails = async (token: string): Promise<AuthenticationResult> =>
     }
     catch (error) {
         return {
-            isValid: false
+            isValid: false,
         }
     }
 }

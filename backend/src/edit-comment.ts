@@ -2,8 +2,7 @@ import { COMMENT_ID_PREFIX, getDynamoDb, getOverlongFields, PAGE_ID_PREFIX } fro
 import { createHandler, errorResult, successResult } from './common';
 import { EditCommentRequest } from '../../common/types/edit-comment-request';
 import { MAX_COMMENT_LENGTH } from '../../common/constants';
-
-import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
+import type { UpdateItemInput } from "@aws-sdk/client-dynamodb";
 
 const dynamo = getDynamoDb();
 
@@ -39,7 +38,7 @@ export const handler = createHandler<EditCommentRequest>({
         };
 
         try {
-            await dynamo.updateItem(updateComment).promise();
+            await dynamo.updateItem(updateComment);
             return successResult({success: true})
         }
         catch (err) {

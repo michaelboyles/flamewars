@@ -1,10 +1,11 @@
 import { COMMENT_ID_PREFIX, DynamoComment, getDynamoDb, PAGE_ID_PREFIX, parseContinuationToken, removeCommentIdPrefix } from './aws';
 import { createHandler, errorResult, successResult } from './common';
 import { limitQuery } from './dynamo';
+import type { ItemList } from './dynamo';
 import { PAGE_SIZE } from '../../common/constants';
 
 import type { GetAllCommentsResponse, Comment } from '../../common/types/get-all-comments-response';
-import type { ItemList, QueryInput } from 'aws-sdk/clients/dynamodb';
+import type { QueryInput } from '@aws-sdk/client-dynamodb';
 
 const DELETED_AUTHOR = 'Anonymous';
 const DELETED_AUTHOR_ID = 'ANONYMOUS';

@@ -1,9 +1,9 @@
 import { COMMENT_ID_PREFIX, DynamoComment, DynamoString, getDynamoDb, getOverlongFields, getRequestUrl, PAGE_ID_PREFIX } from './aws';
-import { PutItemInput, UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 import { MAX_COMMENT_LENGTH } from '../../common/constants';
 import { v4 as uuid } from 'uuid';
 import { createHandler, errorResult } from './common';
 import { normalizeUrl } from '../../common/util';
+import type { PutItemInput, UpdateItemInput } from "@aws-sdk/client-dynamodb";
 
 import type { AddCommentRequest } from '../../common/types/add-comment-request';
 import type { AddCommentResponse } from '../../common/types/add-comment-response';
@@ -43,7 +43,7 @@ export const handler = createHandler<AddCommentRequest>({
             Item: dynamoComment
         };
 
-        const promises = [dynamo.putItem(params).promise()];
+        const promises = [dynamo.putItem(params)];
         if (request.inReplyTo) {
             const input: UpdateItemInput = {
                 TableName: process.env.TABLE_NAME,
@@ -55,7 +55,7 @@ export const handler = createHandler<AddCommentRequest>({
                 ExpressionAttributeValues: {':inc': {N: '1'}},
             };
 
-            promises.push(dynamo.updateItem(input).promise());
+            promises.push(dynamo.updateItem(input));
         }
         
         return Promise.all(promises)

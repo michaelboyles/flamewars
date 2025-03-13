@@ -1,6 +1,6 @@
-const { buildDir, zipFile } = require('./consts');
-const fs = require('fs');
-const archiver = require('archiver');
+import { buildDir, zipFile } from './consts.js';
+import fs from 'fs';
+import archiver from 'archiver';
 
 const output = fs.createWriteStream(zipFile);
 const archive = archiver('zip', { zlib: { level: 9 } });

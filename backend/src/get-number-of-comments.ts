@@ -1,9 +1,8 @@
 import { ApiGatewayRequest, getDynamoDb, PAGE_ID_PREFIX } from './aws';
-import { QueryInput } from 'aws-sdk/clients/dynamodb';
-import { DynamoDB } from 'aws-sdk';
 import { createHandler, errorResult, successResult } from './common';
 import { GetCommentCountResponse, CommentCount } from '../../common/types/comment-count';
 import { MAX_URLS_IN_COUNT_REQUEST } from '../../common/constants';
+import type { DynamoDB, QueryInput } from '@aws-sdk/client-dynamodb';
 
 function getUniqueUrls(request: ApiGatewayRequest): string[] {
     const urls: string = request.queryStringParameters.urls;

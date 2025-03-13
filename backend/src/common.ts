@@ -10,19 +10,19 @@ const CORS_HEADERS = {
 };
 
 export type HandlerResult = {
-    statusCode: number,
-    body: object,
+    statusCode: number
+    body: object
     extraHeaders?: Record<string, string>
-};
+}
 
 export function successResult(body: object): HandlerResult {
     return { statusCode: 200, body };
-};
+}
 
 export function errorResult(statusCode: number, message: string): HandlerResult {
     const body: ErrorResponse = { error: message };
     return { statusCode, body };
-};
+}
 
 function resultToResponse(result: HandlerResult): ApiGatewayResponse {
     return {

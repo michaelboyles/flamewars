@@ -1,4 +1,5 @@
-module.exports = {
+// noinspection JSUnusedGlobalSymbols
+export default {
     name: 'Server',
     mode: 'production',
     entry: {

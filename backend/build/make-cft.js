@@ -1,9 +1,9 @@
-const { schemaBuildDir } = require('./consts');
-const fs = require('fs');
-const util = require('util');
+import { schemaBuildDir } from './consts.js';
+import fs from 'fs';
+import { promisify } from 'util';
 
-const readdir = util.promisify(fs.readdir);
-const readFile = util.promisify(fs.readFile);
+const readdir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
 
 /*
  * Inject JSON schemas into the CloudFormation Template template -- yes, a template for a template.

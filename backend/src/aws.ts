@@ -1,6 +1,7 @@
-import { AttributeValue, PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb';
-import { DynamoDB } from 'aws-sdk';
+import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { MAX_DB_FIELD_LENGTH } from '../../common/constants';
+import type { AttributeValue } from '@aws-sdk/client-dynamodb';
+import type { AttributeMap, DynamoKey } from "./dynamo";
 
 export const PAGE_ID_PREFIX: string = 'PAGE#';
 export const COMMENT_ID_PREFIX: string = '#COMMENT#';
@@ -38,7 +39,7 @@ export interface DynamoNumber {
     N: string;
 }
 
-export interface DynamoComment extends PutItemInputAttributeMap {
+export interface DynamoComment extends AttributeMap {
     PK: DynamoString;
     SK: DynamoString;
     pageUrl: DynamoString;
@@ -67,7 +68,7 @@ export function getOverlongFields(fieldMap: Record<string, AttributeValue>, igno
 }
 
 export function getContentType(event: ApiGatewayRequest) {
-    for (var key in event.headers){
+    for (let key in event.headers) {
         if (key.toLowerCase() === 'content-type') {
             return event.headers[key];
         }
@@ -76,10 +77,10 @@ export function getContentType(event: ApiGatewayRequest) {
 }
 
 export function removeCommentIdPrefix(id: string) {
-    return id.substr(COMMENT_ID_PREFIX.length);
+    return id.substring(COMMENT_ID_PREFIX.length);
 }
 
-export function continuationTokenToStr(key: DynamoDB.Key): string | undefined {
+export function continuationTokenToStr(key: DynamoKey): string | undefined {
     if (key) {
         const keyStr = JSON.stringify(key);
         return Buffer.from(keyStr).toString('base64');

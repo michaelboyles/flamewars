@@ -2,7 +2,7 @@ import { COMMENT_ID_PREFIX, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { createHandler, errorResult, successResult } from './common';
 
 import type { VoteRequest } from '../../common/types/vote';
-import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
+import type { UpdateItemInput } from '@aws-sdk/client-dynamodb';
 
 const getUpdateExpression = (request: VoteRequest) => {
     switch (request.voteType) {

@@ -1,8 +1,7 @@
 import { COMMENT_ID_PREFIX, getDynamoDb, PAGE_ID_PREFIX } from './aws';
 import { createHandler, errorResult, successResult } from './common';
-import { DeleteCommentRequest } from '../../common/types/delete-comment-request';
-
-import type { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
+import type { DeleteCommentRequest } from '../../common/types/delete-comment-request';
+import type { UpdateItemInput } from '@aws-sdk/client-dynamodb';
 
 const dynamo = getDynamoDb();
 
@@ -28,7 +27,7 @@ export const handler = createHandler<DeleteCommentRequest>({
         };
 
         try {
-            const result = await dynamo.updateItem(deleteComment).promise();
+            const result = await dynamo.updateItem(deleteComment);
             // If it's a reply, update the parent to reflect the new reply count
             if (result.Attributes?.threadId?.S) {
                 const decrementParentReplyCount: UpdateItemInput = {
@@ -40,7 +39,7 @@ export const handler = createHandler<DeleteCommentRequest>({
                     UpdateExpression: 'ADD numReplies :minusOne',
                     ExpressionAttributeValues: {':minusOne': {N: '-1'}}
                 };
-                await dynamo.updateItem(decrementParentReplyCount).promise();
+                await dynamo.updateItem(decrementParentReplyCount);
             }
             return successResult({success: true});
         }

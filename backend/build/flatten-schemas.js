@@ -1,8 +1,8 @@
-const { schemaDir, schemaExtension, schemaBuildDir } = require('./consts');
-const fs = require('fs');
-const util = require('util');
-const refParser = require('@apidevtools/json-schema-ref-parser');
-const readdir = util.promisify(fs.readdir);
+import { schemaDir, schemaExtension, schemaBuildDir } from './consts.js';
+import fs from 'fs';
+import { promisify } from 'util';
+import refParser from '@apidevtools/json-schema-ref-parser';
+const readdir = promisify(fs.readdir);
 
 if (!fs.existsSync(schemaBuildDir)) {
     fs.mkdirSync(schemaBuildDir, { recursive: true });
