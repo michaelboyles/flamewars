@@ -62,24 +62,30 @@ export function FwComment({ comment, parent }: Props) {
         }
     }, [authorization, isEditing]);
 
-    const addReply = (reply: Comment) => {
+    function addReply(reply: Comment) {
         setReplies({...replies, [reply.id]: reply})
-    };
+    }
 
-    const deleteComment = () => {
+    async function deleteComment() {
         const shouldDelete = confirm('Are you sure you want to delete this comment?');
         if (!shouldDelete) return;
-        fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${comment.id}`,
-            {
+        try {
+            const response = await fetch(`${AWS_GET_URL}/comments/${encodedWindowUrl()}/${comment.id}`, {
                 method: 'DELETE',
                 body: JSON.stringify({authorization}),
                 headers: {'content-type': 'application/json'}
-            })
-            .then(response => { if (response.ok) { setDeleted(true); setIsEditing(false); } })
-            .catch(e => console.error(e));
-    };
+            });
+            if (response.ok) {
+                setDeleted(true);
+                setIsEditing(false);
+            }
+        }
+        catch(error) {
+            console.error(error);
+        }
+    }
 
-    const afterSubmitNew = (comment: Comment) => {
+    function afterSubmitNew(comment: Comment) {
         if (parent) {
             parent.addReply(comment);
         }
@@ -91,17 +97,17 @@ export function FwComment({ comment, parent }: Props) {
         }
         setNumReplies(numReplies + 1);
         setReplyFormOpen(false);
-    };
+    }
 
-    const afterSubmitEdit = (comment: Comment) => {
+    function afterSubmitEdit(comment: Comment) {
         setIsEditing(false);
         if (comment.text !== comment.text) {
             setText(comment.text);
             setIsEdited(true);
         }
-    };
+    }
 
-    const loadMoreReplies = async () => {
+    async function loadMoreReplies() {
         if (!isRepliesSectionOpen && Object.keys(replies).length > 0) {
             setRepliesSectionOpen(true);
             return;
@@ -166,7 +172,7 @@ export function FwComment({ comment, parent }: Props) {
                     <ShareButton className='share-btn' fragment={id} />
                     <If condition={isOwner && !isDeleted}>
                         <button className='edit-btn' onClick={() => setIsEditing(!isEditing)}>Edit</button>
-                        <button className='delete-btn' onClick={deleteComment}>Delete</button>
+                        <button className='delete-btn' onClick={() => deleteComment()}>Delete</button>
                     </If>
                 </div>
             </div>
