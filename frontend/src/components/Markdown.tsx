@@ -9,6 +9,8 @@ function addAutoLinks(comment: string) : string {
 export const Markdown = (props: {text: string}) => {
     const disallowedElements = ALLOW_IMAGES ? [] : ['image'];
     return (
-        <ReactMarkdown className='content' disallowedElements={disallowedElements}>{addAutoLinks(props.text)}</ReactMarkdown>
+        <div className="content">
+            <ReactMarkdown disallowedElements={disallowedElements}>{addAutoLinks(props.text)}</ReactMarkdown>
+        </div>
     )
 }

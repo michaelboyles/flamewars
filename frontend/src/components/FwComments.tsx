@@ -60,7 +60,7 @@ const FwComments = () => {
         }
     };
 
-    const triggerRef = useRef();
+    const triggerRef = useRef(null);
     const entry = useIntersectionObserver(triggerRef);
     const isTriggerVisible = !!entry?.isIntersecting;
 

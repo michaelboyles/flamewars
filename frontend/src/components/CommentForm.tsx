@@ -163,7 +163,7 @@ export const CommentForm = (props: Props) => {
         }
     }, [setError, text.length]);
 
-    const formRef = useRef<HTMLFormElement>();
+    const formRef = useRef<HTMLFormElement>(null);
     const size = useElementSize(formRef!.current);
     const isLarge = size.width > 500;
 

@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const jsxConditionals = require('jsx-conditionals/transform').default;
 
 module.exports = {
     name: 'Client',
@@ -18,8 +19,10 @@ module.exports = {
                 use: [{
                     loader: 'ts-loader',
                     options: {
-                        compiler: 'ttypescript',
-                        configFile: 'tsconfig.json'
+                        configFile: 'tsconfig.json',
+                        getCustomTransformers: (program) => ({
+                            before: [jsxConditionals(program, {})]
+                        })
                     }
                 }]
             },
