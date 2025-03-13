@@ -85,12 +85,12 @@ export function FwComment({ comment, parent }: Props) {
         }
     }
 
-    function afterSubmitNew(comment: Comment) {
+    function afterSubmitNew(newComment: Comment) {
         if (parent) {
-            parent.addReply(comment);
+            parent.addReply(newComment);
         }
         else {
-            addReply(comment);
+            addReply(newComment);
         }
         if (!isRepliesSectionOpen) {
             setRepliesSectionOpen(true);
@@ -99,10 +99,10 @@ export function FwComment({ comment, parent }: Props) {
         setReplyFormOpen(false);
     }
 
-    function afterSubmitEdit(comment: Comment) {
+    function afterSubmitEdit(newComment: Comment) {
         setIsEditing(false);
-        if (comment.text !== comment.text) {
-            setText(comment.text);
+        if (newComment.text !== comment.text) {
+            setText(newComment.text);
             setIsEdited(true);
         }
     }
