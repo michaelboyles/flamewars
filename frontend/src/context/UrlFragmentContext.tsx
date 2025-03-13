@@ -1,9 +1,8 @@
-import React from 'react';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface IUrlFragmentContext {
     fragment?: string;
-};
+}
 
 export const UrlFragmentContext = createContext<IUrlFragmentContext>({});
 

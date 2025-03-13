@@ -1,5 +1,4 @@
-import React from 'react';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { AWS_GET_URL, USE_INFINITE_SCROLL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../../common/types/get-all-comments-response';
 import { CommentForm } from './CommentForm';
@@ -26,7 +25,7 @@ const jumpToComment = () => {
     }
 };
 
-const FwComment = React.lazy(
+const FwComment = lazy(
     () => import('./FwComment').then(module => ({ default: module.FwComment }))
 );
 

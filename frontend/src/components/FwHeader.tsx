@@ -1,4 +1,3 @@
-import React from 'react';
 import { useContext } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { DISPLAY_GITHUB_LINK, GOOGLE_CLIENT_ID } from '../config';

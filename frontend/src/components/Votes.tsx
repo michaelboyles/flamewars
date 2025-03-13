@@ -1,4 +1,3 @@
-import React from 'react';
 import { useContext, useState } from 'react';
 import { AWS_GET_URL } from '../config';
 import { AuthContext } from '../context/AuthContext';

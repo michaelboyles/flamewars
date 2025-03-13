@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactNode, useState, ButtonHTMLAttributes } from 'react';
 
 interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onclick'> {

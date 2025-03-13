@@ -1,4 +1,3 @@
-import React from 'react';
 import identicon from 'svg-identicon';
 import md5 from 'md5';
 

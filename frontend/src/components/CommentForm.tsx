@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useContext, useEffect, useRef, useState } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 import type { Comment, CommentId } from '../../../common/types/comment';
 import type { AddCommentRequest } from '../../../common/types/add-comment-request';
@@ -92,7 +91,7 @@ export const CommentForm = (props: Props) => {
     const [hasBeenFocused, setHasBeenFocused] = useState(false);
     const { authorization } = useContext(AuthContext);
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!text || text.trim().length === 0) {
             setError('Comment cannot be blank');

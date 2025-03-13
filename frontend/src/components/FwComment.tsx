@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useContext, useEffect } from 'react';
+import { memo, useState, useContext, useEffect } from 'react';
 import { AWS_GET_URL, DELETED_MESSAGE } from '../config';
 import { CommentForm } from './CommentForm';
 import { DefaultAvatar } from './DefaultAvatar';
@@ -17,7 +16,7 @@ import type { Comment, GetAllCommentsResponse } from '../../../common/types/get-
 
 import './FwComment.scss';
 
-const Timestamp = React.memo((props: {isoTimestamp: string}) => {
+const Timestamp = memo((props: {isoTimestamp: string}) => {
     const date = new Date(props.isoTimestamp);
     return (
         <time className='timestamp' dateTime={props.isoTimestamp} title={formatFullTime(date)}>{formatPastDate(date)}</time>

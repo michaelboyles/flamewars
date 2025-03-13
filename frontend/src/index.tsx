@@ -1,4 +1,3 @@
-import React from 'react';
 import FwComments from './components/FwComments';
 import { createRoot } from 'react-dom/client';
 import { applyCountToCommentLinks } from './comment-count';
