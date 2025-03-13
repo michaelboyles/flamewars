@@ -1,6 +1,6 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { AWS_GET_URL } from '../config';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 import { encodedWindowUrl } from '../util';
 import { HiOutlineThumbDown, HiOutlineThumbUp } from 'react-icons/hi'
 
@@ -15,7 +15,7 @@ export type Props = {
     comment: Comment
 }
 export function Votes({ comment }: Props) {
-    const { authorization, user } = useContext(AuthContext);
+    const { authorization, user } = useAuthContext();
     const [votes, setVotes] = useState(comment.votes);
 
     let myVote = undefined;

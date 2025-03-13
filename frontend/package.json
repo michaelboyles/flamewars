@@ -13,12 +13,11 @@
   "author": "Michael Boyles",
   "license": "MIT",
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "build": "0.1.4",
-    "google-auth-library": "9.15.1",
     "md5": "2.3.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-google-login": "5.2.2",
     "react-icons": "^5.5.0",
     "react-markdown": "10.1.0",
     "react-mde": "11.5.0",

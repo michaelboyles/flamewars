@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { AWS_GET_URL, USE_INFINITE_SCROLL } from '../config';
+import { AWS_GET_URL, GOOGLE_CLIENT_ID, USE_INFINITE_SCROLL } from '../config';
 import { Comment, GetAllCommentsResponse } from '../../../common/types/get-all-comments-response';
 import { CommentForm } from './CommentForm';
-import { AuthContext, User } from '../context/AuthContext';
+import { AuthContextProvider } from '../context/AuthContext';
 import { UrlFragmentContextProvider } from '../context/UrlFragmentContext';
 import { FwHeader } from './FwHeader';
 import { encodedWindowUrl } from '../util';
@@ -10,8 +10,7 @@ import { Else, ElseIf, If } from 'jsx-conditionals';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { LoadButton } from './LoadButton';
-
-import type { Authorization } from '../../../common/types/add-comment-request';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import './FwComments.scss';
 
@@ -33,8 +32,6 @@ function FwComments() {
     const baseUrl = `${AWS_GET_URL}/comments/${encodedWindowUrl()}`;
 
     const [comments, setComments] = useState<Comment[]>([]);
-    const [authorization, setAuthorization] = useState<Authorization>();
-    const [user, setUser] = useState<User>();
     const [nextUrl, setNextUrl] = useState(baseUrl);
     const [failedToLoad, setFailedToLoad] = useState(false);
 
@@ -74,31 +71,33 @@ function FwComments() {
 
     return (
         <section className='flamewars-container'>
-            <UrlFragmentContextProvider>
-                <AuthContext.Provider value={{authorization, setAuthorization, user, setUser}}>
-                    <FwHeader />
-                    <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
-                    <ul className='comments'>
-                    {
-                        comments
-                            .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                            .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>)
-                    }
-                    </ul>
-                    <div ref={triggerRef} className='infinite-scroll-trigger'>
-                        <If condition={failedToLoad}>Failed to load comments</If>
-                        <Else>
-                            <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
-                                <LoadingSpinner />
-                            </If>
-                            <ElseIf condition={baseUrl !== nextUrl && comments.length === 0}>
-                                Be the first to comment
-                            </ElseIf>
-                        </Else>
-                        <LoadButton className='load-more-comments' load={loadComments} visible={!!nextUrl && !USE_INFINITE_SCROLL} />
-                    </div>
-                </AuthContext.Provider>
-            </UrlFragmentContextProvider>
+            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                <UrlFragmentContextProvider>
+                    <AuthContextProvider>
+                        <FwHeader />
+                        <CommentForm afterSubmit={(comment: Comment) => setComments(comments.concat(comment))} type='add' />
+                        <ul className='comments'>
+                        {
+                            comments
+                                .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+                                .map(comment => <Suspense key={comment.id} fallback={<></>}><FwComment comment={comment} /></Suspense>)
+                        }
+                        </ul>
+                        <div ref={triggerRef} className='infinite-scroll-trigger'>
+                            <If condition={failedToLoad}>Failed to load comments</If>
+                            <Else>
+                                <If condition={!!nextUrl && USE_INFINITE_SCROLL}>
+                                    <LoadingSpinner />
+                                </If>
+                                <ElseIf condition={baseUrl !== nextUrl && comments.length === 0}>
+                                    Be the first to comment
+                                </ElseIf>
+                            </Else>
+                            <LoadButton className='load-more-comments' load={loadComments} visible={!!nextUrl && !USE_INFINITE_SCROLL} />
+                        </div>
+                    </AuthContextProvider>
+                </UrlFragmentContextProvider>
+            </GoogleOAuthProvider>
         </section>
     )
 }

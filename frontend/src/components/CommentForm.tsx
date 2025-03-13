@@ -1,4 +1,4 @@
-import { type FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 import type { Comment, CommentId } from '../../../common/types/comment';
 import type { AddCommentRequest } from '../../../common/types/add-comment-request';
@@ -6,7 +6,7 @@ import type { EditCommentRequest } from '../../../common/types/edit-comment-requ
 import { MAX_COMMENT_LENGTH } from '../../../common/constants';
 import ReactMde from 'react-mde';
 import { Markdown } from './Markdown';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 import { SignIn } from './SignIn';
 import { ALLOW_IMAGES, AWS_GET_URL } from '../config';
 import { useElementSize } from '../hooks/useElementSize';
@@ -94,7 +94,7 @@ export function CommentForm(props: Props) {
     const [error, setError] = useState<string | null>(null);
     const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
     const [hasBeenFocused, setHasBeenFocused] = useState(false);
-    const { authorization } = useContext(AuthContext);
+    const { authorization } = useAuthContext();
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

@@ -1,15 +1,11 @@
-import { useContext } from 'react';
-import { useGoogleLogout } from 'react-google-login';
-import { DISPLAY_GITHUB_LINK, GOOGLE_CLIENT_ID } from '../config';
-import { AuthContext } from '../context/AuthContext';
+import { DISPLAY_GITHUB_LINK } from '../config';
+import { useAuthContext } from '../context/AuthContext';
 import { If } from 'jsx-conditionals';
 
 import './FwHeader.scss';
 
 export function FwHeader() {
-    const { user, setAuthorization } = useContext(AuthContext);
-    const { signOut: googleSignOut } = useGoogleLogout({ clientId: GOOGLE_CLIENT_ID });
-    const signOut = () => { googleSignOut(); setAuthorization(null); }
+    const { user, signOut } = useAuthContext();
 
     return (
         <header className='flamewars-header'>
@@ -20,7 +16,7 @@ export function FwHeader() {
                 </If>
             </div>
             <If condition={user?.name}>
-                <span className='user'>Signed in as {user.name} &ndash; <a className='sign-out' onClick={signOut}>Sign out</a></span> 
+                <span className='user'>Signed in as {user.name} &ndash; <a className='sign-out' onClick={() => signOut()}>Sign out</a></span>
             </If>
         </header>
     )

@@ -4,7 +4,7 @@ import { CommentForm } from './CommentForm';
 import { DefaultAvatar } from './DefaultAvatar';
 import { Markdown } from './Markdown';
 import { ShareButton } from './ShareButton';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 import { UrlFragmentContext } from '../context/UrlFragmentContext';
 import { Else, If } from 'jsx-conditionals';
 import { Votes } from './Votes';
@@ -52,7 +52,7 @@ export function FwComment({ comment, parent }: Props) {
     const [isEdited, setIsEdited] = useState(comment.status === 'edited');
     const [text, setText] = useState(comment.text);
     const [numReplies, setNumReplies] = useState(comment.replies?.count ?? 0);
-    const { authorization, user } = useContext(AuthContext);
+    const { authorization, user } = useAuthContext();
     const { fragment } = useContext(UrlFragmentContext);
 
     useEffect(() => {

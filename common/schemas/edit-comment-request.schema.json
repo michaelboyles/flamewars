@@ -7,7 +7,7 @@
     "properties": {
         "comment": {
             "type": "string",
-            "description": "The new, editted body of the comment"
+            "description": "The new, edited body of the comment"
         },
         "authorization": {
             "$ref": "authorization.schema.json",
