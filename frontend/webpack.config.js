@@ -1,7 +1,7 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const jsxConditionals = require('jsx-conditionals/transform').default;
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import jsxConditionals from 'jsx-conditionals/transform.js';
 
-module.exports = {
+export default {
     name: 'Client',
     mode: 'production',
     entry: './src/index.tsx',
@@ -21,7 +21,7 @@ module.exports = {
                     options: {
                         configFile: 'tsconfig.json',
                         getCustomTransformers: (program) => ({
-                            before: [jsxConditionals(program, {})]
+                            before: [jsxConditionals.default(program, {})]
                         })
                     }
                 }]

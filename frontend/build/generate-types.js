@@ -1,6 +1,6 @@
-const { schemaDir, schemaExtension, schemaTypeDir } = require('../../backend/build/consts');
-const fs = require('fs');
-const js2ts = require('json-schema-to-typescript');
+import { schemaDir, schemaExtension, schemaTypeDir } from '../../backend/build/consts.js';
+import fs from 'fs';
+import js2ts from 'json-schema-to-typescript';
 
 if (!fs.existsSync(schemaTypeDir)) {
     fs.mkdirSync(schemaTypeDir, { recursive: true });
